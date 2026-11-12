@@ -1,0 +1,171 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    background-color: #FAFCF9;
+    color: #26332A;
+    overflow-x: hidden;
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
+
+  html.dark body {
+    background-color: #0D1510;
+    color: #ECF3EE;
+  }
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+/* ============================================================================
+   MODE MALAM (DARK MODE) — NOCTURNAL CYPRESS & FOREST PALETTE
+   ============================================================================ */
+html.dark .bg-\[\#FAFCF9\] {
+  background-color: #0D1510 !important;
+}
+
+html.dark .bg-white,
+html.dark .bg-white\/95,
+html.dark .bg-white\/90 {
+  background-color: #142019 !important;
+}
+
+/* Preserve white background inside the QR code container on the member card */
+html.dark [data-testid="digital-member-card"] .bg-white,
+html.dark [data-testid="digital-member-card-back"] .bg-white {
+  background-color: #FFFFFF !important;
+}
+
+html.dark .bg-\[\#F3F7F2\] {
+  background-color: #1B2B22 !important;
+}
+
+html.dark .bg-\[\#E8EFE7\] {
+  background-color: #213529 !important;
+}
+
+html.dark .bg-\[\#EBF5EE\] {
+  background-color: rgba(59, 117, 81, 0.24) !important;
+}
+
+html.dark .bg-\[\#FCF5E8\] {
+  background-color: rgba(160, 106, 24, 0.22) !important;
+}
+
+html.dark .bg-\[\#FCEEEF\] {
+  background-color: rgba(180, 66, 56, 0.22) !important;
+}
+
+html.dark .text-\[\#26332A\] {
+  color: #ECF3EE !important;
+}
+
+/* Preserve dark text on light badges inside the member card */
+html.dark [data-testid="digital-member-card"] .text-\[\#19432D\],
+html.dark [data-testid="digital-member-card"] .text-\[\#26332A\] {
+  color: #19432D !important;
+}
+
+html.dark .text-\[\#6B776D\] {
+  color: #9BB0A1 !important;
+}
+
+html.dark .text-\[\#315B43\] {
+  color: #7CC497 !important;
+}
+
+html.dark .text-\[\#3B7551\] {
+  color: #6EE7B7 !important;
+}
+
+html.dark .text-\[\#A06A18\] {
+  color: #FBBF24 !important;
+}
+
+html.dark .text-\[\#B44238\] {
+  color: #F87171 !important;
+}
+
+html.dark .border-\[\#E3EAE3\] {
+  border-color: #24382C !important;
+}
+
+html.dark .border-\[\#C7D7C8\] {
+  border-color: #2F4B3A !important;
+}
+
+html.dark .divide-\[\#E3EAE3\] > :not([hidden]) ~ :not([hidden]) {
+  border-color: #24382C !important;
+}
+
+html.dark input:not([type="color"]):not([type="checkbox"]),
+html.dark select,
+html.dark textarea {
+  background-color: #0F1913 !important;
+  color: #ECF3EE !important;
+  border-color: #2A4032 !important;
+}
+
+html.dark input::placeholder,
+html.dark textarea::placeholder {
+  color: #687D6E !important;
+}
+
+html.dark .hover\:bg-\[\#F3F7F2\]:hover,
+html.dark .hover\:bg-\[\#FAFCF9\]:hover {
+  background-color: #1E3025 !important;
+}
+
+/* ============================================================================
+   CETAK PRINTER & PDF (@media print)
+   ============================================================================ */
+@media print {
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+
+  html,
+  body,
+  html.dark body {
+    background-color: #FFFFFF !important;
+    color: #26332A !important;
+  }
+
+  main {
+    padding: 0 !important;
+    margin: 0 !important;
+    max-width: 100% !important;
+  }
+
+  /* When printing specifically from DigitalMemberCard */
+  body.printing-member-card * {
+    visibility: hidden;
+  }
+
+  body.printing-member-card .printable-member-card-sheet,
+  body.printing-member-card .printable-member-card-sheet * {
+    visibility: visible;
+  }
+
+  body.printing-member-card .printable-member-card-sheet {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    padding: 16px;
+    background: #FFFFFF !important;
+  }
+}
+

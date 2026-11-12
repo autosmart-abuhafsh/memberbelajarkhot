@@ -1,0 +1,596 @@
+{
+  "users": [
+    {
+      "uid": "usr-admin-01",
+      "memberId": "ADMIN-01",
+      "username": "admin",
+      "fullName": "Ustadz H. Zulkifli Hasan",
+      "gender": "Laki-laki (Ikhwan)",
+      "phone": "081110002026",
+      "email": "admin@belajarkhot.id",
+      "city": "Jakarta Selatan",
+      "photoURL": "",
+      "role": "admin",
+      "accountStatus": "Aktif",
+      "createdAt": "2026-01-01T00:00:00.000Z",
+      "updatedAt": "2026-11-10T08:00:00.000Z",
+      "lastLoginAt": "2026-11-11T15:23:31.653Z",
+      "isDemo": false
+    },
+    {
+      "uid": "usr-bk-00001",
+      "memberId": "BK-00001",
+      "username": "BK-00001",
+      "fullName": "Ahmad Fauzi (Demo)",
+      "gender": "Laki-laki (Ikhwan)",
+      "phone": "081234567801",
+      "email": "ahmad.fauzi@contoh.id",
+      "city": "Jakarta Selatan",
+      "photoURL": "",
+      "role": "member",
+      "accountStatus": "Aktif",
+      "createdAt": "2026-08-12T08:30:00.000Z",
+      "updatedAt": "2026-08-12T08:30:00.000Z",
+      "lastLoginAt": "2026-11-09T19:30:00.000Z",
+      "isDemo": true
+    },
+    {
+      "uid": "usr-bk-00002",
+      "memberId": "BK-00002",
+      "username": "BK-00002",
+      "fullName": "Muhammad Ridwan (Demo)",
+      "gender": "Laki-laki (Ikhwan)",
+      "phone": "081298765402",
+      "email": "m.ridwan@contoh.id",
+      "city": "Bandung",
+      "photoURL": "",
+      "role": "member",
+      "accountStatus": "Aktif",
+      "createdAt": "2026-10-20T09:00:00.000Z",
+      "updatedAt": "2026-10-20T09:00:00.000Z",
+      "lastLoginAt": "2026-11-09T19:30:00.000Z",
+      "isDemo": true
+    },
+    {
+      "uid": "usr-bk-00003",
+      "memberId": "BK-00003",
+      "username": "BK-00003",
+      "fullName": "Ibrahim Khalil (Demo)",
+      "gender": "Laki-laki (Ikhwan)",
+      "phone": "081345678903",
+      "email": "ibrahim.k@contoh.id",
+      "city": "Yogyakarta",
+      "photoURL": "",
+      "role": "member",
+      "accountStatus": "Aktif",
+      "createdAt": "2026-11-02T14:20:00.000Z",
+      "updatedAt": "2026-11-02T14:20:00.000Z",
+      "lastLoginAt": "2026-11-09T19:30:00.000Z",
+      "isDemo": true
+    },
+    {
+      "uid": "usr-bk-00004",
+      "memberId": "BK-00004",
+      "username": "BK-00004",
+      "fullName": "Salman Al-Farisi (Demo)",
+      "gender": "Laki-laki (Ikhwan)",
+      "phone": "081567892304",
+      "email": "salman.farisi@contoh.id",
+      "city": "Depok",
+      "photoURL": "",
+      "role": "member",
+      "accountStatus": "Aktif",
+      "createdAt": "2026-09-05T07:45:00.000Z",
+      "updatedAt": "2026-09-05T07:45:00.000Z",
+      "lastLoginAt": "2026-11-09T19:30:00.000Z",
+      "isDemo": true
+    },
+    {
+      "uid": "usr-bk-00005",
+      "memberId": "BK-00005",
+      "username": "BK-00005",
+      "fullName": "Yusuf Mansuruddin (Demo)",
+      "gender": "Laki-laki (Ikhwan)",
+      "phone": "081789012305",
+      "email": "yusuf.m@contoh.id",
+      "city": "Surabaya",
+      "photoURL": "",
+      "role": "member",
+      "accountStatus": "Nonaktif",
+      "createdAt": "2026-06-15T10:00:00.000Z",
+      "updatedAt": "2026-06-15T10:00:00.000Z",
+      "lastLoginAt": null,
+      "isDemo": true
+    },
+    {
+      "uid": "usr-bk-00006",
+      "memberId": "BK-00006",
+      "username": "BK-00006",
+      "fullName": "Zaid bin Tsabit (Demo)",
+      "gender": "Laki-laki (Ikhwan)",
+      "phone": "081901234506",
+      "email": "zaid.tsabit@contoh.id",
+      "city": "Bogor",
+      "photoURL": "",
+      "role": "member",
+      "accountStatus": "Aktif",
+      "createdAt": "2026-09-18T13:10:00.000Z",
+      "updatedAt": "2026-09-18T13:10:00.000Z",
+      "lastLoginAt": "2026-11-09T19:30:00.000Z",
+      "isDemo": true
+    }
+  ],
+  "passwordHashes": {
+    "usr-admin-01": "565e7ca293d152f1294abad871a69e02:33c598f7f7e2a66750ddbc3422d1a4b45b8b254769380466a8e80438b055b4a85835b23e43cee0ac820ccbf0f0f6a11313a04c4d275cf98d2e3bd393a12ccd1a",
+    "usr-bk-00001": "8c6684f3ebb04b4e4176040fd2b99dbc:fb13b020da73566e6ffab4c488d1328001df0abb63e824afc07717b3a96a602e30ac3711c61a5d58d34d751d865c70e58f17e562b7718be9400fbdf4b51075b2",
+    "usr-bk-00002": "43623417bb7046aa1dbb119d38afcc63:54afbc2dcc06775a5a43b426f2980702db49d736515a180a2a61b631d6012c6eeb2e6763106edcc750009bf93ebc1b40bcfa2400345d6c6b7117f9b77990e10e",
+    "usr-bk-00003": "c61267f5297085f7bce29e650aa5394a:abf1159aa540e29ed02fc59e69cfeb8d0663332d593a6b4a1bb9d4cb0cb6dd45f71df9b9b9dc220280621cf804b4eb7c115a8a5c8778150444e75a01ebf4472f",
+    "usr-bk-00004": "1519d95bf49cbb368064b3a31aa97f47:c319eaf9b76e94211b415772f29c3e3914e6b1ba5321d77a7f9e3d073c8c973cc2094caa5a57fe0f20c08102ac5e2b7128d580863784e33a72484ffa9cf66a62",
+    "usr-bk-00005": "1fb16f502e0c8c94b76829670f74fc3b:a4246d1e21bed1fd599e0b17984963e904256139dc7e35bd44c90034cbb6b73081ea784122c56af7b6a1c2d1b1ddeffa5152a45dce2fd6872670aa530cda3803",
+    "usr-bk-00006": "eaa2ec33d7e2e6117e2d51dbb61a3370:07674add20717423b1d798c106c45410f5e74a35647ddf5d3af631ff5bbaffdd76e578f49d846febb2a44ed975367cabde2bb3a5d90bd68c897b738df60b69af"
+  },
+  "members": [
+    {
+      "id": "mem-bk-00001",
+      "uid": "usr-bk-00001",
+      "memberId": "BK-00001",
+      "program": "Khot Naskhi",
+      "learningMethod": "Online",
+      "bookPurchaseStatus": "Sudah diverifikasi",
+      "membershipStatus": "Member Aktif",
+      "agreedToRules": true,
+      "joinDate": "2026-08-12T08:30:00.000Z",
+      "verificationDate": "2026-08-13T10:15:00.000Z",
+      "adminNotes": "Data Demonstrasi — Peserta aktif angkatan ke-4, buku paket Khot Naskhi lunas.",
+      "isDemo": true
+    },
+    {
+      "id": "mem-bk-00002",
+      "uid": "usr-bk-00002",
+      "memberId": "BK-00002",
+      "program": "Khot Riq'ah",
+      "learningMethod": "Offline",
+      "bookPurchaseStatus": "Menunggu verifikasi",
+      "membershipStatus": "Menunggu Verifikasi",
+      "agreedToRules": true,
+      "joinDate": "2026-10-20T09:00:00.000Z",
+      "verificationDate": null,
+      "adminNotes": "Data Demonstrasi — Bukti pemesanan buku Riqah sedang diperiksa admin.",
+      "isDemo": true
+    },
+    {
+      "id": "mem-bk-00003",
+      "uid": "usr-bk-00003",
+      "memberId": "BK-00003",
+      "program": "Khot Naskhi",
+      "learningMethod": "Online",
+      "bookPurchaseStatus": "Belum membeli",
+      "membershipStatus": "Calon Peserta",
+      "agreedToRules": true,
+      "joinDate": "2026-11-02T14:20:00.000Z",
+      "verificationDate": null,
+      "adminNotes": "Data Demonstrasi — Pendaftar baru, diarahkan untuk pemesanan buku Khot.",
+      "isDemo": true
+    },
+    {
+      "id": "mem-bk-00004",
+      "uid": "usr-bk-00004",
+      "memberId": "BK-00004",
+      "program": "Khot Riq'ah",
+      "learningMethod": "Offline",
+      "bookPurchaseStatus": "Sudah diverifikasi",
+      "membershipStatus": "Member Aktif",
+      "agreedToRules": true,
+      "joinDate": "2026-09-05T07:45:00.000Z",
+      "verificationDate": "2026-09-06T11:00:00.000Z",
+      "adminNotes": "Data Demonstrasi — Hadir rutin halaqah Sabtu pagi di studio Depok.",
+      "isDemo": true
+    },
+    {
+      "id": "mem-bk-00005",
+      "uid": "usr-bk-00005",
+      "memberId": "BK-00005",
+      "program": "Khot Naskhi",
+      "learningMethod": "Online",
+      "bookPurchaseStatus": "Sudah diverifikasi",
+      "membershipStatus": "Member Nonaktif",
+      "agreedToRules": true,
+      "joinDate": "2026-06-15T10:00:00.000Z",
+      "verificationDate": "2026-06-16T15:30:00.000Z",
+      "adminNotes": "Data Demonstrasi — Cuti sementara selama 1 semester karena tugas luar kota.",
+      "isDemo": true
+    },
+    {
+      "id": "mem-bk-00006",
+      "uid": "usr-bk-00006",
+      "memberId": "BK-00006",
+      "program": "Khot Naskhi",
+      "learningMethod": "Offline",
+      "bookPurchaseStatus": "Sudah diverifikasi",
+      "membershipStatus": "Member Aktif",
+      "agreedToRules": true,
+      "joinDate": "2026-09-18T13:10:00.000Z",
+      "verificationDate": "2026-09-19T09:00:00.000Z",
+      "adminNotes": "Data Demonstrasi — Peserta aktif kelas tatap muka Khot Naskhi.",
+      "isDemo": true
+    }
+  ],
+  "announcements": [
+    {
+      "id": "ann-01",
+      "title": "Pembukaan Tashih & Evaluasi Semester Ganjil Khot Naskhi & Riq'ah",
+      "content": "Bismillah. Diberitahukan kepada seluruh Member Aktif Belajar Khot (Online maupun Offline) bahwa pekan evaluasi tashih huruf mufradat dan murakkabat akan dilaksanakan mulai tanggal 20/11/2026. Pastikan seluruh peserta telah menyiapkan lembar latihan di kertas art paper beserta buku panduan resmi masing-masing.",
+      "category": "Pengumuman Resmi",
+      "imageURL": "",
+      "attachmentURL": "/api/documents/doc-01/download",
+      "attachmentName": "Panduan_Resmi_Peserta_Belajar_Khot_2026.pdf",
+      "targetAudience": "Semua Member",
+      "isPinned": true,
+      "isImportant": true,
+      "status": "Dipublikasikan",
+      "publishAt": "2026-11-05T08:00:00.000Z",
+      "expiresAt": "2026-12-31T23:59:59.000Z",
+      "createdBy": "Ustadz H. Zulkifli Hasan",
+      "createdAt": "2026-11-05T08:00:00.000Z",
+      "isDemo": true
+    },
+    {
+      "id": "ann-02",
+      "title": "Batas Waktu Verifikasi Kepemilikan Buku Panduan Khot Bagi Calon Peserta",
+      "content": "Kepada seluruh Calon Peserta yang telah mendaftar pada gelombang ini, harap segera melengkapi konfirmasi pemesanan Buku Panduan Khot (Naskhi / Riq'ah) melalui admin agar status keanggotaan dan Kartu Member Digital Anda dapat diaktifkan.",
+      "category": "Informasi Pendaftaran",
+      "imageURL": "",
+      "attachmentURL": "/api/documents/doc-02/download",
+      "attachmentName": "Katalog_dan_Spesifikasi_Buku_Khot_Naskhi_Riqah.pdf",
+      "targetAudience": "Calon Peserta",
+      "isPinned": true,
+      "isImportant": true,
+      "status": "Dipublikasikan",
+      "publishAt": "2026-11-08T09:30:00.000Z",
+      "expiresAt": null,
+      "createdBy": "Ustadz H. Zulkifli Hasan",
+      "createdAt": "2026-11-08T09:30:00.000Z",
+      "isDemo": true
+    },
+    {
+      "id": "ann-03",
+      "title": "Jadwal Kelas Online Zoom Interaktif Khot Naskhi Pekan Ini",
+      "content": "Sesi koreksi langsung (live tashih) untuk peserta pembelajaran Online program Khot Naskhi akan diselenggarakan pada hari Sabtu pukul 08.30 WIB. Tautan ruang pertemuan tersedia pada menu Informasi Kelas.",
+      "category": "Informasi Pembelajaran",
+      "imageURL": "",
+      "attachmentURL": "",
+      "attachmentName": "",
+      "targetAudience": "Peserta Online",
+      "isPinned": false,
+      "isImportant": false,
+      "status": "Dipublikasikan",
+      "publishAt": "2026-11-09T13:00:00.000Z",
+      "expiresAt": null,
+      "createdBy": "Ustadz H. Zulkifli Hasan",
+      "createdAt": "2026-11-09T13:00:00.000Z",
+      "isDemo": true
+    }
+  ],
+  "information": [
+    {
+      "id": "info-01",
+      "title": "Paket Buku Resmi Kaidah Khot Naskhi & Riq'ah Edisi Cetak Terbaru",
+      "description": "Dicetak di atas kertas glossy art paper 150gsm dengan panduan anatomi titik (mizanul huruf) yang presisi. Wajib dimiliki oleh seluruh peserta Belajar Khot sebagai acuan latihan harian.",
+      "imageURL": "",
+      "category": "Promosi Buku Khot",
+      "targetAudience": "Semua Member",
+      "destinationURL": "https://wa.me/6281110002026?text=Assalamualaikum%20Admin%20Belajar%20Khot%2C%20saya%20ingin%20memesan%20Buku%20Panduan%20Khot",
+      "status": "Aktif",
+      "orderIndex": 1,
+      "publishAt": "2026-11-01T00:00:00.000Z",
+      "expiresAt": null,
+      "isDemo": true
+    },
+    {
+      "id": "info-02",
+      "title": "Daurah Intensif Meraut Kalam Handam & Racikan Tinta Likah Tradisional",
+      "description": "Kegiatan khusus member ikhwan untuk mempelajari teknik meraut ujung pena (qath) miring sesuai kaidah kaligrafi Utsmani serta cara merawat tinta likah di dalam wadah tinta.",
+      "imageURL": "",
+      "category": "Informasi Kegiatan",
+      "targetAudience": "Semua Member",
+      "destinationURL": "/member/classes",
+      "status": "Aktif",
+      "orderIndex": 2,
+      "publishAt": "2026-11-04T00:00:00.000Z",
+      "expiresAt": null,
+      "isDemo": true
+    },
+    {
+      "id": "info-03",
+      "title": "Mengenal Perbedaan Karakteristik Khot Naskhi dan Khot Riq'ah",
+      "description": "Khot Naskhi memiliki kejelasan dan keluwesan lengkung yang biasa digunakan untuk penulisan Mushaf Al-Qur'an, sedangkan Khot Riq'ah memiliki garis tegas, ringkas, dan cepat untuk penulisan harian.",
+      "imageURL": "",
+      "category": "Materi Edukasi",
+      "targetAudience": "Semua Member",
+      "destinationURL": "/member/documents",
+      "status": "Aktif",
+      "orderIndex": 3,
+      "publishAt": "2026-11-06T00:00:00.000Z",
+      "expiresAt": null,
+      "isDemo": true
+    }
+  ],
+  "documents": [
+    {
+      "id": "doc-01",
+      "fileName": "Panduan_Resmi_Peserta_Belajar_Khot_2026.pdf",
+      "fileURL": "/api/documents/doc-01/download",
+      "fileType": "PDF",
+      "fileSize": 886,
+      "category": "Panduan Peserta",
+      "description": "Buku saku digital tata tertib, adab belajar, dan alur verifikasi kartu member Belajar Khot.",
+      "accessLevel": "Publik Member",
+      "targetAudience": "Semua Member",
+      "status": "Aktif",
+      "uploadedBy": "Ustadz H. Zulkifli Hasan",
+      "uploadedAt": "2026-10-15T08:00:00.000Z",
+      "contentSummary": "Tata tertib peserta ikhwan, kewajiban buku panduan resmi, metode belajar Online & Offline, serta prosedur evaluasi tashih.",
+      "isDemo": true
+    },
+    {
+      "id": "doc-02",
+      "fileName": "Katalog_dan_Spesifikasi_Buku_Khot_Naskhi_Riqah.pdf",
+      "fileURL": "/api/documents/doc-02/download",
+      "fileType": "PDF",
+      "fileSize": 886,
+      "category": "Informasi Buku Khot",
+      "description": "Rincian spesifikasi buku wajib Khot Naskhi dan Khot Riq'ah beserta prosedur konfirmasi pembelian.",
+      "accessLevel": "Publik Member",
+      "targetAudience": "Semua Member",
+      "status": "Aktif",
+      "uploadedBy": "Ustadz H. Zulkifli Hasan",
+      "uploadedAt": "2026-10-18T10:30:00.000Z",
+      "contentSummary": "Spesifikasi buku Khot Naskhi (72 halaman art paper) dan Khot Riq'ah (64 halaman art paper) beserta paket kalam & tinta.",
+      "isDemo": true
+    },
+    {
+      "id": "doc-03",
+      "fileName": "Kurikulum_Kaidah_Dasar_Huruf_Mufradat_Naskhi.pdf",
+      "fileURL": "/api/documents/doc-03/download",
+      "fileType": "PDF",
+      "fileSize": 870,
+      "category": "Materi Pembelajaran",
+      "description": "Lembar kerja proporsi titik (mizanul huruf) khusus bagi Member Aktif program Khot Naskhi.",
+      "accessLevel": "Khusus Member Aktif",
+      "targetAudience": "Khot Naskhi",
+      "status": "Aktif",
+      "uploadedBy": "Ustadz H. Zulkifli Hasan",
+      "uploadedAt": "2026-10-25T14:00:00.000Z",
+      "contentSummary": "Tabel mizanul huruf Alif (5 titik), Ba (5 titik), Jim (4 titik), Dal, Ra, Sin, Shad hingga Ya pada kaidah Naskhi.",
+      "isDemo": true
+    }
+  ],
+  "classes": [
+    {
+      "id": "cls-01",
+      "className": "Halaqah Online Khot Naskhi — Angkatan IV (Ikhwan)",
+      "instructor": "Ustadz H. Zulkifli Hasan, M.Ag.",
+      "program": "Khot Naskhi",
+      "learningMethod": "Online",
+      "schedule": "Setiap Sabtu, 08:30 – 10:30 WIB",
+      "meetingLink": "https://meet.google.com/bkh-naskhi-online",
+      "offlineLocation": "-",
+      "description": "Pembelajaran daring interaktif melalui koreksi kamera makro (overhead camera) untuk proporsi huruf mufradat dan sambungan dasar Khot Naskhi.",
+      "participantIds": [
+        "BK-00001",
+        "BK-00003",
+        "BK-00005"
+      ],
+      "status": "Aktif",
+      "isDemo": true
+    },
+    {
+      "id": "cls-02",
+      "className": "Kelas Tatap Muka Khot Naskhi — Studio Utama",
+      "instructor": "Ustadz H. Zulkifli Hasan, M.Ag.",
+      "program": "Khot Naskhi",
+      "learningMethod": "Offline",
+      "schedule": "Setiap Ahad, 09:00 – 11:30 WIB",
+      "meetingLink": "-",
+      "offlineLocation": "Griya Kaligrafi Belajar Khot, Jl. Taman Pendidikan Islam No. 14, Jakarta Selatan",
+      "description": "Talaqqi dan koreksi goresan langsung (tashih) di meja latihan studio bersama musyrif.",
+      "participantIds": [
+        "BK-00006"
+      ],
+      "status": "Aktif",
+      "isDemo": true
+    },
+    {
+      "id": "cls-03",
+      "className": "Kelas Tatap Muka Khot Riq'ah — Reguler Ikhwan",
+      "instructor": "Ustadz Salman Al-Hafizh",
+      "program": "Khot Riq'ah",
+      "learningMethod": "Offline",
+      "schedule": "Setiap Sabtu, 13:00 – 15:00 WIB",
+      "meetingLink": "-",
+      "offlineLocation": "Griya Kaligrafi Belajar Khot, Ruang Riq'ah Lantai 2, Jakarta Selatan",
+      "participantIds": [
+        "BK-00002",
+        "BK-00004"
+      ],
+      "description": "Fokus pada penguasaan sudut kemiringan pena dan kecepatan penulisan kaidah Khot Riq'ah Utsmani.",
+      "status": "Aktif",
+      "isDemo": true
+    },
+    {
+      "id": "cls-04",
+      "className": "Kelas Online Khot Riq'ah — Intensif Malam",
+      "instructor": "Ustadz Salman Al-Hafizh",
+      "program": "Khot Riq'ah",
+      "learningMethod": "Online",
+      "schedule": "Setiap Rabu, 19:45 – 21:15 WIB",
+      "meetingLink": "https://meet.google.com/bkh-riqah-malam",
+      "offlineLocation": "-",
+      "participantIds": [],
+      "description": "Kelas daring malam hari bagi peserta ikhwan pekerja dan mahasiswa yang mengambil program Khot Riq'ah.",
+      "status": "Aktif",
+      "isDemo": true
+    }
+  ],
+  "notifications": [
+    {
+      "id": "notif-01",
+      "recipientUid": "ALL_ADMINS",
+      "title": "Permintaan Verifikasi Buku Khot Baru",
+      "message": "Muhammad Ridwan (BK-00002) mengajukan verifikasi kepemilikan buku Khot Riq'ah.",
+      "type": "verification",
+      "isRead": false,
+      "createdAt": "2026-11-09T10:00:00.000Z",
+      "linkTo": "/admin/members",
+      "isDemo": true
+    },
+    {
+      "id": "notif-02",
+      "recipientUid": "ALL_ADMINS",
+      "title": "Calon Peserta Baru Terdaftar",
+      "message": "Ibrahim Khalil (BK-00003) telah ditambahkan sebagai Calon Peserta program Khot Naskhi.",
+      "type": "info",
+      "isRead": false,
+      "createdAt": "2026-11-08T15:20:00.000Z",
+      "linkTo": "/admin/members",
+      "isDemo": true
+    },
+    {
+      "id": "notif-03",
+      "recipientUid": "usr-bk-00001",
+      "title": "Kartu Member Digital Anda Telah Aktif",
+      "message": "Alhamdulillah, status keanggotaan Anda (BK-00001) telah diverifikasi sebagai MEMBER AKTIF.",
+      "type": "success",
+      "isRead": false,
+      "createdAt": "2026-11-05T09:00:00.000Z",
+      "linkTo": "/member/card",
+      "isDemo": true
+    },
+    {
+      "id": "notif-04",
+      "recipientUid": "usr-bk-00002",
+      "title": "Status Verifikasi Buku Sedang Diproses",
+      "message": "Data konfirmasi buku Khot Riq'ah Anda sedang diperiksa oleh pengurus lembaga.",
+      "type": "warning",
+      "isRead": false,
+      "createdAt": "2026-11-08T11:00:00.000Z",
+      "linkTo": "/member/card",
+      "isDemo": true
+    }
+  ],
+  "readReceipts": [],
+  "activityLogs": [
+    {
+      "id": "log-1794410611653-ec8a",
+      "actorUid": "usr-admin-01",
+      "actorName": "Ustadz H. Zulkifli Hasan",
+      "activityType": "LOGIN",
+      "description": "Pengguna ADMIN-01 berhasil masuk ke portal.",
+      "targetId": "ADMIN-01",
+      "createdAt": "2026-11-11T15:23:31.653Z"
+    },
+    {
+      "id": "log-01",
+      "actorUid": "usr-admin-01",
+      "actorName": "Ustadz H. Zulkifli Hasan",
+      "activityType": "VERIFIKASI_MEMBER",
+      "description": "Memverifikasi kepemilikan buku dan mengaktifkan status Member Aktif untuk Ahmad Fauzi (BK-00001).",
+      "targetId": "BK-00001",
+      "createdAt": "2026-11-05T09:00:00.000Z",
+      "isDemo": true
+    },
+    {
+      "id": "log-02",
+      "actorUid": "usr-admin-01",
+      "actorName": "Ustadz H. Zulkifli Hasan",
+      "activityType": "PUBLIKASI_PENGUMUMAN",
+      "description": "Menerbitkan pengumuman resmi: Pembukaan Tashih & Evaluasi Semester Ganjil.",
+      "targetId": "ann-01",
+      "createdAt": "2026-11-05T08:00:00.000Z",
+      "isDemo": true
+    },
+    {
+      "id": "log-03",
+      "actorUid": "usr-admin-01",
+      "actorName": "Ustadz H. Zulkifli Hasan",
+      "activityType": "TAMBAH_PESERTA",
+      "description": "Menambahkan calon peserta baru Ibrahim Khalil dengan ID otomatis BK-00003.",
+      "targetId": "BK-00003",
+      "createdAt": "2026-11-02T14:20:00.000Z",
+      "isDemo": true
+    }
+  ],
+  "settings": {
+    "institutionName": "BELAJAR KHOT",
+    "tagline": "One Portal, Organized Learning, Better Membership Management.",
+    "logoURL": "",
+    "description": "Lembaga pendidikan kaligrafi Islam terstruktur yang berfokus pada penguasaan kaidah murni Khot Naskhi dan Khot Riq'ah bagi peserta ikhwan secara Online maupun Offline.",
+    "contactEmail": "sekretariat@belajarkhot.id",
+    "whatsappNumber": "6281110002026",
+    "whatsappGroupURL": "https://chat.whatsapp.com/BelajarKhotResmiIkhwan2026",
+    "whatsappGroupInstructions": "Grup WhatsApp resmi hanya diperuntukkan bagi peserta ikhwan terdaftar. Mohon cantumkan Nama Lengkap dan Nomor ID Member (contoh: Ahmad Fauzi - BK-00001) saat bergabung.",
+    "whatsappHelpMessage": "Assalamu'alaikum Admin Belajar Khot, saya membutuhkan bantuan terkait akses akun / verifikasi keanggotaan.",
+    "address": "Griya Kaligrafi Belajar Khot, Jl. Taman Pendidikan Islam No. 14, Kebayoran Baru, Jakarta Selatan",
+    "memberIdPrefix": "BK",
+    "membershipRules": [
+      "Program pembelajaran dikhususkan untuk laki-laki (ikhwan).",
+      "Calon peserta wajib memiliki atau membeli buku panduan Khot resmi sesuai ketentuan lembaga.",
+      "Peserta harus terdaftar secara resmi sebagai member di sistem portal Belajar Khot.",
+      "Peserta wajib mengikuti jadwal pembelajaran (Online / Offline) dan menyetorkan latihan (tashih) dengan tertib.",
+      "Menjaga adab penuntut ilmu serta tidak menyebarluaskan dokumen internal lembaga tanpa izin resmi."
+    ],
+    "bookRequirementInfo": "Setiap peserta diwajibkan memiliki Buku Panduan Kaidah Khot (Khot Naskhi atau Khot Riq'ah) terbitan resmi Belajar Khot sebagai lembar acuan koreksi.",
+    "bookPriceInfo": "Paket Buku Panduan & Kalam Standar: Rp 145.000 (Sudah termasuk akses evaluasi tashih).",
+    "demoModeEnabled": true,
+    "cardSettings": {
+      "showQrCode": true,
+      "cardSubtitle": "KARTU TANDA ANGGOTA RESMI • DIGITAL MEMBER CARD",
+      "cardFooterNote": "Kartu ini merupakan identitas resmi anggota Belajar Khot dan dapat diverifikasi melalui pemindaian QR Code.",
+      "accentTheme": "forest-matcha",
+      "memberColorTheme": {
+        "presetId": "forest-matcha",
+        "primaryColor": "#19432D",
+        "secondaryColor": "#315B43",
+        "accentColor": "#A3D1B3"
+      }
+    },
+    "memberColorTheme": {
+      "presetId": "classic-navy",
+      "primaryColor": "#1E3A5F",
+      "secondaryColor": "#2563EB",
+      "accentColor": "#93C5FD"
+    }
+  },
+  "sessions": [
+    {
+      "token": "35dcdbdbb866e58fe7b348ef8707bed8c28459f5e9131ee4a56c2dcea8708209",
+      "uid": "usr-bk-00001",
+      "createdAt": "2026-11-11T07:32:48.453Z"
+    },
+    {
+      "token": "195a52220eee142a4303cefc8a72bd3c71f379ebe3dfc9e5ca8ab58a86788823",
+      "uid": "usr-bk-00001",
+      "createdAt": "2026-11-11T07:34:18.481Z"
+    },
+    {
+      "token": "16727a9eaaaa2f63c9e6af53781dbfa2d83807833043302f0a5f87fb8db2f4bc",
+      "uid": "usr-admin-01",
+      "createdAt": "2026-11-11T10:44:59.503Z"
+    },
+    {
+      "token": "bkh1.eyJ1aWQiOiJ1c3ItYWRtaW4tMDEiLCJtZW1iZXJJZCI6IkFETUlOLTAxIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzk0Mzk1MjA5MTQzfQ.s0Z0Stz9jaj_9_KNdBGWeZeEfw__XXeYmexAUc7ulG0",
+      "uid": "usr-admin-01",
+      "createdAt": "2026-11-11T11:06:49.144Z"
+    },
+    {
+      "token": "bkh1.eyJ1aWQiOiJ1c3ItYWRtaW4tMDEiLCJtZW1iZXJJZCI6IkFETUlOLTAxIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzk0NDA4MzU4NDg5fQ.nVu8B1OMujNZlvTMT-N0wRwW3r50G_fav4OQdCAIZiI",
+      "uid": "usr-admin-01",
+      "createdAt": "2026-11-11T14:45:58.489Z"
+    },
+    {
+      "token": "bkh1.eyJ1aWQiOiJ1c3ItYWRtaW4tMDEiLCJtZW1iZXJJZCI6IkFETUlOLTAxIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzk0NDEwNjExNjUzfQ.4k_wD0OydfttYI6E6ldpDiNCQr0152RxZt8jIA_uykY",
+      "uid": "usr-admin-01",
+      "createdAt": "2026-11-11T15:23:31.653Z"
+    }
+  ]
+}

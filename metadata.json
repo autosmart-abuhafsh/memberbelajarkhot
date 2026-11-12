@@ -1,0 +1,8 @@
+{
+  "name": "Belajar Khot — Sistem Manajemen Keanggotaan & Portal Member Digital",
+  "description": "Sistem manajemen calon peserta, administrasi keanggotaan, pusat pengumuman resmi, dokumen pembelajaran, dan kartu member digital untuk lembaga kaligrafi Islam Belajar Khot.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

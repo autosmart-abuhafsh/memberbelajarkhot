@@ -1,0 +1,17 @@
+{
+  "name": "Belajar Khot — Sistem Manajemen Keanggotaan & Portal Member Digital",
+  "short_name": "Belajar Khot",
+  "description": "Sistem manajemen calon peserta, administrasi keanggotaan, pusat pengumuman resmi, dokumen pembelajaran, dan kartu member digital Belajar Khot.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FAFCF9",
+  "theme_color": "#19432D",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

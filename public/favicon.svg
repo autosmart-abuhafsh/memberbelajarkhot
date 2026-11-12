@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="none">
+  <defs>
+    <linearGradient id="bkBg" x1="0" y1="0" x2="128" y2="128" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#19432D" />
+      <stop offset="55%" stop-color="#315B43" />
+      <stop offset="100%" stop-color="#1E3A2B" />
+    </linearGradient>
+    <linearGradient id="bkGold" x1="24" y1="20" x2="104" y2="108" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#F7DF94" />
+      <stop offset="50%" stop-color="#D4AF37" />
+      <stop offset="100%" stop-color="#AA7C11" />
+    </linearGradient>
+    <linearGradient id="bkMint" x1="0" y1="0" x2="128" y2="128" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#DCECE1" />
+      <stop offset="100%" stop-color="#A3D1B3" />
+    </linearGradient>
+  </defs>
+
+  <!-- Rounded Squircle Base -->
+  <rect x="4" y="4" width="120" height="120" rx="28" fill="url(#bkBg)" />
+  <rect x="8" y="8" width="112" height="112" rx="24" stroke="url(#bkGold)" stroke-width="2" stroke-opacity="0.55" />
+
+  <!-- Subtle Rub el Hizb (Islamic Octagram) Geometric Watermark -->
+  <g opacity="0.16" stroke="#A3D1B3" stroke-width="2">
+    <rect x="28" y="28" width="72" height="72" rx="6" />
+    <rect x="28" y="28" width="72" height="72" rx="6" transform="rotate(45 64 64)" />
+  </g>
+
+  <!-- Calligraphic Qalam (Reed Pen Nib) + Crescent Arch -->
+  <path
+    d="M64 18L84 46L74 88H54L44 46L64 18Z"
+    fill="url(#bkGold)"
+    fill-opacity="0.18"
+    stroke="url(#bkGold)"
+    stroke-width="2.5"
+    stroke-linejoin="round"
+  />
+  <!-- Qalam Slit & Breather Hole -->
+  <line x1="64" y1="18" x2="64" y2="42" stroke="url(#bkGold)" stroke-width="2.5" stroke-linecap="round" />
+  <circle cx="64" cy="45" r="3.5" fill="url(#bkGold)" />
+
+  <!-- Classical Arabic Letter Kha (خ) Monogram -->
+  <text
+    x="64"
+    y="86"
+    text-anchor="middle"
+    fill="#FFFFFF"
+    font-family="serif"
+    font-size="50"
+    font-weight="700"
+  >خ</text>
+
+  <!-- Nuqta (Calligraphic Rhombus Dot) in Gold -->
+  <rect
+    x="60"
+    y="28"
+    width="8"
+    height="8"
+    rx="1.5"
+    transform="rotate(45 64 32)"
+    fill="url(#bkGold)"
+  />
+
+  <!-- Bottom Ornamental Book/Rehal Ribbon -->
+  <path
+    d="M34 100C46 95 56 97 64 102C72 97 82 95 94 100"
+    stroke="url(#bkMint)"
+    stroke-width="3.5"
+    stroke-linecap="round"
+  />
+  <path
+    d="M42 107C51 103 58 104 64 108C70 104 77 103 86 107"
+    stroke="url(#bkGold)"
+    stroke-width="2.2"
+    stroke-linecap="round"
+  />
+</svg>

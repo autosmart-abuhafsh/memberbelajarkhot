@@ -1,0 +1,1059 @@
+# PRODUCT REQUIREMENTS DOCUMENT (PRD)
+# BELAJAR KHOT — MEMBERSHIP MANAGEMENT SYSTEM & DIGITAL MEMBER PORTAL
+
+## 1. PROJECT OVERVIEW
+
+Buat sebuah aplikasi web profesional bernama **BELAJAR KHOT – Membership Management System & Digital Member Portal**.
+
+Aplikasi ini merupakan sistem manajemen calon peserta dan keanggotaan untuk lembaga Belajar Khot. Sistem digunakan oleh administrator untuk mengelola data peserta, akun pengguna, status keanggotaan, pengumuman resmi, informasi kegiatan, konten promosi, dokumen penting, dan kartu member digital.
+
+Aplikasi juga menyediakan portal khusus bagi calon peserta dan member agar mereka dapat login, melihat informasi resmi, membaca pengumuman, mengakses dokumen yang dibagikan, serta melihat kartu member digital masing-masing.
+
+Aplikasi harus benar-benar berfungsi sebagai web application, bukan sekadar desain dashboard atau prototype statis.
+
+### Tujuan utama:
+1. Memudahkan lembaga mengelola seluruh data calon peserta dan member.
+2. Memiliki sistem login admin dan member yang terpisah berdasarkan hak akses.
+3. Memudahkan penyampaian pengumuman resmi kepada seluruh member.
+4. Menjadi pusat informasi dan dokumentasi Belajar Khot.
+5. Menyediakan kartu member digital yang profesional.
+6. Memudahkan pengelolaan peserta pembelajaran online maupun offline.
+7. Mengurangi pengelolaan data secara manual melalui sistem terpusat.
+
+## 2. IDENTITAS DAN KONSEP APLIKASI
+
+Nama aplikasi: BELAJAR KHOT
+
+Jenis aplikasi:
+- Membership Management System.
+- Admin Dashboard.
+- Digital Member Portal.
+- CRM sederhana untuk pengelolaan calon peserta.
+- CMS untuk pengelolaan informasi dan pengumuman.
+- CRUD untuk manajemen seluruh data.
+
+Tagline konsep:
+"One Portal, Organized Learning, Better Membership Management."
+
+Target pengguna:
+- Administrator lembaga.
+- Calon peserta.
+- Member aktif.
+- Peserta pembelajaran online.
+- Peserta pembelajaran offline.
+
+Bahasa aplikasi: Bahasa Indonesia.
+
+Format tanggal: DD/MM/YYYY.
+
+Zona waktu: Asia/Jakarta (WIB).
+
+## 3. ATURAN DAN KETENTUAN KEANGGOTAAN
+
+Sistem harus mendukung ketentuan lembaga Belajar Khot berikut:
+
+1. Program pembelajaran dikhususkan untuk laki-laki (ikhwan).
+2. Calon peserta wajib memiliki atau membeli buku Khot sesuai ketentuan lembaga.
+3. Peserta harus terdaftar sebagai member Belajar Khot.
+4. Pendaftaran menggunakan formulir sederhana dengan data penting saja.
+5. Peserta dapat mengikuti pembelajaran secara online atau offline.
+6. Informasi pengumuman dan arahan kegiatan dapat disampaikan melalui pusat pengumuman dan grup WhatsApp resmi.
+7. Materi/program pembelajaran Khot memiliki dua jenis utama:
+   - Khot Naskhi.
+   - Khot Riq'ah.
+
+Admin dapat mengubah ketentuan dan informasi tambahan melalui pengaturan aplikasi.
+
+## 4. SISTEM ROLE DAN HAK AKSES
+
+Buat sistem autentikasi dengan dua jenis akun utama.
+
+### A. ADMIN
+
+Admin memiliki akses untuk:
+- Melihat seluruh data peserta dan member.
+- Menambahkan peserta baru.
+- Mengedit data peserta.
+- Menghapus atau menonaktifkan akun sesuai kewenangan.
+- Membuat ID dan password member.
+- Mengatur status keanggotaan.
+- Memverifikasi persyaratan pembelian buku.
+- Mengelola kartu member.
+- Membuat pengumuman resmi.
+- Mengelola informasi dan promosi.
+- Mengunggah dan menghapus dokumen.
+- Mengatur informasi kelas online dan offline.
+- Mengelola link grup WhatsApp.
+- Melihat statistik peserta.
+- Mengekspor data peserta.
+- Melihat riwayat aktivitas admin.
+
+### B. MEMBER / CALON PESERTA
+
+Member hanya dapat:
+- Login menggunakan akun masing-masing.
+- Melihat dashboard pribadi.
+- Melihat profil sendiri.
+- Melihat kartu member sendiri.
+- Membaca pengumuman resmi.
+- Melihat informasi kegiatan dan promosi.
+- Mengakses dokumen yang dibagikan kepada mereka.
+- Melihat informasi kelas.
+- Mengakses link grup WhatsApp resmi jika tersedia.
+- Mengubah password sendiri.
+- Memperbarui data tertentu yang diizinkan admin.
+
+Member tidak boleh:
+- Melihat data pribadi member lain.
+- Mengakses halaman admin.
+- Mengedit status keanggotaan sendiri.
+- Mengedit atau menghapus pengumuman.
+- Mengakses dokumen privat yang bukan haknya.
+- Membuat atau mengubah akun pengguna lain.
+
+Pastikan sistem menerapkan Role-Based Access Control (RBAC) di frontend dan backend.
+
+## 5. DESAIN UI/UX DAN IDENTITAS VISUAL
+
+Buat tampilan premium, minimalis, modern, bersih, profesional, dan nyaman dipakai dalam jangka panjang.
+
+### Warna utama:
+
+- Matcha Green: #6F8F72
+- Deep Forest Green: #315B43
+- Soft Sage: #E8EFE7
+- Off White: #FAFCF9
+- White: #FFFFFF
+- Charcoal: #26332A
+- Light Gray: #F1F4F1
+- Border: #E3EAE3
+
+Gunakan kombinasi hijau matcha, hijau hutan, sage, dan putih secara harmonis.
+
+### Karakter desain:
+- Premium educational platform.
+- Clean dashboard.
+- Modern membership management.
+- Elegant typography.
+- Rounded cards secukupnya.
+- Soft shadow.
+- Ikon profesional dan konsisten.
+- Animasi transisi halus.
+- Tidak terlalu banyak warna.
+- Tidak terlalu ramai.
+- Hindari tampilan seperti template dashboard gratis yang generik.
+
+Gunakan font modern seperti Inter atau Plus Jakarta Sans.
+
+### Layout desktop:
+- Sidebar navigasi di sebelah kiri.
+- Header dengan judul halaman, notifikasi, dan profil akun.
+- Konten utama di area tengah.
+- Dashboard menggunakan card statistik.
+- Tabel data dengan pencarian dan filter.
+- Navigasi jelas dan terstruktur.
+
+### Layout mobile:
+- Harus responsif sempurna.
+- Sidebar berubah menjadi drawer atau navigasi mobile.
+- Gunakan bottom navigation jika sesuai.
+- Tabel berubah menjadi card list pada layar sempit.
+- Tombol mudah disentuh.
+- Form mudah diisi melalui HP.
+- Kartu member tetap terlihat bagus pada layar HP.
+- Tidak boleh ada horizontal overflow.
+- Modal dan dropdown harus nyaman digunakan melalui touchscreen.
+
+## 6. HALAMAN LOGIN
+
+Buat halaman login premium dengan identitas Belajar Khot.
+
+Elemen:
+- Logo atau identitas Belajar Khot.
+- Judul "Selamat Datang di Belajar Khot".
+- Input ID Pengguna.
+- Input Password.
+- Tombol tampil/sembunyikan password.
+- Tombol Login.
+- Informasi bantuan login.
+- Link bantuan menghubungi admin jika lupa password.
+
+Login harus membedakan role admin dan member secara otomatis berdasarkan akun yang terautentikasi.
+
+Jangan menampilkan tombol atau akses admin kepada member.
+
+Admin dan member tidak perlu menggunakan halaman login berbeda, tetapi setelah login harus diarahkan ke dashboard sesuai role.
+
+Buat sistem autentikasi yang aman. Jangan menyimpan password dalam bentuk teks biasa, jangan menanam password admin tetap di source code frontend, dan jangan menggunakan localStorage sebagai pengganti sistem autentikasi backend.
+
+## 7. ADMIN DASHBOARD
+
+Buat halaman utama admin yang menjadi pusat pengelolaan lembaga.
+
+### A. Statistik utama
+
+Tampilkan card statistik:
+1. Total seluruh peserta.
+2. Total calon peserta.
+3. Member aktif.
+4. Member nonaktif.
+5. Peserta online.
+6. Peserta offline.
+7. Menunggu verifikasi.
+8. Jumlah pengumuman aktif.
+
+Statistik harus dihitung secara dinamis berdasarkan database.
+
+### B. Grafik dan aktivitas
+
+Sediakan:
+- Grafik pertumbuhan peserta.
+- Grafik peserta online dan offline.
+- Ringkasan status keanggotaan.
+- Aktivitas terbaru.
+- Daftar peserta terbaru.
+- Pengumuman terbaru.
+
+Jangan menggunakan angka statistik palsu pada dashboard produksi.
+
+### C. Quick Actions
+
+Tombol pintasan:
+- Tambah Peserta.
+- Buat Akun Member.
+- Buat Pengumuman.
+- Upload Dokumen.
+- Tambah Informasi.
+- Kelola Kartu Member.
+
+## 8. MODUL MANAJEMEN PESERTA DAN MEMBER
+
+Buat fitur CRUD lengkap.
+
+### A. Tabel data peserta
+
+Kolom:
+- Nomor.
+- ID Member.
+- Nama lengkap.
+- Jenis kelamin.
+- Nomor WhatsApp.
+- Email (opsional).
+- Program pembelajaran.
+- Metode belajar.
+- Status pembelian buku.
+- Status keanggotaan.
+- Tanggal bergabung.
+- Aksi.
+
+### B. Fitur pengelolaan
+
+- Tambah peserta.
+- Edit data peserta.
+- Detail peserta.
+- Hapus data dengan konfirmasi.
+- Aktifkan akun.
+- Nonaktifkan akun.
+- Reset password.
+- Pencarian berdasarkan nama atau ID.
+- Filter berdasarkan program.
+- Filter berdasarkan online/offline.
+- Filter berdasarkan status member.
+- Filter berdasarkan status verifikasi.
+- Pagination.
+- Export Excel atau CSV.
+- Print data.
+
+### C. Data formulir peserta
+
+Sediakan formulir sederhana.
+
+Data yang perlu dikumpulkan:
+1. Nama lengkap.
+2. Nomor WhatsApp aktif.
+3. Email (opsional).
+4. Domisili (kota/kabupaten).
+5. Pilihan pembelajaran: Online atau Offline.
+6. Pilihan program: Khot Naskhi atau Khot Riq'ah.
+7. Konfirmasi persyaratan buku Khot.
+8. Persetujuan ketentuan keanggotaan.
+
+Jangan meminta data yang tidak diperlukan.
+
+Admin dapat menambahkan catatan internal untuk masing-masing peserta.
+
+## 9. MANAJEMEN AKUN DAN STATUS KEANGGOTAAN
+
+Admin dapat membuat akun member secara manual.
+
+Setiap member memiliki:
+- ID Member unik.
+- Username/login ID unik.
+- Password awal yang aman.
+- Nama lengkap.
+- Foto profil.
+- Status akun.
+- Tanggal pembuatan akun.
+- Role.
+
+Format ID member yang disarankan:
+BK-00001
+BK-00002
+BK-00003
+
+Nomor harus dibuat otomatis dan tidak boleh duplikat.
+
+Status peserta:
+- Calon Peserta.
+- Menunggu Verifikasi.
+- Member Aktif.
+- Member Nonaktif.
+- Ditolak.
+- Alumni.
+
+Status persyaratan buku:
+- Belum membeli.
+- Menunggu verifikasi.
+- Sudah diverifikasi.
+
+Admin memiliki kewenangan mengubah status setelah memeriksa persyaratan.
+
+Berikan konfirmasi sebelum perubahan status yang penting.
+
+## 10. PUSAT PENGUMUMAN RESMI
+
+Buat modul khusus untuk menyampaikan informasi resmi lembaga.
+
+Admin dapat:
+- Membuat pengumuman baru.
+- Mengedit pengumuman.
+- Menghapus pengumuman.
+- Menambahkan gambar.
+- Menambahkan lampiran PDF.
+- Menetapkan tanggal publikasi.
+- Menetapkan masa berlaku.
+- Menentukan target penerima.
+- Menandai pengumuman sebagai penting.
+- Menyematkan pengumuman di bagian paling atas.
+
+Kategori pengumuman:
+1. Pengumuman Resmi.
+2. Informasi Pembelajaran.
+3. Jadwal Kegiatan.
+4. Informasi Pendaftaran.
+5. Perubahan Kebijakan.
+6. Informasi Penting.
+7. Pengumuman Lainnya.
+
+Target penerima:
+- Semua member.
+- Calon peserta.
+- Member aktif.
+- Peserta online.
+- Peserta offline.
+- Kelompok tertentu.
+
+Member dapat:
+- Membaca pengumuman.
+- Melihat detail informasi.
+- Mengunduh lampiran.
+- Melihat tanggal publikasi.
+- Menandai sebagai sudah dibaca.
+
+Buat indikator pengumuman baru atau belum dibaca.
+
+## 11. INFORMASI, IKLAN, DAN PROMOSI
+
+Buat modul terpisah bernama "Pusat Informasi".
+
+Modul ini digunakan admin untuk mempublikasikan:
+- Informasi lembaga.
+- Promosi buku Khot.
+- Informasi pendaftaran.
+- Program pembelajaran.
+- Informasi kegiatan.
+- Poster digital.
+- Materi edukasi.
+- Informasi lainnya yang relevan.
+
+Setiap konten memiliki:
+- Judul.
+- Gambar/banner.
+- Deskripsi.
+- Kategori.
+- Tanggal publikasi.
+- Tanggal berakhir.
+- Link tujuan (opsional).
+- Status aktif/nonaktif.
+- Target audiens.
+
+Tampilan member harus berupa card informasi yang menarik, seperti portal berita atau information center.
+
+Admin dapat mengatur urutan informasi yang tampil.
+
+Pastikan iklan atau promosi merupakan konten yang dikendalikan oleh admin lembaga, bukan sistem iklan otomatis pihak ketiga.
+
+## 12. MANAJEMEN DOKUMEN DAN FILE
+
+Buat modul bernama "Pusat Dokumen".
+
+Admin dapat mengunggah:
+- PDF.
+- DOCX.
+- XLSX.
+- JPG.
+- JPEG.
+- PNG.
+- PPTX.
+- File lain yang diperbolehkan sistem.
+
+Setiap dokumen memiliki:
+- Nama file.
+- Deskripsi.
+- Kategori.
+- Tanggal upload.
+- Pengunggah.
+- Ukuran file.
+- Target penerima.
+- Status publikasi.
+
+Kategori dokumen:
+- Dokumen Resmi.
+- Panduan Peserta.
+- Materi Pembelajaran.
+- Formulir.
+- Jadwal.
+- Informasi Buku Khot.
+- Arsip Lainnya.
+
+Member hanya dapat melihat dan mengunduh dokumen yang memiliki izin untuk akunnya.
+
+Buat preview PDF jika memungkinkan.
+
+Sediakan fitur:
+- Search.
+- Filter kategori.
+- Download.
+- Detail dokumen.
+- Hapus dokumen oleh admin.
+- Pengelolaan akses dokumen.
+
+File harus disimpan di penyimpanan backend yang sesuai, bukan hanya disimpan di browser.
+
+## 13. KARTU MEMBER DIGITAL
+
+Ini merupakan salah satu fitur utama aplikasi.
+
+Buat desain kartu member digital yang benar-benar profesional dan eksklusif.
+
+### Desain kartu:
+- Dominasi warna Deep Forest Green.
+- Kombinasi Matcha Green dan White.
+- Tipografi modern.
+- Layout elegan.
+- Identitas Belajar Khot.
+- Logo lembaga.
+- Garis atau ornamen minimalis.
+- Tampilan depan kartu yang rapi.
+- QR Code unik.
+
+### Informasi kartu:
+- Logo Belajar Khot.
+- Tulisan MEMBER CARD.
+- Foto peserta.
+- Nama lengkap.
+- Nomor ID Member.
+- Program pembelajaran.
+- Metode belajar.
+- Status keanggotaan.
+- Tanggal bergabung.
+- QR Code verifikasi.
+
+Contoh nomor:
+BK-00001.
+
+### Aturan kartu:
+
+Jika status peserta masih calon peserta atau menunggu verifikasi, jangan tampilkan kartu sebagai member aktif.
+
+Tampilkan status:
+"Menunggu Verifikasi".
+
+Jika sudah disetujui admin, tampilkan:
+"MEMBER AKTIF".
+
+Jika akun dinonaktifkan, kartu tidak boleh menampilkan status aktif.
+
+### Fitur kartu:
+- Preview kartu.
+- Download kartu sebagai PNG atau PDF.
+- Tombol cetak kartu.
+- QR Code unik.
+- Verifikasi keaslian kartu.
+- Desain kartu tetap proporsional pada smartphone.
+- Admin dapat melihat dan mencetak kartu member.
+
+QR Code harus mengarah ke halaman verifikasi yang aman dan hanya menampilkan informasi publik minimum, tanpa membocorkan nomor WhatsApp, email, atau data pribadi sensitif.
+
+## 14. MODUL KELAS DAN PROGRAM PEMBELAJARAN
+
+Buat modul untuk mengelola peserta berdasarkan program dan metode belajar.
+
+Program:
+1. Khot Naskhi.
+2. Khot Riq'ah.
+
+Metode:
+- Online.
+- Offline.
+
+Admin dapat:
+- Menambahkan informasi kelas.
+- Mengatur jadwal.
+- Menulis deskripsi.
+- Menambahkan link pembelajaran online.
+- Menambahkan lokasi pembelajaran offline.
+- Mengelompokkan peserta.
+- Menentukan target peserta.
+- Memperbarui informasi kelas.
+
+Member hanya dapat melihat informasi kelas yang sesuai dengan program dan kelompoknya.
+
+Modul ini dapat dikembangkan menjadi sistem pengelolaan kelas yang lebih lengkap di masa mendatang.
+
+## 15. INTEGRASI INFORMASI WHATSAPP
+
+Buat fitur untuk memudahkan komunikasi melalui WhatsApp.
+
+Admin dapat mengatur:
+- Link grup WhatsApp resmi.
+- Nomor WhatsApp admin.
+- Pesan bantuan.
+- Informasi tata cara bergabung ke grup.
+
+Pada dashboard member tampilkan card:
+"Grup WhatsApp Resmi Belajar Khot".
+
+Tambahkan tombol:
+"GABUNG GRUP WHATSAPP".
+
+Tombol mengarah ke link yang sudah dimasukkan admin.
+
+Jika link belum tersedia, tombol dinonaktifkan dan tampilkan informasi bahwa link belum diterbitkan.
+
+Jangan membuat klaim bahwa aplikasi sudah terintegrasi dengan WhatsApp API jika belum ada integrasi resmi.
+
+## 16. DASHBOARD MEMBER
+
+Setelah login, member akan diarahkan ke halaman dashboard pribadi.
+
+Tampilkan:
+
+### A. Welcome Section
+"Assalamu'alaikum, [Nama Member]."
+
+Selamat datang di Portal Belajar Khot.
+
+### B. Ringkasan akun
+- Nama peserta.
+- ID Member.
+- Status keanggotaan.
+- Program pembelajaran.
+- Metode pembelajaran.
+
+### C. Menu utama
+1. Dashboard Saya.
+2. Profil Saya.
+3. Kartu Member.
+4. Pengumuman.
+5. Pusat Informasi.
+6. Pusat Dokumen.
+7. Informasi Kelas.
+8. Grup WhatsApp.
+9. Pengaturan Akun.
+10. Logout.
+
+### D. Widget utama
+- Kartu member.
+- Pengumuman terbaru.
+- Informasi penting.
+- Dokumen terbaru.
+- Agenda kegiatan.
+- Informasi grup WhatsApp.
+
+Desain dashboard member harus terasa seperti portal pendidikan premium, bukan panel administrasi yang rumit.
+
+## 17. PENGATURAN APLIKASI
+
+Admin memiliki halaman pengaturan.
+
+Pengaturan identitas:
+- Nama lembaga.
+- Logo.
+- Deskripsi lembaga.
+- Kontak resmi.
+- Nomor WhatsApp.
+- Link grup WhatsApp.
+- Alamat.
+- Informasi program.
+
+Pengaturan keanggotaan:
+- Format ID member.
+- Ketentuan calon peserta.
+- Status keanggotaan.
+- Informasi pembelian buku.
+- Template kartu member.
+
+Pengaturan sistem:
+- Manajemen akun.
+- Pengaturan notifikasi.
+- Pengaturan hak akses.
+- Konfigurasi penyimpanan.
+- Pengaturan keamanan.
+
+## 18. NOTIFIKASI DAN AKTIVITAS
+
+Buat notification center di bagian header.
+
+Notifikasi untuk member:
+- Pengumuman baru.
+- Informasi penting.
+- Dokumen terbaru.
+- Perubahan informasi kelas.
+- Perubahan status keanggotaan.
+
+Notifikasi untuk admin:
+- Peserta baru.
+- Permintaan verifikasi.
+- Perubahan data peserta.
+- Aktivitas penting sistem.
+
+Buat aktivitas terbaru berupa log:
+- Siapa yang melakukan aktivitas.
+- Jenis aktivitas.
+- Waktu aktivitas.
+- Data yang berkaitan.
+
+Sediakan audit log untuk aktivitas administratif penting.
+
+## 19. DATABASE DAN STRUKTUR DATA
+
+Gunakan database terpusat dan persisten.
+
+Apabila menggunakan Firebase, susun struktur data Firestore secara modular.
+
+Koleksi yang disarankan:
+
+### users
+- uid
+- memberId
+- username
+- fullName
+- phone
+- email
+- city
+- photoURL
+- role
+- accountStatus
+- createdAt
+- updatedAt
+- lastLoginAt
+
+### members
+- id
+- uid
+- memberId
+- program
+- learningMethod
+- bookPurchaseStatus
+- membershipStatus
+- joinDate
+- verificationDate
+- adminNotes
+
+### announcements
+- id
+- title
+- content
+- category
+- imageURL
+- attachmentURL
+- targetAudience
+- isPinned
+- status
+- publishAt
+- expiresAt
+- createdBy
+- createdAt
+
+### information
+- id
+- title
+- description
+- imageURL
+- category
+- targetAudience
+- destinationURL
+- status
+- publishAt
+- expiresAt
+
+### documents
+- id
+- fileName
+- fileURL
+- fileType
+- fileSize
+- category
+- description
+- accessLevel
+- targetAudience
+- uploadedBy
+- uploadedAt
+
+### classes
+- id
+- className
+- program
+- learningMethod
+- schedule
+- meetingLink
+- offlineLocation
+- description
+- participantIds
+- status
+
+### notifications
+- id
+- recipientUid
+- title
+- message
+- type
+- isRead
+- createdAt
+
+### readReceipts
+- id
+- announcementId
+- uid
+- readAt
+
+### activityLogs
+- id
+- actorUid
+- actorName
+- activityType
+- description
+- targetId
+- createdAt
+
+### settings
+- institutionName
+- logoURL
+- contact
+- whatsappNumber
+- whatsappGroupURL
+- address
+- membershipRules
+- cardSettings
+
+Gunakan relasi data yang tepat agar tidak terjadi duplikasi berlebihan.
+
+Buat indeks Firestore jika diperlukan.
+
+Pastikan semua data bertahan setelah halaman direfresh, logout, maupun login kembali.
+
+## 20. TEKNOLOGI YANG DIREKOMENDASIKAN
+
+Gunakan teknologi modern dan mudah dikembangkan.
+
+Frontend:
+- React.
+- TypeScript.
+- Tailwind CSS.
+- Lucide Icons.
+- Komponen UI reusable.
+
+Backend:
+- Firebase Authentication.
+- Cloud Firestore.
+- Firebase Storage.
+- Firebase Cloud Functions apabila dibutuhkan untuk operasi administratif yang membutuhkan hak istimewa.
+
+Gunakan arsitektur aplikasi yang modular dan mudah dipelihara.
+
+Jika teknologi yang dipilih tidak tersedia secara langsung pada lingkungan Google AI Studio, jelaskan alternatif implementasinya tanpa menghilangkan kebutuhan fungsional.
+
+Pisahkan:
+- Komponen UI.
+- Halaman.
+- Services.
+- Authentication.
+- Database operations.
+- Types/interfaces.
+- Utilities.
+- Configuration.
+
+Jangan menulis seluruh aplikasi dalam satu file besar.
+
+## 21. KEAMANAN APLIKASI
+
+Keamanan merupakan prioritas.
+
+Terapkan:
+1. Authentication yang benar.
+2. Role-based access control.
+3. Validasi form di frontend dan backend.
+4. Firestore Security Rules.
+5. Proteksi halaman admin.
+6. Proteksi data pribadi member.
+7. File upload validation.
+8. Pembatasan jenis dan ukuran file.
+9. Password hashing melalui sistem autentikasi resmi.
+10. Konfirmasi sebelum penghapusan data.
+11. Audit log.
+12. Proteksi akses dokumen berdasarkan role.
+
+PENTING:
+
+- Jangan pernah menyimpan password biasa di Firestore.
+- Jangan menanam kredensial rahasia dalam source code frontend.
+- Jangan mengandalkan pemeriksaan role hanya di frontend.
+- Operasi pembuatan akun dan perubahan role harus melalui backend tepercaya.
+- Akun admin pertama harus dibuat melalui prosedur bootstrap yang aman.
+- Jangan menyediakan tombol registrasi admin untuk publik.
+- Member hanya boleh membaca dan memperbarui data yang menjadi haknya.
+
+Jika menggunakan ID pengguna sebagai pengganti email pada form login, implementasikan mekanisme pemetaan ID ke identitas autentikasi secara aman melalui backend. Jangan membuat sistem password sendiri di frontend.
+
+## 22. UX DAN INTERAKSI
+
+Pastikan semua fitur memiliki interaksi yang berfungsi.
+
+Elemen yang harus berfungsi:
+- Sidebar navigation.
+- Bottom navigation mobile jika digunakan.
+- Login dan logout.
+- Search.
+- Filter.
+- Sort.
+- Pagination.
+- CRUD.
+- Upload dan download file.
+- Form validation.
+- Modal.
+- Dropdown.
+- Toast notifications.
+- Confirmation dialog.
+- Status badges.
+- Print.
+- Export.
+- QR Code.
+- Pengaturan akun.
+
+Tampilkan:
+- Loading state.
+- Empty state.
+- Error state.
+- Success state.
+
+Jangan membuat tombol dekoratif yang tidak memiliki fungsi.
+
+Jika backend belum terhubung, jangan berpura-pura bahwa penyimpanan data sudah berhasil.
+
+## 23. DATA DEMO DAN MODE PENGEMBANGAN
+
+Sediakan contoh data demo hanya untuk keperluan pengujian.
+
+Contoh:
+- BK-00001.
+- BK-00002.
+- BK-00003.
+
+Contoh nama dan informasi harus ditandai sebagai data demonstrasi.
+
+Jangan menganggap data demo sebagai data anggota sebenarnya.
+
+Sediakan mekanisme agar data demo mudah dibersihkan sebelum produksi.
+
+Jangan hardcode daftar peserta sebagai pengganti database.
+
+## 24. HALAMAN DAN ROUTING APLIKASI
+
+Susun halaman dengan struktur berikut.
+
+PUBLIC:
+- /login
+- /verify-member/:id
+- /help-login
+
+ADMIN:
+- /admin/dashboard
+- /admin/members
+- /admin/members/add
+- /admin/members/:id
+- /admin/accounts
+- /admin/announcements
+- /admin/information
+- /admin/documents
+- /admin/classes
+- /admin/cards
+- /admin/notifications
+- /admin/activity-logs
+- /admin/settings
+
+MEMBER:
+- /member/dashboard
+- /member/profile
+- /member/card
+- /member/announcements
+- /member/information
+- /member/documents
+- /member/classes
+- /member/notifications
+- /member/settings
+
+Routing harus dilindungi berdasarkan role.
+
+Jika member mencoba membuka alamat admin secara langsung, tampilkan halaman akses ditolak atau arahkan kembali ke dashboard member.
+
+Jika pengguna belum login, arahkan ke halaman login.
+
+## 25. OUTPUT YANG HARUS DIHASILKAN GOOGLE AI STUDIO
+
+Bangun aplikasi secara bertahap tetapi hasil akhirnya harus merupakan aplikasi utuh.
+
+Tahap 1:
+- Buat desain UI/UX.
+- Buat struktur aplikasi.
+- Buat halaman login.
+- Buat layout admin.
+- Buat layout member.
+- Buat responsive navigation.
+
+Tahap 2:
+- Integrasikan Authentication.
+- Integrasikan database.
+- Implementasikan role admin dan member.
+- Implementasikan CRUD peserta.
+- Implementasikan manajemen akun.
+
+Tahap 3:
+- Implementasikan pengumuman.
+- Implementasikan informasi dan promosi.
+- Implementasikan manajemen dokumen.
+- Implementasikan kartu member digital.
+- Implementasikan pengelolaan kelas.
+- Implementasikan WhatsApp link.
+
+Tahap 4:
+- Implementasikan notifikasi.
+- Implementasikan audit log.
+- Implementasikan export.
+- Implementasikan verifikasi QR Code.
+- Implementasikan seluruh validasi dan keamanan.
+
+Tahap 5:
+- Pengujian keseluruhan.
+- Perbaikan bug.
+- Pengujian responsive desktop, tablet, dan smartphone.
+- Pengujian keamanan hak akses.
+- Pengujian penyimpanan database.
+- Pengujian upload dan download dokumen.
+
+## 26. ACCEPTANCE CRITERIA (KRITERIA KEBERHASILAN)
+
+Aplikasi dinyatakan berhasil apabila:
+
+1. Admin dan member dapat login sesuai role masing-masing.
+2. Admin dapat membuat akun member.
+3. ID member dibuat otomatis dan tidak duplikat.
+4. Admin dapat mengelola seluruh data peserta melalui CRUD.
+5. Member hanya bisa melihat data pribadinya.
+6. Pengumuman yang dibuat admin dapat dilihat oleh target penerimanya.
+7. Informasi dan promosi dapat dikelola admin.
+8. Admin dapat mengunggah dokumen.
+9. Member dapat mengunduh dokumen yang diizinkan.
+10. Kartu member dapat ditampilkan sesuai status keanggotaan.
+11. QR Code dapat digunakan untuk verifikasi kartu.
+12. Informasi kelas dapat dikelola berdasarkan program dan metode belajar.
+13. Link WhatsApp dapat diubah oleh admin.
+14. Data tersimpan secara permanen di backend.
+15. Tampilan berfungsi dengan baik di komputer dan smartphone.
+16. Tidak ada tombol utama yang hanya menjadi dekorasi.
+17. Tidak ada celah akses admin melalui akun member.
+18. Tidak ada kebocoran data pribadi antar-member.
+
+## 27. ARAHAN DESAIN AKHIR
+
+Saya ingin aplikasi ini memiliki kualitas desain seperti SaaS dashboard profesional.
+
+Bayangkan sebuah platform pendidikan modern yang memiliki:
+- Dashboard elegan.
+- Kartu statistik yang bersih.
+- Sidebar minimalis.
+- Layout yang lapang.
+- Penggunaan warna matcha yang konsisten.
+- Animasi mikro yang halus.
+- Kartu member eksklusif.
+- Pusat informasi dengan tampilan editorial.
+- Pengalaman pengguna yang sangat baik di smartphone.
+
+Jangan menggunakan warna yang terlalu mencolok.
+
+Hindari:
+- Desain terlalu ramai.
+- Gradient berlebihan.
+- Terlalu banyak shadow.
+- Font terlalu kecil.
+- Tabel yang sulit digunakan di HP.
+- Halaman kosong tanpa arahan.
+- Tombol yang tidak memiliki fungsi.
+- Data statis yang seolah-olah merupakan data nyata.
+
+UTAMAKAN:
+- Profesionalitas.
+- Kemudahan penggunaan.
+- Keamanan.
+- Kecepatan.
+- Responsivitas.
+- Konsistensi desain.
+- Pengelolaan data yang rapi.
+
+## 28. INSTRUKSI FINAL UNTUK AI DEVELOPER
+
+Bertindaklah sebagai Senior Full-Stack Developer, UI/UX Designer, Database Architect, dan Application Security Engineer.
+
+Bangun aplikasi BELAJAR KHOT sesuai spesifikasi PRD ini.
+
+Jangan hanya menghasilkan mockup atau tampilan visual. Buat aplikasi dengan arsitektur yang benar, integrasi backend, database persisten, autentikasi, hak akses, dan fungsi CRUD yang benar-benar bekerja.
+
+Prioritaskan pengalaman pengguna admin dan member secara seimbang.
+
+Pastikan aplikasi dapat dikembangkan lebih lanjut tanpa harus membangun ulang seluruh sistem.
+
+Sebelum menyelesaikan pekerjaan:
+- Audit semua halaman.
+- Periksa seluruh navigasi.
+- Tes seluruh tombol.
+- Tes CRUD.
+- Tes autentikasi.
+- Tes keamanan.
+- Tes integrasi database.
+- Tes upload file.
+- Tes tampilan mobile.
+
+Jika terdapat konfigurasi Firebase atau layanan eksternal yang membutuhkan tindakan manual, jelaskan dengan rinci:
+1. Layanan yang harus dibuat.
+2. Konfigurasi yang harus dimasukkan.
+3. Environment variables yang diperlukan.
+4. Security Rules yang harus dipasang.
+5. Cara membuat akun admin pertama.
+6. Cara menjalankan aplikasi.
+7. Cara melakukan deployment.
+
+Jangan menyatakan aplikasi telah siap produksi sebelum seluruh konfigurasi, pengujian, dan keamanan backend benar-benar selesai.
+
+HASIL AKHIR YANG DIHARAPKAN:
+
+Sebuah aplikasi web **BELAJAR KHOT — MEMBERSHIP MANAGEMENT SYSTEM & DIGITAL MEMBER PORTAL** yang premium, modern, profesional, aman, responsif, dan siap dikembangkan menjadi sistem administrasi digital lembaga Belajar Khot.
