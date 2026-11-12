@@ -157,11 +157,11 @@ export const AdminDashboardHome: React.FC<AdminDashboardHomeProps> = ({
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5 sm:space-y-6">
       {/* Top Welcome & Summary Header */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-[#26332A]">
+          <h1 className="text-lg sm:text-2xl font-bold tracking-tight text-[#26332A]">
             Pusat Kendali Administrasi Belajar Khot
           </h1>
           <p className="mt-1 text-xs sm:text-sm text-[#6B776D]">
@@ -169,18 +169,18 @@ export const AdminDashboardHome: React.FC<AdminDashboardHomeProps> = ({
           </p>
         </div>
 
-        <div className="flex flex-wrap items-center gap-2.5 self-start sm:self-auto">
+        <div className="grid grid-cols-1 sm:flex sm:flex-wrap items-center gap-2 w-full sm:w-auto">
           {onToggleDemoMode && (
             <button
               type="button"
               onClick={() => onToggleDemoMode(!demoModeEnabled)}
-              className={`inline-flex items-center gap-2 rounded-lg border px-3.5 py-2.5 text-xs font-semibold transition-colors cursor-pointer ${
+              className={`inline-flex w-full sm:w-auto justify-center items-center gap-2 rounded-lg border px-3.5 py-2.5 text-xs font-semibold transition-colors cursor-pointer ${
                 demoModeEnabled
                   ? 'border-[#A06A18]/40 bg-[#FCF5E8] text-[#A06A18] hover:bg-[#F7E8CC]'
                   : 'border-[#315B43]/40 bg-[#EBF5EE] text-[#3B7551] hover:bg-[#DCECE1]'
               }`}
             >
-              <span>
+              <span className="truncate">
                 {demoModeEnabled
                   ? '● Mode Demo: AKTIF (Klik untuk Kosongkan)'
                   : '○ Mode Fresh / Kosongan (Klik untuk Data Demo)'}
@@ -191,16 +191,16 @@ export const AdminDashboardHome: React.FC<AdminDashboardHomeProps> = ({
           <button
             type="button"
             onClick={() => onNavigate('/admin/members/add')}
-            className="inline-flex items-center gap-2 rounded-lg bg-[#315B43] px-4 py-2.5 text-xs font-semibold text-white hover:bg-[#264734] transition-colors cursor-pointer"
+            className="inline-flex w-full sm:w-auto justify-center items-center gap-2 rounded-lg bg-[#315B43] px-4 py-2.5 text-xs font-semibold text-white hover:bg-[#264734] transition-colors cursor-pointer"
           >
-            <UserPlus className="h-4 w-4" />
-            Tambah Peserta Baru
+            <UserPlus className="h-4 w-4 shrink-0" />
+            <span>Tambah Peserta Baru</span>
           </button>
         </div>
       </div>
 
-      {/* 8 Stat Cards Grid (PRD Section 7.A) */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      {/* 8 Stat Cards Grid (2 columns on mobile for clean compact scanning, 4 on desktop) */}
+      <div className="grid grid-cols-2 gap-2.5 sm:gap-4 lg:grid-cols-4">
         {statCards.map((card) => {
           const Icon = card.icon;
           return (
@@ -208,21 +208,23 @@ export const AdminDashboardHome: React.FC<AdminDashboardHomeProps> = ({
               key={card.label}
               type="button"
               onClick={() => onNavigate(card.path)}
-              className="group flex flex-col justify-between rounded-2xl border border-[#E3EAE3] bg-white p-5 text-left hover:border-[#C7D7C8] transition-all cursor-pointer"
+              className="group flex flex-col justify-between rounded-2xl border border-[#E3EAE3] bg-white p-3.5 sm:p-5 text-left hover:border-[#C7D7C8] transition-all cursor-pointer min-w-0"
             >
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-semibold text-[#6B776D] group-hover:text-[#26332A]">
+              <div className="flex items-start justify-between gap-2">
+                <span className="text-[11px] sm:text-xs font-semibold text-[#6B776D] group-hover:text-[#26332A] leading-snug">
                   {card.label}
                 </span>
-                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#E8EFE7] text-[#315B43]">
-                  <Icon className="h-4 w-4" />
+                <div className="flex h-7 w-7 sm:h-9 sm:w-9 shrink-0 items-center justify-center rounded-xl bg-[#E8EFE7] text-[#315B43]">
+                  <Icon className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                 </div>
               </div>
-              <div className="mt-3">
-                <div className="font-mono text-2xl sm:text-3xl font-bold tracking-tight text-[#26332A] tabular-nums">
+              <div className="mt-2.5 sm:mt-3">
+                <div className="font-mono text-xl sm:text-3xl font-bold tracking-tight text-[#26332A] tabular-nums">
                   {card.value}
                 </div>
-                <div className="mt-1 text-[11px] text-[#6B776D]">{card.sub}</div>
+                <div className="mt-0.5 text-[10px] sm:text-[11px] text-[#6B776D] line-clamp-1">
+                  {card.sub}
+                </div>
               </div>
             </button>
           );
@@ -230,14 +232,16 @@ export const AdminDashboardHome: React.FC<AdminDashboardHomeProps> = ({
       </div>
 
       {/* Quick Actions Bar (PRD Section 7.C) */}
-      <div className="rounded-2xl border border-[#E3EAE3] bg-white p-5 sm:p-6">
-        <div className="flex items-center justify-between">
-          <h2 className="text-base font-bold text-[#26332A]">
+      <div className="rounded-2xl border border-[#E3EAE3] bg-white p-4 sm:p-6">
+        <div className="flex flex-wrap items-center justify-between gap-1">
+          <h2 className="text-sm sm:text-base font-bold text-[#26332A]">
             Pintasan Tindakan Cepat (Quick Actions)
           </h2>
-          <span className="text-xs text-[#6B776D]">Akses langsung modul utama</span>
+          <span className="text-[11px] sm:text-xs text-[#6B776D]">
+            Akses langsung modul utama
+          </span>
         </div>
-        <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
+        <div className="mt-3.5 grid grid-cols-2 gap-2.5 sm:grid-cols-3 lg:grid-cols-6">
           {quickActions.map((act) => {
             const Icon = act.icon;
             return (
@@ -245,19 +249,21 @@ export const AdminDashboardHome: React.FC<AdminDashboardHomeProps> = ({
                 key={act.label}
                 type="button"
                 onClick={() => onNavigate(act.path)}
-                className={`flex flex-col items-start justify-between rounded-xl p-3.5 text-left transition-colors cursor-pointer ${
+                className={`flex flex-col items-start justify-between rounded-xl p-3 sm:p-3.5 text-left transition-colors cursor-pointer min-w-0 ${
                   act.primary
                     ? 'bg-[#315B43] text-white hover:bg-[#264734]'
                     : 'bg-[#F3F7F2] text-[#26332A] hover:bg-[#E8EFE7]'
                 }`}
               >
                 <Icon
-                  className={`h-5 w-5 ${act.primary ? 'text-[#A3D1B3]' : 'text-[#315B43]'}`}
+                  className={`h-4 w-4 sm:h-5 sm:w-5 ${
+                    act.primary ? 'text-[#A3D1B3]' : 'text-[#315B43]'
+                  }`}
                 />
-                <div className="mt-3">
-                  <div className="text-xs font-bold">{act.label}</div>
+                <div className="mt-2.5 min-w-0 w-full">
+                  <div className="text-xs font-bold truncate">{act.label}</div>
                   <div
-                    className={`mt-0.5 text-[11px] ${
+                    className={`mt-0.5 text-[10px] sm:text-[11px] line-clamp-1 ${
                       act.primary ? 'text-white/80' : 'text-[#6B776D]'
                     }`}
                   >
@@ -271,43 +277,43 @@ export const AdminDashboardHome: React.FC<AdminDashboardHomeProps> = ({
       </div>
 
       {/* Pengelolaan Admin Utama & Anggota Monitoring Section */}
-      <div className="rounded-2xl border border-[#315B43]/30 bg-white p-5 sm:p-6 shadow-xs">
+      <div className="rounded-2xl border border-[#315B43]/30 bg-white p-4 sm:p-6 shadow-xs">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between border-b border-[#E3EAE3] pb-4">
           <div className="flex items-start gap-3">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#315B43] text-white">
+            <div className="flex h-9 w-9 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-xl bg-[#315B43] text-white">
               <ShieldCheck className="h-5 w-5" />
             </div>
-            <div>
+            <div className="min-w-0">
               <div className="flex flex-wrap items-center gap-2">
-                <h2 className="text-base font-bold text-[#26332A]">
+                <h2 className="text-sm sm:text-base font-bold text-[#26332A]">
                   Pengelolaan Admin Utama & Anggota Monitoring
                 </h2>
-                <span className="rounded-md bg-[#EBF5EE] px-2 py-0.5 text-[11px] font-bold text-[#315B43]">
+                <span className="rounded-md bg-[#EBF5EE] px-2 py-0.5 text-[10px] sm:text-[11px] font-bold text-[#315B43]">
                   {admins.length || 1} Akun Pengurus & Monitoring
                 </span>
               </div>
-              <p className="mt-0.5 text-xs text-[#6B776D]">
+              <p className="mt-1 text-xs text-[#6B776D] leading-relaxed">
                 Sebagai Pemilik Portal, Anda dapat mengubah profil/kredensial <strong>Admin Utama</strong> serta mendaftarkan <strong>Anggota Monitoring</strong> dan memberikan <strong>ID Pengguna & Password</strong> khusus.
               </p>
             </div>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2 shrink-0">
+          <div className="grid grid-cols-1 sm:flex sm:flex-wrap items-center gap-2 w-full sm:w-auto shrink-0">
             <button
               type="button"
               onClick={() => onNavigate('/admin/accounts')}
-              className="inline-flex items-center gap-1.5 rounded-lg border border-[#315B43] bg-[#F3F7F2] px-3.5 py-2 text-xs font-semibold text-[#315B43] hover:bg-[#E8EFE7] transition-colors cursor-pointer"
+              className="inline-flex w-full sm:w-auto justify-center items-center gap-1.5 rounded-lg border border-[#315B43] bg-[#F3F7F2] px-3.5 py-2 text-xs font-semibold text-[#315B43] hover:bg-[#E8EFE7] transition-colors cursor-pointer"
             >
-              <KeyRound className="h-3.5 w-3.5" />
-              Kelola Admin Utama & Beri ID Password
+              <KeyRound className="h-3.5 w-3.5 shrink-0" />
+              <span>Kelola Admin Utama & Beri ID Password</span>
             </button>
             <button
               type="button"
               onClick={() => onNavigate('/admin/accounts')}
-              className="inline-flex items-center gap-1.5 rounded-lg bg-[#315B43] px-3.5 py-2 text-xs font-semibold text-white hover:bg-[#264734] transition-colors cursor-pointer"
+              className="inline-flex w-full sm:w-auto justify-center items-center gap-1.5 rounded-lg bg-[#315B43] px-3.5 py-2 text-xs font-semibold text-white hover:bg-[#264734] transition-colors cursor-pointer"
             >
-              <UserPlus className="h-3.5 w-3.5" />
-              + Daftarkan Anggota Monitoring
+              <UserPlus className="h-3.5 w-3.5 shrink-0" />
+              <span>+ Daftarkan Anggota Monitoring</span>
             </button>
           </div>
         </div>
@@ -323,7 +329,7 @@ export const AdminDashboardHome: React.FC<AdminDashboardHomeProps> = ({
             return (
               <div
                 key={adm.uid}
-                className={`flex flex-col justify-between rounded-xl border p-4 ${
+                className={`flex flex-col justify-between rounded-xl border p-3.5 sm:p-4 ${
                   isMainOwner
                     ? 'border-[#315B43]/40 bg-[#F3F7F2]'
                     : 'border-[#E3EAE3] bg-white'
@@ -332,7 +338,7 @@ export const AdminDashboardHome: React.FC<AdminDashboardHomeProps> = ({
                 <div>
                   <div className="flex items-center justify-between gap-2">
                     <span
-                      className={`inline-flex items-center rounded-md px-2 py-0.5 text-[11px] font-bold ${
+                      className={`inline-flex items-center rounded-md px-2 py-0.5 text-[10px] sm:text-[11px] font-bold ${
                         isMainOwner
                           ? 'bg-[#315B43] text-white'
                           : 'bg-[#FCF5E8] text-[#A06A18]'
@@ -350,28 +356,33 @@ export const AdminDashboardHome: React.FC<AdminDashboardHomeProps> = ({
                       ● {adm.accountStatus}
                     </span>
                   </div>
-                  <div className="mt-2.5 text-sm font-bold text-[#26332A]">
+                  <div className="mt-2 text-sm font-bold text-[#26332A] break-words">
                     {adm.fullName}
                   </div>
-                  <div className="mt-1 space-y-0.5 text-[11px] text-[#6B776D]">
-                    <div>
-                      ID / Kode:{' '}
-                      <strong className="font-mono text-[#315B43]">
-                        {adm.memberId}
-                      </strong>{' '}
-                      · Username Login:{' '}
-                      <strong className="font-mono text-[#26332A]">
-                        {adm.username}
-                      </strong>
+                  <div className="mt-1.5 space-y-1 text-[11px] text-[#6B776D]">
+                    <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5">
+                      <span>
+                        ID:{' '}
+                        <strong className="font-mono text-[#315B43]">
+                          {adm.memberId}
+                        </strong>
+                      </span>
+                      <span>·</span>
+                      <span>
+                        Login:{' '}
+                        <strong className="font-mono text-[#26332A]">
+                          {adm.username}
+                        </strong>
+                      </span>
                     </div>
                     <div>
                       Password:{' '}
-                      <strong className="font-mono text-[#26332A]">
+                      <strong className="font-mono text-[#26332A] break-all">
                         {adm.plainPasswordHint || 'AdminKhot2026!'}
                       </strong>
                     </div>
                     {adm.notes && (
-                      <div className="text-[11px] italic text-[#6B776D] truncate">
+                      <div className="text-[11px] italic text-[#6B776D] line-clamp-1">
                         {adm.notes}
                       </div>
                     )}
@@ -379,7 +390,7 @@ export const AdminDashboardHome: React.FC<AdminDashboardHomeProps> = ({
                 </div>
 
                 <div className="mt-3 flex items-center justify-between border-t border-[#E3EAE3] pt-2.5">
-                  <span className="text-[11px] text-[#6B776D]">{adm.phone}</span>
+                  <span className="font-mono text-[11px] text-[#6B776D]">{adm.phone}</span>
                   <button
                     type="button"
                     onClick={() => onNavigate('/admin/accounts')}

@@ -2350,10 +2350,10 @@ export const AdminLogsNotificationsSettingsView: React.FC<
 
   if (tab === 'notifications') {
     return (
-      <div className="space-y-6">
-        <div className="flex items-center justify-between">
+      <div className="space-y-5 sm:space-y-6">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h1 className="text-xl sm:text-2xl font-bold text-[#26332A]">
+            <h1 className="text-lg sm:text-2xl font-bold text-[#26332A]">
               Pusat Notifikasi Administrator
             </h1>
             <p className="mt-1 text-xs sm:text-sm text-[#6B776D]">
@@ -2363,7 +2363,7 @@ export const AdminLogsNotificationsSettingsView: React.FC<
           <button
             type="button"
             onClick={handleMarkAllRead}
-            className="rounded-lg bg-[#E8EFE7] px-3.5 py-2 text-xs font-semibold text-[#315B43] hover:bg-[#DCE6DA] cursor-pointer"
+            className="w-full sm:w-auto rounded-lg bg-[#E8EFE7] px-3.5 py-2 text-xs font-semibold text-[#315B43] hover:bg-[#DCE6DA] cursor-pointer text-center"
           >
             Tandai Semua Dibaca
           </button>
@@ -2373,27 +2373,27 @@ export const AdminLogsNotificationsSettingsView: React.FC<
           {notifications.map((n) => (
             <div
               key={n.id}
-              className={`rounded-2xl border p-4 flex items-start justify-between gap-4 ${
+              className={`rounded-2xl border p-4 flex flex-col sm:flex-row sm:items-start justify-between gap-3 ${
                 n.isRead
                   ? 'border-[#E3EAE3] bg-white'
                   : 'border-[#315B43]/40 bg-[#F3F7F2]'
               }`}
             >
-              <div>
-                <div className="flex items-center gap-2 text-xs text-[#6B776D]">
+              <div className="min-w-0">
+                <div className="flex flex-wrap items-center gap-2 text-xs text-[#6B776D]">
                   <span className="font-semibold text-[#315B43]">
                     {n.isRead ? 'Sudah Dibaca' : 'BARU'}
                   </span>
                   <span className="font-mono tabular-nums">· {formatDateID(n.createdAt, true)}</span>
                 </div>
-                <h3 className="mt-1 text-sm font-bold text-[#26332A]">{n.title}</h3>
-                <p className="mt-0.5 text-xs text-[#6B776D]">{n.message}</p>
+                <h3 className="mt-1 text-sm font-bold text-[#26332A] break-words">{n.title}</h3>
+                <p className="mt-0.5 text-xs text-[#6B776D] break-words">{n.message}</p>
               </div>
               {n.linkTo && (
                 <button
                   type="button"
                   onClick={() => onNavigate(n.linkTo!)}
-                  className="shrink-0 rounded-lg bg-[#315B43] px-3 py-1.5 text-xs font-semibold text-white cursor-pointer"
+                  className="w-full sm:w-auto shrink-0 rounded-lg bg-[#315B43] px-3.5 py-2 sm:py-1.5 text-xs font-semibold text-white cursor-pointer text-center"
                 >
                   Tinjau
                 </button>
@@ -2407,9 +2407,9 @@ export const AdminLogsNotificationsSettingsView: React.FC<
 
   if (tab === 'logs') {
     return (
-      <div className="space-y-6">
+      <div className="space-y-5 sm:space-y-6">
         <div>
-          <h1 className="text-xl sm:text-2xl font-bold text-[#26332A]">
+          <h1 className="text-lg sm:text-2xl font-bold text-[#26332A]">
             Riwayat Aktivitas & Audit Log Sistem
           </h1>
           <p className="mt-1 text-xs sm:text-sm text-[#6B776D]">
@@ -2417,37 +2417,68 @@ export const AdminLogsNotificationsSettingsView: React.FC<
           </p>
         </div>
 
-        <div className="overflow-hidden rounded-2xl border border-[#E3EAE3] bg-white">
-          <table className="w-full text-left border-collapse">
-            <thead>
-              <tr className="border-b border-[#E3EAE3] bg-[#F3F7F2] text-[11px] font-semibold uppercase tracking-wider text-[#6B776D]">
-                <th className="py-3.5 pl-5 pr-3">Waktu (WIB)</th>
-                <th className="px-3 py-3.5">Pelaku (Actor)</th>
-                <th className="px-3 py-3.5">Jenis Aktivitas</th>
-                <th className="px-3 py-3.5">Rincian Aktivitas</th>
-                <th className="py-3.5 pl-3 pr-5">Target ID</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-[#E3EAE3] text-xs">
-              {logs.map((log) => (
-                <tr key={log.id} className="hover:bg-[#FAFCF9]">
-                  <td className="py-3 pl-5 pr-3 font-mono text-[#6B776D] tabular-nums whitespace-nowrap">
-                    {formatDateID(log.createdAt, true)}
-                  </td>
-                  <td className="px-3 py-3 font-semibold text-[#26332A]">{log.actorName}</td>
-                  <td className="px-3 py-3">
-                    <span className="font-mono text-[11px] font-semibold text-[#315B43]">
-                      {log.activityType}
-                    </span>
-                  </td>
-                  <td className="px-3 py-3 text-[#26332A]">{log.description}</td>
-                  <td className="py-3 pl-3 pr-5 font-mono text-[#6B776D] tabular-nums">
-                    {log.targetId}
-                  </td>
+        {/* Desktop Table (md+) */}
+        <div className="hidden md:block overflow-hidden rounded-2xl border border-[#E3EAE3] bg-white">
+          <div className="overflow-x-auto">
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr className="border-b border-[#E3EAE3] bg-[#F3F7F2] text-[11px] font-semibold uppercase tracking-wider text-[#6B776D]">
+                  <th className="py-3.5 pl-5 pr-3">Waktu (WIB)</th>
+                  <th className="px-3 py-3.5">Pelaku (Actor)</th>
+                  <th className="px-3 py-3.5">Jenis Aktivitas</th>
+                  <th className="px-3 py-3.5">Rincian Aktivitas</th>
+                  <th className="py-3.5 pl-3 pr-5">Target ID</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="divide-y divide-[#E3EAE3] text-xs">
+                {logs.map((log) => (
+                  <tr key={log.id} className="hover:bg-[#FAFCF9]">
+                    <td className="py-3 pl-5 pr-3 font-mono text-[#6B776D] tabular-nums whitespace-nowrap">
+                      {formatDateID(log.createdAt, true)}
+                    </td>
+                    <td className="px-3 py-3 font-semibold text-[#26332A]">{log.actorName}</td>
+                    <td className="px-3 py-3">
+                      <span className="font-mono text-[11px] font-semibold text-[#315B43]">
+                        {log.activityType}
+                      </span>
+                    </td>
+                    <td className="px-3 py-3 text-[#26332A]">{log.description}</td>
+                    <td className="py-3 pl-3 pr-5 font-mono text-[#6B776D] tabular-nums">
+                      {log.targetId}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        {/* Mobile Card List (< md) */}
+        <div className="grid grid-cols-1 gap-3 md:hidden">
+          {logs.map((log) => (
+            <div
+              key={log.id}
+              className="rounded-2xl border border-[#E3EAE3] bg-white p-3.5 space-y-2 text-xs"
+            >
+              <div className="flex items-center justify-between gap-2">
+                <span className="rounded bg-[#EBF5EE] px-2 py-0.5 font-mono text-[10px] font-bold text-[#315B43]">
+                  {log.activityType}
+                </span>
+                <span className="font-mono text-[10px] text-[#6B776D] tabular-nums">
+                  {formatDateID(log.createdAt, true)}
+                </span>
+              </div>
+              <p className="text-xs font-medium text-[#26332A] break-words">
+                {log.description}
+              </p>
+              <div className="flex items-center justify-between border-t border-[#E3EAE3] pt-2 text-[11px] text-[#6B776D]">
+                <span>
+                  Oleh: <strong className="text-[#26332A]">{log.actorName}</strong>
+                </span>
+                <span className="font-mono">{log.targetId}</span>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     );
@@ -2458,9 +2489,9 @@ export const AdminLogsNotificationsSettingsView: React.FC<
   );
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5 sm:space-y-6">
       <div>
-        <h1 className="text-xl sm:text-2xl font-bold text-[#26332A]">
+        <h1 className="text-lg sm:text-2xl font-bold text-[#26332A]">
           Pengaturan Aplikasi, Database Google Sheets & Deployment
         </h1>
         <p className="mt-1 text-xs sm:text-sm text-[#6B776D]">
@@ -2471,7 +2502,7 @@ export const AdminLogsNotificationsSettingsView: React.FC<
       {/* =================================================================== */}
       {/* PANEL 1: INTEGRASI SERVER DATABASE GOOGLE SHEETS / APPS SCRIPT */}
       {/* =================================================================== */}
-      <div className="rounded-2xl border border-[#315B43]/30 bg-white p-6 space-y-5">
+      <div className="rounded-2xl border border-[#315B43]/30 bg-white p-4 sm:p-6 space-y-5">
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between border-b border-[#E3EAE3] pb-4">
           <div>
             <div className="text-xs font-bold uppercase tracking-wider text-[#315B43]">
@@ -2521,44 +2552,46 @@ export const AdminLogsNotificationsSettingsView: React.FC<
           </div>
         </div>
 
-        <div className="flex flex-wrap items-center gap-2.5 pt-1">
+        <div className="grid grid-cols-1 sm:flex sm:flex-wrap items-center gap-2 pt-1">
           <button
             type="button"
             disabled={syncingSheets}
             onClick={() => handleSyncGoogleSheets('push')}
-            className="inline-flex items-center gap-1.5 rounded-lg bg-[#315B43] px-4 py-2.5 text-xs font-semibold text-white hover:bg-[#264734] disabled:opacity-50 cursor-pointer"
+            className="inline-flex w-full sm:w-auto justify-center items-center gap-1.5 rounded-lg bg-[#315B43] px-4 py-2.5 text-xs font-semibold text-white hover:bg-[#264734] disabled:opacity-50 cursor-pointer"
           >
-            <Upload className="h-4 w-4" />
-            {syncingSheets ? 'Menyinkronkan...' : 'Simpan URL & Push Data ke Google Sheets'}
+            <Upload className="h-4 w-4 shrink-0" />
+            <span>{syncingSheets ? 'Menyinkronkan...' : 'Simpan URL & Push ke Google Sheets'}</span>
           </button>
 
           <button
             type="button"
             disabled={syncingSheets || !isSheetsConnected}
             onClick={() => handleSyncGoogleSheets('pull')}
-            className="inline-flex items-center gap-1.5 rounded-lg border border-[#315B43] bg-[#F3F7F2] px-4 py-2.5 text-xs font-semibold text-[#315B43] hover:bg-[#E8EFE7] disabled:opacity-40 cursor-pointer"
+            className="inline-flex w-full sm:w-auto justify-center items-center gap-1.5 rounded-lg border border-[#315B43] bg-[#F3F7F2] px-4 py-2.5 text-xs font-semibold text-[#315B43] hover:bg-[#E8EFE7] disabled:opacity-40 cursor-pointer"
           >
-            <Download className="h-4 w-4" />
-            Tarik Data (Pull) dari Google Sheets
+            <Download className="h-4 w-4 shrink-0" />
+            <span>Tarik Data (Pull) dari Google Sheets</span>
           </button>
 
-          <button
-            type="button"
-            onClick={() => handleCopyAppsScriptCode('code')}
-            className="inline-flex items-center gap-1.5 rounded-lg border border-[#E3EAE3] bg-white px-3.5 py-2.5 text-xs font-semibold text-[#26332A] hover:bg-[#F3F7F2] cursor-pointer"
-          >
-            <FileText className="h-4 w-4 text-[#315B43]" />
-            Salin 1. Code.gs
-          </button>
+          <div className="grid grid-cols-2 sm:flex items-center gap-2 w-full sm:w-auto">
+            <button
+              type="button"
+              onClick={() => handleCopyAppsScriptCode('code')}
+              className="inline-flex justify-center items-center gap-1.5 rounded-lg border border-[#E3EAE3] bg-white px-3 py-2.5 text-xs font-semibold text-[#26332A] hover:bg-[#F3F7F2] cursor-pointer"
+            >
+              <FileText className="h-4 w-4 text-[#315B43] shrink-0" />
+              <span>Salin 1. Code.gs</span>
+            </button>
 
-          <button
-            type="button"
-            onClick={() => handleCopyAppsScriptCode('setup')}
-            className="inline-flex items-center gap-1.5 rounded-lg border border-[#E3EAE3] bg-white px-3.5 py-2.5 text-xs font-semibold text-[#26332A] hover:bg-[#F3F7F2] cursor-pointer"
-          >
-            <FileText className="h-4 w-4 text-[#315B43]" />
-            Salin 2. Setup.gs
-          </button>
+            <button
+              type="button"
+              onClick={() => handleCopyAppsScriptCode('setup')}
+              className="inline-flex justify-center items-center gap-1.5 rounded-lg border border-[#E3EAE3] bg-white px-3 py-2.5 text-xs font-semibold text-[#26332A] hover:bg-[#F3F7F2] cursor-pointer"
+            >
+              <FileText className="h-4 w-4 text-[#315B43] shrink-0" />
+              <span>Salin 2. Setup.gs</span>
+            </button>
+          </div>
 
           <button
             type="button"
@@ -2578,16 +2611,16 @@ export const AdminLogsNotificationsSettingsView: React.FC<
                 onShowToast('Silakan salin Environment Variable dari kotak di bawah.', 'success');
               }
             }}
-            className="inline-flex items-center gap-1.5 rounded-lg border border-[#315B43]/30 bg-[#F3F7F2] px-3.5 py-2.5 text-xs font-semibold text-[#315B43] hover:bg-[#E8EFE7] cursor-pointer"
+            className="inline-flex w-full sm:w-auto justify-center items-center gap-1.5 rounded-lg border border-[#315B43]/30 bg-[#F3F7F2] px-3.5 py-2.5 text-xs font-semibold text-[#315B43] hover:bg-[#E8EFE7] cursor-pointer"
           >
-            <FileText className="h-4 w-4 text-[#315B43]" />
-            Salin 1 Env Vercel (GOOGLE_APPS_SCRIPT_URL)
+            <FileText className="h-4 w-4 text-[#315B43] shrink-0" />
+            <span>Salin 1 Env Vercel (GOOGLE_APPS_SCRIPT_URL)</span>
           </button>
 
           <button
             type="button"
             onClick={() => setShowAppsScriptCode((prev) => !prev)}
-            className="inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-xs font-semibold text-[#315B43] hover:underline cursor-pointer"
+            className="inline-flex w-full sm:w-auto justify-center items-center gap-1.5 rounded-lg px-3 py-2 text-xs font-semibold text-[#315B43] hover:underline cursor-pointer"
           >
             {showAppsScriptCode
               ? 'Sembunyikan Panduan Vercel & Kode Apps Script'

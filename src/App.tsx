@@ -649,17 +649,17 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#FAFCF9] text-[#26332A] flex">
+    <div className="min-h-screen bg-[#FAFCF9] text-[#26332A] flex overflow-x-hidden">
       {/* Toast Notification Feedback */}
       {toast && (
         <div
           role="status"
-          className={`fixed bottom-20 right-4 lg:bottom-6 lg:right-6 z-50 flex items-center gap-2.5 rounded-xl px-4 py-3 text-xs font-semibold text-white shadow-lg transition-all ${
+          className={`fixed bottom-20 left-4 right-4 sm:left-auto sm:right-4 lg:bottom-6 lg:right-6 z-50 flex items-center gap-2.5 rounded-xl px-4 py-3 text-xs font-semibold text-white shadow-lg transition-all ${
             toast.type === 'error' ? 'bg-[#B44238]' : 'bg-[#315B43]'
           }`}
         >
           <CheckCircle2 className="h-4 w-4 shrink-0" />
-          <span>{toast.message}</span>
+          <span className="break-words">{toast.message}</span>
         </div>
       )}
 
@@ -675,11 +675,11 @@ export default function App() {
             }
             accentColor={resolveMemberThemeColors(settings, currentMember).accentColor}
           />
-          <div>
-            <div className="text-sm font-bold tracking-tight text-[#26332A]">
+          <div className="min-w-0">
+            <div className="text-sm font-bold tracking-tight text-[#26332A] truncate">
               {settings?.institutionName || 'BELAJAR KHOT'}
             </div>
-            <div className="text-[11px] font-medium text-[#6B776D]">
+            <div className="text-[11px] font-medium text-[#6B776D] truncate">
               {currentUser.role === 'admin' ? 'Panel Administrator' : 'Portal Member Digital'}
             </div>
           </div>
@@ -715,7 +715,7 @@ export default function App() {
             <div className="text-xs font-bold text-[#26332A] truncate">
               {currentUser.fullName}
             </div>
-            <div className="font-mono text-[11px] text-[#315B43] font-semibold">
+            <div className="font-mono text-[11px] text-[#315B43] font-semibold truncate">
               {currentUser.memberId} ·{' '}
               {currentUser.role === 'admin'
                 ? currentUser.adminRole || 'Admin Utama'
@@ -743,25 +743,30 @@ export default function App() {
       </aside>
 
       {/* Main Content Column */}
-      <div className="flex flex-1 flex-col lg:pl-64 min-w-0">
+      <div className="flex flex-1 flex-col lg:pl-64 min-w-0 w-full">
         {/* Top Bar Contract */}
-        <header className="no-print lg:sticky lg:top-0 z-30 flex items-center justify-between gap-4 border-b border-[#E3EAE3] bg-white/95 px-4 py-3.5 sm:px-8 backdrop-blur-xs">
-          <div className="flex items-center gap-3 min-w-0">
+        <header className="no-print sticky top-0 z-30 flex items-center justify-between gap-2 border-b border-[#E3EAE3] bg-white/95 px-3 py-2.5 sm:px-6 sm:py-3.5 backdrop-blur-xs">
+          <div className="flex items-center gap-2 sm:gap-3 min-w-0">
             <button
               type="button"
               onClick={() => setMobileMenuOpen(true)}
               aria-label="Buka menu navigasi"
-              className="lg:hidden rounded-lg p-2 text-[#26332A] hover:bg-[#F3F7F2]"
+              className="lg:hidden rounded-lg p-2 text-[#26332A] hover:bg-[#F3F7F2] shrink-0"
             >
               <Menu className="h-5 w-5" />
             </button>
-            <span className="text-sm font-bold text-[#26332A] truncate">
-              {navItems.find((n) => currentPath.startsWith(n.path))?.label ||
-                'Belajar Khot Portal'}
-            </span>
+            <div className="min-w-0">
+              <span className="block text-xs sm:text-sm font-bold text-[#26332A] truncate">
+                {navItems.find((n) => currentPath.startsWith(n.path))?.label ||
+                  'Belajar Khot Portal'}
+              </span>
+              <span className="block lg:hidden text-[10px] font-mono text-[#6B776D] truncate">
+                {currentUser.fullName} ({currentUser.memberId})
+              </span>
+            </div>
           </div>
 
-          <div className="flex items-center gap-2 sm:gap-2.5 shrink-0">
+          <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
             {currentUser.role === 'admin' && (
               <>
                 <button
@@ -805,7 +810,7 @@ export default function App() {
               aria-label={
                 themeMode === 'dark' ? 'Aktifkan Mode Terang' : 'Aktifkan Mode Malam'
               }
-              className="rounded-lg bg-[#F3F7F2] px-3 py-2 text-xs font-semibold text-[#26332A] hover:bg-[#E8EFE7] transition-colors cursor-pointer flex items-center gap-1.5"
+              className="rounded-lg bg-[#F3F7F2] p-2 sm:px-3 sm:py-2 text-xs font-semibold text-[#26332A] hover:bg-[#E8EFE7] transition-colors cursor-pointer flex items-center gap-1.5"
             >
               {themeMode === 'dark' ? (
                 <>
@@ -830,12 +835,12 @@ export default function App() {
                 )
               }
               aria-label="Notifikasi"
-              className="relative rounded-lg bg-[#F3F7F2] px-3 py-2 text-xs font-semibold text-[#26332A] hover:bg-[#E8EFE7] transition-colors cursor-pointer flex items-center gap-1.5"
+              className="relative rounded-lg bg-[#F3F7F2] p-2 sm:px-3 sm:py-2 text-xs font-semibold text-[#26332A] hover:bg-[#E8EFE7] transition-colors cursor-pointer flex items-center gap-1"
             >
               <Bell className="h-4 w-4 text-[#315B43]" />
               <span className="hidden sm:inline">Notifikasi</span>
               {unreadNotifCount > 0 && (
-                <span className="font-mono font-bold text-[#315B43] tabular-nums">
+                <span className="font-mono text-[11px] font-bold text-[#315B43] tabular-nums">
                   ({unreadNotifCount})
                 </span>
               )}
@@ -844,15 +849,18 @@ export default function App() {
             <button
               type="button"
               onClick={handleLogout}
-              className="lg:hidden rounded-lg border border-[#E3EAE3] px-3 py-2 text-xs font-semibold text-[#B44238]"
+              aria-label="Keluar"
+              title="Keluar (Logout)"
+              className="lg:hidden rounded-lg border border-[#E3EAE3] p-2 sm:px-3 sm:py-2 text-xs font-semibold text-[#B44238] hover:bg-[#FCEEEF] flex items-center gap-1"
             >
-              Logout
+              <LogOut className="h-4 w-4" />
+              <span className="hidden sm:inline">Logout</span>
             </button>
           </div>
         </header>
 
         {/* Main Viewport */}
-        <main className="flex-1 px-4 py-6 pb-24 sm:px-8 lg:pb-10 max-w-7xl w-full mx-auto">
+        <main className="flex-1 px-3.5 py-4 pb-24 sm:px-6 sm:py-6 lg:px-8 lg:pb-10 max-w-7xl w-full mx-auto min-w-0">
           {renderMainView()}
         </main>
       </div>
@@ -861,12 +869,12 @@ export default function App() {
       {mobileMenuOpen && (
         <div className="fixed inset-0 z-50 lg:hidden flex">
           <div
-            className="fixed inset-0 bg-black/50"
+            className="fixed inset-0 bg-black/50 backdrop-blur-xs"
             onClick={() => setMobileMenuOpen(false)}
           />
-          <div className="relative z-10 flex w-72 flex-col bg-white p-5 shadow-xl">
-            <div className="flex items-center justify-between border-b border-[#E3EAE3] pb-4">
-              <div className="flex items-center gap-2.5">
+          <div className="relative z-10 flex w-[84vw] max-w-xs flex-col bg-white p-4 shadow-xl h-full overflow-y-auto">
+            <div className="flex items-center justify-between border-b border-[#E3EAE3] pb-3.5">
+              <div className="flex items-center gap-2.5 min-w-0">
                 <BrandLogo
                   size="sm"
                   logoUrl={settings?.logoURL}
@@ -880,22 +888,81 @@ export default function App() {
                     resolveMemberThemeColors(settings, currentMember).accentColor
                   }
                 />
-                <span className="text-sm font-bold text-[#26332A]">
-                  {settings?.institutionName || 'BELAJAR KHOT'}
-                </span>
+                <div className="min-w-0">
+                  <div className="text-sm font-bold text-[#26332A] truncate">
+                    {settings?.institutionName || 'BELAJAR KHOT'}
+                  </div>
+                  <div className="text-[10px] font-medium text-[#6B776D] truncate">
+                    {currentUser.role === 'admin'
+                      ? 'Panel Administrator'
+                      : 'Portal Member Digital'}
+                  </div>
+                </div>
               </div>
               <button
                 type="button"
                 onClick={() => setMobileMenuOpen(false)}
                 aria-label="Tutup menu"
+                className="rounded-lg p-1.5 text-[#6B776D] hover:bg-[#F3F7F2]"
               >
-                <X className="h-5 w-5 text-[#6B776D]" />
+                <X className="h-5 w-5" />
               </button>
             </div>
-            <nav className="mt-4 flex-1 space-y-1 overflow-y-auto">
+
+            {/* Mobile User Profile Summary Card */}
+            <div className="mt-3.5 rounded-xl border border-[#E3EAE3] bg-[#F3F7F2] p-3">
+              <div className="text-xs font-bold text-[#26332A] break-words">
+                {currentUser.fullName}
+              </div>
+              <div className="mt-0.5 font-mono text-[11px] text-[#315B43] font-semibold">
+                {currentUser.memberId} ·{' '}
+                {currentUser.role === 'admin'
+                  ? currentUser.adminRole || 'Admin Utama'
+                  : 'Member'}
+              </div>
+              {currentUser.role === 'admin' && (
+                <div className="mt-2.5 grid grid-cols-1 gap-1.5">
+                  <button
+                    type="button"
+                    onClick={() => navigate('/admin/accounts')}
+                    className="w-full rounded-lg border border-[#315B43]/30 bg-white px-2.5 py-1.5 text-[11px] font-semibold text-[#315B43] hover:bg-[#EBF5EE] text-center"
+                  >
+                    Kelola Admin Utama & Monitoring
+                  </button>
+                  <div className="grid grid-cols-2 gap-1.5">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        handleToggleDemoMode(settings?.demoModeEnabled === false);
+                        setMobileMenuOpen(false);
+                      }}
+                      className={`rounded-lg border px-2 py-1.5 text-[10px] font-semibold text-center ${
+                        settings?.demoModeEnabled !== false
+                          ? 'border-[#A06A18]/40 bg-[#FCF5E8] text-[#A06A18]'
+                          : 'border-[#315B43]/40 bg-[#EBF5EE] text-[#3B7551]'
+                      }`}
+                    >
+                      {settings?.demoModeEnabled !== false ? '● Demo: ON' : '○ Mode Fresh'}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => navigate('/admin/cards')}
+                      className="rounded-lg border border-[#E3EAE3] bg-white px-2 py-1.5 text-[10px] font-semibold text-[#26332A] text-center"
+                    >
+                      Warna Kartu
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <nav className="mt-3.5 flex-1 space-y-1 overflow-y-auto">
               {navItems.map((item) => {
                 const Icon = item.icon;
-                const isActive = currentPath === item.path;
+                const isActive =
+                  currentPath === item.path ||
+                  (item.path === '/admin/members' &&
+                    currentPath.startsWith('/admin/members'));
                 return (
                   <button
                     key={item.path}
@@ -907,12 +974,23 @@ export default function App() {
                         : 'text-[#6B776D] hover:bg-[#F3F7F2]'
                     }`}
                   >
-                    <Icon className="h-4 w-4" />
-                    <span>{item.label}</span>
+                    <Icon className="h-4 w-4 shrink-0" />
+                    <span className="truncate">{item.label}</span>
                   </button>
                 );
               })}
             </nav>
+
+            <div className="mt-4 border-t border-[#E3EAE3] pt-3">
+              <button
+                type="button"
+                onClick={handleLogout}
+                className="flex w-full items-center justify-center gap-2 rounded-xl border border-[#E3EAE3] px-3 py-2.5 text-xs font-semibold text-[#B44238] hover:bg-[#FCEEEF]"
+              >
+                <LogOut className="h-4 w-4" />
+                Keluar (Logout)
+              </button>
+            </div>
           </div>
         </div>
       )}
@@ -920,38 +998,49 @@ export default function App() {
       {/* Mobile Bottom Navigation Bar (< lg) */}
       <nav
         aria-label="Navigasi Mobile"
-        className="no-print fixed bottom-0 left-0 right-0 z-30 flex h-14 items-center justify-around border-t border-[#E3EAE3] bg-white/95 backdrop-blur-md lg:hidden"
+        className="no-print fixed bottom-0 left-0 right-0 z-30 grid grid-cols-5 h-16 items-center border-t border-[#E3EAE3] bg-white/95 px-1 backdrop-blur-md lg:hidden"
       >
         {(currentUser.role === 'admin'
           ? [
-              { label: 'Dashboard', path: '/admin/dashboard', icon: LayoutDashboard },
+              { label: 'Beranda', path: '/admin/dashboard', icon: LayoutDashboard },
               { label: 'Peserta', path: '/admin/members', icon: Users },
+              { label: 'Akun/Admin', path: '/admin/accounts', icon: UserCheck },
               { label: 'Kartu', path: '/admin/cards', icon: CreditCard },
-              { label: 'Pengumuman', path: '/admin/announcements', icon: Megaphone },
             ]
           : [
               { label: 'Beranda', path: '/member/dashboard', icon: LayoutDashboard },
-              { label: 'Kartu Member', path: '/member/card', icon: CreditCard },
-              { label: 'Pengumuman', path: '/member/announcements', icon: Megaphone },
-              { label: 'Dokumen', path: '/member/documents', icon: FileText },
+              { label: 'Kartu', path: '/member/card', icon: CreditCard },
+              { label: 'Info', path: '/member/announcements', icon: Megaphone },
+              { label: 'Profil', path: '/member/profile', icon: User },
             ]
         ).map((tab) => {
           const Icon = tab.icon;
-          const active = currentPath === tab.path;
+          const active =
+            currentPath === tab.path ||
+            (tab.path === '/admin/members' &&
+              currentPath.startsWith('/admin/members'));
           return (
             <button
               key={tab.path}
               type="button"
               onClick={() => navigate(tab.path)}
-              className={`flex flex-col items-center justify-center gap-1 px-3 py-1 text-[11px] font-semibold ${
+              className={`flex flex-col items-center justify-center gap-1 py-1.5 text-[10px] font-semibold transition-colors ${
                 active ? 'text-[#315B43]' : 'text-[#6B776D]'
               }`}
             >
-              <Icon className="h-4 w-4" />
-              <span>{tab.label}</span>
+              <Icon className="h-4 w-4 shrink-0" />
+              <span className="truncate max-w-full px-0.5">{tab.label}</span>
             </button>
           );
         })}
+        <button
+          type="button"
+          onClick={() => setMobileMenuOpen(true)}
+          className="flex flex-col items-center justify-center gap-1 py-1.5 text-[10px] font-semibold text-[#6B776D] hover:text-[#315B43]"
+        >
+          <Menu className="h-4 w-4 shrink-0" />
+          <span className="truncate">Menu</span>
+        </button>
       </nav>
     </div>
   );

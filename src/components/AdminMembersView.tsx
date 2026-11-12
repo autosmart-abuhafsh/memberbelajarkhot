@@ -547,11 +547,11 @@ export const AdminMembersView: React.FC<AdminMembersViewProps> = ({
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5 sm:space-y-6">
       {/* Page Header & Primary Actions */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex flex-col gap-3.5 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-[#26332A]">
+          <h1 className="text-lg sm:text-2xl font-bold tracking-tight text-[#26332A]">
             {mode === 'accounts'
               ? 'Kelola Admin Utama, Anggota Monitoring & Akun Member'
               : 'Manajemen Calon Peserta, Member & Tim Monitoring'}
@@ -561,38 +561,38 @@ export const AdminMembersView: React.FC<AdminMembersViewProps> = ({
           </p>
         </div>
 
-        <div className="no-print flex flex-wrap items-center gap-2.5">
+        <div className="no-print grid grid-cols-2 sm:flex sm:flex-wrap items-center gap-2 w-full sm:w-auto">
           <button
             type="button"
             onClick={handleExportCsv}
-            className="inline-flex items-center gap-1.5 rounded-lg border border-[#C7D7C8] bg-white px-3.5 py-2.5 text-xs font-semibold text-[#315B43] hover:bg-[#F3F7F2] transition-colors cursor-pointer"
+            className="inline-flex justify-center items-center gap-1.5 rounded-lg border border-[#C7D7C8] bg-white px-3 py-2.5 text-xs font-semibold text-[#315B43] hover:bg-[#F3F7F2] transition-colors cursor-pointer"
           >
-            <Download className="h-4 w-4" />
-            Export CSV
+            <Download className="h-4 w-4 shrink-0" />
+            <span className="truncate">Export CSV</span>
           </button>
           <button
             type="button"
             onClick={() => window.print()}
-            className="inline-flex items-center gap-1.5 rounded-lg bg-[#E8EFE7] px-3.5 py-2.5 text-xs font-semibold text-[#315B43] hover:bg-[#DCE6DA] transition-colors cursor-pointer"
+            className="inline-flex justify-center items-center gap-1.5 rounded-lg bg-[#E8EFE7] px-3 py-2.5 text-xs font-semibold text-[#315B43] hover:bg-[#DCE6DA] transition-colors cursor-pointer"
           >
-            <Printer className="h-4 w-4" />
-            Cetak Data
+            <Printer className="h-4 w-4 shrink-0" />
+            <span className="truncate">Cetak Data</span>
           </button>
           <button
             type="button"
             onClick={() => setShowAddAdminModal(true)}
-            className="inline-flex items-center gap-1.5 rounded-lg border border-[#315B43] bg-[#F3F7F2] px-3.5 py-2.5 text-xs font-semibold text-[#315B43] hover:bg-[#E8EFE7] transition-colors cursor-pointer"
+            className="col-span-2 sm:col-span-1 inline-flex justify-center items-center gap-1.5 rounded-lg border border-[#315B43] bg-[#F3F7F2] px-3.5 py-2.5 text-xs font-semibold text-[#315B43] hover:bg-[#E8EFE7] transition-colors cursor-pointer"
           >
-            <ShieldCheck className="h-4 w-4" />
-            + Daftarkan Anggota Monitoring
+            <ShieldCheck className="h-4 w-4 shrink-0" />
+            <span>+ Daftarkan Anggota Monitoring</span>
           </button>
           <button
             type="button"
             onClick={() => setShowAddModal(true)}
-            className="inline-flex items-center gap-1.5 rounded-lg bg-[#315B43] px-4 py-2.5 text-xs font-semibold text-white hover:bg-[#264734] transition-colors cursor-pointer"
+            className="col-span-2 sm:col-span-1 inline-flex justify-center items-center gap-1.5 rounded-lg bg-[#315B43] px-4 py-2.5 text-xs font-semibold text-white hover:bg-[#264734] transition-colors cursor-pointer"
           >
-            <UserPlus className="h-4 w-4" />
-            + Tambah Peserta / Member
+            <UserPlus className="h-4 w-4 shrink-0" />
+            <span>+ Tambah Peserta / Member</span>
           </button>
         </div>
       </div>
@@ -600,51 +600,51 @@ export const AdminMembersView: React.FC<AdminMembersViewProps> = ({
       {/* ===================================================================== */}
       {/* PANEL 1: PENGELOLAAN ADMIN UTAMA & ANGGOTA MONITORING */}
       {/* ===================================================================== */}
-      <div className="rounded-2xl border border-[#315B43]/30 bg-white p-5 sm:p-6 shadow-xs space-y-4">
+      <div className="rounded-2xl border border-[#315B43]/30 bg-white p-4 sm:p-6 shadow-xs space-y-4">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between border-b border-[#E3EAE3] pb-4">
           <div className="flex items-start gap-3">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#315B43] text-white">
+            <div className="flex h-9 w-9 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-xl bg-[#315B43] text-white">
               <ShieldCheck className="h-5 w-5" />
             </div>
-            <div>
+            <div className="min-w-0">
               <div className="flex flex-wrap items-center gap-2">
-                <h2 className="text-base font-bold text-[#26332A]">
+                <h2 className="text-sm sm:text-base font-bold text-[#26332A]">
                   1. Pengelolaan Admin Utama (Pemilik Portal) & Anggota Monitoring
                 </h2>
-                <span className="rounded-md bg-[#EBF5EE] px-2.5 py-0.5 text-[11px] font-bold text-[#315B43]">
+                <span className="rounded-md bg-[#EBF5EE] px-2 py-0.5 text-[10px] sm:text-[11px] font-bold text-[#315B43]">
                   {effectiveAdmins.length} Akun Terdaftar
                 </span>
               </div>
-              <p className="mt-0.5 text-xs text-[#6B776D]">
+              <p className="mt-1 text-xs text-[#6B776D] leading-relaxed">
                 Kelola nama & kredensial <strong>Admin Utama</strong> Anda atau daftarkan <strong>Anggota Monitoring</strong> yang dapat masuk ke dashboard menggunakan ID & Password yang Anda tetapkan.
               </p>
             </div>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2 shrink-0">
+          <div className="grid grid-cols-1 sm:flex sm:flex-wrap items-center gap-2 w-full sm:w-auto shrink-0">
             {currentUser && (
               <button
                 type="button"
                 onClick={() => openEditAdminModal(currentUser)}
-                className="inline-flex items-center gap-1.5 rounded-lg border border-[#315B43] bg-white px-3.5 py-2 text-xs font-semibold text-[#315B43] hover:bg-[#F3F7F2] transition-colors cursor-pointer"
+                className="inline-flex w-full sm:w-auto justify-center items-center gap-1.5 rounded-lg border border-[#315B43] bg-white px-3.5 py-2 text-xs font-semibold text-[#315B43] hover:bg-[#F3F7F2] transition-colors cursor-pointer"
               >
-                <Edit3 className="h-3.5 w-3.5" />
-                Edit Profil Admin Utama Saya
+                <Edit3 className="h-3.5 w-3.5 shrink-0" />
+                <span>Edit Profil Admin Utama Saya</span>
               </button>
             )}
             <button
               type="button"
               onClick={() => setShowAddAdminModal(true)}
-              className="inline-flex items-center gap-1.5 rounded-lg bg-[#315B43] px-3.5 py-2 text-xs font-semibold text-white hover:bg-[#264734] transition-colors cursor-pointer"
+              className="inline-flex w-full sm:w-auto justify-center items-center gap-1.5 rounded-lg bg-[#315B43] px-3.5 py-2 text-xs font-semibold text-white hover:bg-[#264734] transition-colors cursor-pointer"
             >
-              <UserPlus className="h-3.5 w-3.5" />
-              + Daftarkan Anggota Monitoring (Beri ID & Password)
+              <UserPlus className="h-3.5 w-3.5 shrink-0" />
+              <span>+ Daftarkan Anggota Monitoring (Beri ID & Pass)</span>
             </button>
           </div>
         </div>
 
-        {/* Table of Admin Utama & Anggota Monitoring */}
-        <div className="overflow-x-auto">
+        {/* Desktop Table of Admin Utama & Anggota Monitoring (md+) */}
+        <div className="hidden md:block overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="border-b border-[#E3EAE3] bg-[#F3F7F2] text-[11px] font-semibold uppercase tracking-wider text-[#6B776D]">
@@ -762,14 +762,131 @@ export const AdminMembersView: React.FC<AdminMembersViewProps> = ({
             </tbody>
           </table>
         </div>
+
+        {/* Mobile Card List of Admin Utama & Anggota Monitoring (< md) */}
+        <div className="grid grid-cols-1 gap-3 md:hidden">
+          {effectiveAdmins.map((adm) => {
+            const roleLabel =
+              adm.adminRole ||
+              (adm.memberId.toUpperCase().startsWith('MON')
+                ? 'Anggota Monitoring'
+                : 'Admin Utama');
+            const isMainOwner = roleLabel === 'Admin Utama';
+            const displayPass = adm.plainPasswordHint || 'AdminKhot2026!';
+            return (
+              <div
+                key={adm.uid}
+                className={`rounded-xl border p-3.5 space-y-3 ${
+                  isMainOwner
+                    ? 'border-[#315B43]/40 bg-[#F3F7F2]'
+                    : 'border-[#E3EAE3] bg-white'
+                }`}
+              >
+                <div className="flex items-start justify-between gap-2">
+                  <div className="min-w-0">
+                    <div className="flex flex-wrap items-center gap-1.5">
+                      <span
+                        className={`inline-flex rounded px-2 py-0.5 text-[10px] font-bold ${
+                          isMainOwner
+                            ? 'bg-[#315B43] text-white'
+                            : 'bg-[#FCF5E8] text-[#A06A18]'
+                        }`}
+                      >
+                        {roleLabel}
+                      </span>
+                      <span className="font-mono text-xs font-bold text-[#315B43]">
+                        {adm.memberId}
+                      </span>
+                      {adm.uid === currentUser?.uid && (
+                        <span className="rounded bg-[#EBF5EE] px-1.5 py-0.5 text-[10px] font-bold text-[#315B43]">
+                          Anda
+                        </span>
+                      )}
+                    </div>
+                    <h3 className="mt-1.5 text-sm font-bold text-[#26332A] break-words">
+                      {adm.fullName}
+                    </h3>
+                    {adm.notes && (
+                      <p className="mt-0.5 text-[11px] text-[#6B776D] line-clamp-2">
+                        {adm.notes}
+                      </p>
+                    )}
+                  </div>
+                  <span
+                    className={`shrink-0 text-[11px] font-semibold ${
+                      adm.accountStatus === 'Aktif' ? 'text-[#3B7551]' : 'text-[#B44238]'
+                    }`}
+                  >
+                    ● {adm.accountStatus}
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-2 gap-2 rounded-lg border border-[#E3EAE3] bg-white p-2.5 text-xs">
+                  <div className="min-w-0">
+                    <span className="text-[10px] text-[#6B776D] block">
+                      ID Login / Username
+                    </span>
+                    <span className="font-mono font-bold text-[#26332A] break-all">
+                      {adm.username}
+                    </span>
+                  </div>
+                  <div className="min-w-0">
+                    <span className="text-[10px] text-[#6B776D] block">
+                      Password Login
+                    </span>
+                    <span className="font-mono font-bold text-[#315B43] break-all">
+                      {displayPass}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="flex flex-wrap items-center justify-between gap-2 text-[11px] text-[#6B776D]">
+                  <span className="font-mono">{adm.phone}</span>
+                  <span>{adm.city}</span>
+                </div>
+
+                <div className="no-print flex flex-wrap items-center gap-2 border-t border-[#E3EAE3] pt-2.5">
+                  <button
+                    type="button"
+                    onClick={() =>
+                      handleCopyCredentials(adm.username, displayPass, adm.fullName)
+                    }
+                    className="flex-1 inline-flex justify-center items-center gap-1 rounded-lg border border-[#E3EAE3] bg-white px-2.5 py-2 text-xs font-semibold text-[#26332A] hover:bg-[#F3F7F2]"
+                  >
+                    <Copy className="h-3.5 w-3.5 text-[#315B43]" />
+                    <span>Salin ID & Pass</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => openEditAdminModal(adm)}
+                    className="flex-1 inline-flex justify-center items-center gap-1 rounded-lg bg-[#315B43] px-2.5 py-2 text-xs font-semibold text-white hover:bg-[#264734]"
+                  >
+                    <Edit3 className="h-3.5 w-3.5" />
+                    <span>Edit / Password</span>
+                  </button>
+                  {adm.uid !== currentUser?.uid && effectiveAdmins.length > 1 && (
+                    <button
+                      type="button"
+                      onClick={() => setConfirmDeleteAdmin(adm)}
+                      aria-label={`Hapus ${adm.fullName}`}
+                      className="rounded-lg border border-[#B44238]/30 bg-[#FCEEEF] p-2 text-[#B44238]"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </button>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </div>
       </div>
 
       {/* ===================================================================== */}
       {/* PANEL 2: PENGELOLAAN PESERTA / MEMBER (BK-XXXXX) */}
       {/* ===================================================================== */}
-      <div className="flex items-center justify-between pt-2">
+      <div className="flex items-center justify-between pt-1">
         <div>
-          <h2 className="text-base font-bold text-[#26332A]">
+          <h2 className="text-sm sm:text-base font-bold text-[#26332A]">
             2. Daftar Akun & Keanggotaan Peserta / Member ({filteredProfiles.length} Peserta)
           </h2>
           <p className="text-xs text-[#6B776D]">
@@ -1070,65 +1187,94 @@ export const AdminMembersView: React.FC<AdminMembersViewProps> = ({
       <div className="grid grid-cols-1 gap-3 md:hidden">
         {paginatedProfiles.map((p) => {
           const { user, member } = p;
+          const memberPass = user.plainPasswordHint || 'MemberKhot123!';
           return (
             <div
               key={member.memberId}
               className="rounded-2xl border border-[#E3EAE3] bg-white p-4 space-y-3"
             >
               <div className="flex items-start justify-between gap-2">
-                <div>
+                <div className="min-w-0">
                   <span className="font-mono text-xs font-bold text-[#315B43] tabular-nums">
                     {member.memberId}
                   </span>
-                  <h3 className="text-sm font-bold text-[#26332A]">{user.fullName}</h3>
+                  <h3 className="text-sm font-bold text-[#26332A] break-words">
+                    {user.fullName}
+                  </h3>
                   <div className="text-xs text-[#6B776D]">
                     {member.program} · {member.learningMethod} · {user.city}
                   </div>
                 </div>
-                <span className="text-xs font-semibold text-[#315B43]">
+                <span className="shrink-0 text-xs font-semibold text-[#315B43]">
                   {member.membershipStatus}
                 </span>
               </div>
 
-              <div className="grid grid-cols-2 gap-2 border-t border-[#E3EAE3] pt-2.5 text-xs">
-                <div>
-                  <span className="text-[#6B776D] block">Password</span>
-                  <span className="font-mono font-medium text-[#26332A]">
-                    {user.plainPasswordHint || 'MemberKhot123!'}
+              <div className="grid grid-cols-2 gap-2 rounded-lg border border-[#E3EAE3] bg-[#FAFCF9] p-2.5 text-xs">
+                <div className="min-w-0">
+                  <span className="text-[10px] text-[#6B776D] block">
+                    ID Login / Pass
+                  </span>
+                  <span className="font-mono font-semibold text-[#26332A] break-all">
+                    {user.username || member.memberId} / {memberPass}
                   </span>
                 </div>
-                <div>
-                  <span className="text-[#6B776D] block">Status Buku</span>
+                <div className="min-w-0">
+                  <span className="text-[10px] text-[#6B776D] block">Status Buku</span>
                   <span className="font-medium text-[#26332A]">
                     {member.bookPurchaseStatus}
                   </span>
                 </div>
               </div>
 
-              <div className="flex flex-wrap items-center justify-end gap-2 border-t border-[#E3EAE3] pt-3">
+              <div className="no-print grid grid-cols-2 sm:flex sm:flex-wrap items-center gap-2 border-t border-[#E3EAE3] pt-2.5">
                 {(member.membershipStatus !== 'Member Aktif' ||
                   member.bookPurchaseStatus !== 'Sudah diverifikasi') && (
                   <button
                     type="button"
                     onClick={() => handleQuickVerifyAndApprove(p)}
-                    className="rounded-lg bg-[#EBF5EE] px-3 py-1.5 text-xs font-semibold text-[#3B7551]"
+                    className="col-span-2 rounded-lg bg-[#EBF5EE] px-3 py-2 text-xs font-semibold text-[#3B7551] text-center"
                   >
-                    Verifikasi Aktif
+                    ✓ Verifikasi Buku & Aktifkan Member
                   </button>
                 )}
                 <button
                   type="button"
-                  onClick={() => setDetailProfile(p)}
-                  className="rounded-lg bg-[#F3F7F2] px-3 py-1.5 text-xs font-semibold text-[#26332A]"
+                  onClick={() =>
+                    handleCopyCredentials(
+                      user.username || member.memberId,
+                      memberPass,
+                      user.fullName
+                    )
+                  }
+                  className="inline-flex justify-center items-center gap-1 rounded-lg border border-[#E3EAE3] bg-white px-2.5 py-2 text-xs font-semibold text-[#26332A]"
                 >
-                  Detail & Kartu
+                  <Copy className="h-3.5 w-3.5 text-[#315B43]" />
+                  <span>Salin ID/Pass</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setDetailProfile(p)}
+                  className="inline-flex justify-center items-center gap-1 rounded-lg bg-[#F3F7F2] px-2.5 py-2 text-xs font-semibold text-[#26332A]"
+                >
+                  <Eye className="h-3.5 w-3.5 text-[#315B43]" />
+                  <span>Detail & Kartu</span>
                 </button>
                 <button
                   type="button"
                   onClick={() => openEditModal(p)}
-                  className="rounded-lg bg-[#E8EFE7] px-3 py-1.5 text-xs font-semibold text-[#315B43]"
+                  className="inline-flex justify-center items-center gap-1 rounded-lg bg-[#315B43] px-2.5 py-2 text-xs font-semibold text-white"
                 >
-                  Edit / Pass
+                  <Edit3 className="h-3.5 w-3.5" />
+                  <span>Edit / Pass</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setConfirmDeleteProfile(p)}
+                  className="inline-flex justify-center items-center gap-1 rounded-lg border border-[#B44238]/30 bg-[#FCEEEF] px-2.5 py-2 text-xs font-semibold text-[#B44238]"
+                >
+                  <Trash2 className="h-3.5 w-3.5" />
+                  <span>Hapus</span>
                 </button>
               </div>
             </div>

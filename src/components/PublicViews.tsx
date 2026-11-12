@@ -78,17 +78,17 @@ export const LoginPage: React.FC<LoginPageProps> = ({
   };
 
   return (
-    <div className="min-h-screen bg-[#FAFCF9] text-[#26332A] flex flex-col justify-between">
+    <div className="min-h-screen bg-[#FAFCF9] text-[#26332A] flex flex-col justify-between overflow-x-hidden">
       {/* Top Minimal Header */}
       <header className="border-b border-[#E3EAE3] bg-white/90 backdrop-blur-xs">
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-6 px-4 py-4 sm:px-8">
-          <div className="flex items-center gap-3">
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-2 px-4 py-3.5 sm:px-8 sm:py-4">
+          <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
             <BrandLogo size="md" />
-            <div>
-              <span className="text-lg font-bold tracking-tight text-[#26332A] whitespace-nowrap block leading-tight">
+            <div className="min-w-0">
+              <span className="text-base sm:text-lg font-bold tracking-tight text-[#26332A] truncate block leading-tight">
                 BELAJAR KHOT
               </span>
-              <span className="text-[11px] font-medium text-[#6B776D] block">
+              <span className="text-[10px] sm:text-[11px] font-medium text-[#6B776D] truncate block">
                 Portal Keanggotaan & Akademik Kaligrafi
               </span>
             </div>
@@ -111,7 +111,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({
             </button>
           </nav>
 
-          <div className="flex items-center gap-2.5">
+          <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
             {onToggleTheme && (
               <button
                 type="button"
@@ -119,17 +119,17 @@ export const LoginPage: React.FC<LoginPageProps> = ({
                 aria-label={
                   themeMode === 'dark' ? 'Aktifkan Mode Terang' : 'Aktifkan Mode Malam'
                 }
-                className="inline-flex items-center gap-1.5 rounded-lg border border-[#E3EAE3] bg-[#F3F7F2] px-3 py-2 text-xs font-semibold text-[#26332A] hover:bg-[#E8EFE7] transition-colors cursor-pointer"
+                className="inline-flex items-center gap-1.5 rounded-lg border border-[#E3EAE3] bg-[#F3F7F2] px-2.5 py-2 sm:px-3 text-xs font-semibold text-[#26332A] hover:bg-[#E8EFE7] transition-colors cursor-pointer"
               >
                 {themeMode === 'dark' ? (
                   <>
                     <Sun className="h-3.5 w-3.5 text-[#F6C453]" />
-                    <span>Mode Terang</span>
+                    <span className="hidden sm:inline">Mode Terang</span>
                   </>
                 ) : (
                   <>
                     <Moon className="h-3.5 w-3.5 text-[#315B43]" />
-                    <span>Mode Malam</span>
+                    <span className="hidden sm:inline">Mode Malam</span>
                   </>
                 )}
               </button>
@@ -137,7 +137,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({
             <button
               type="button"
               onClick={() => onNavigate('/help-login')}
-              className="rounded-lg bg-[#E8EFE7] px-3.5 py-2 text-xs font-semibold text-[#315B43] hover:bg-[#DCE6DA] transition-colors whitespace-nowrap cursor-pointer"
+              className="rounded-lg bg-[#E8EFE7] px-2.5 py-2 sm:px-3.5 text-xs font-semibold text-[#315B43] hover:bg-[#DCE6DA] transition-colors whitespace-nowrap cursor-pointer"
             >
               Hubungi Admin
             </button>
@@ -145,30 +145,30 @@ export const LoginPage: React.FC<LoginPageProps> = ({
         </div>
       </header>
 
-      {/* Main Content Split */}
-      <main className="mx-auto w-full max-w-6xl px-4 py-8 sm:px-8 sm:py-12">
-        <div className="grid grid-cols-1 gap-8 lg:grid-cols-12 lg:items-stretch">
-          {/* Left Column: Brand Philosophy & Rules Overview */}
-          <div className="flex flex-col justify-between rounded-2xl bg-[#315B43] p-6 sm:p-10 text-white lg:col-span-6 relative overflow-hidden">
+      {/* Main Content Split (Login Card first on mobile so users don't scroll past intro) */}
+      <main className="mx-auto w-full max-w-6xl px-4 py-5 sm:px-8 sm:py-12">
+        <div className="grid grid-cols-1 gap-6 sm:gap-8 lg:grid-cols-12 lg:items-stretch">
+          {/* Left Column: Brand Philosophy & Rules Overview (Order 2 on Mobile, Order 1 on Desktop) */}
+          <div className="order-2 lg:order-1 flex flex-col justify-between rounded-2xl bg-[#315B43] p-5 sm:p-10 text-white lg:col-span-6 relative overflow-hidden">
             <div
               aria-hidden="true"
               className="pointer-events-none absolute -right-20 -bottom-20 h-72 w-72 rounded-full border border-[#A3D1B3]/15"
             />
             <div>
-              <div className="text-xs font-semibold uppercase tracking-widest text-[#A3D1B3]">
+              <div className="text-[11px] sm:text-xs font-semibold uppercase tracking-widest text-[#A3D1B3]">
                 PORTAL RESMI KEANGGOTAAN & AKADEMIK
               </div>
-              <h1 className="mt-3 text-2xl sm:text-3xl font-bold tracking-tight text-white leading-tight">
+              <h1 className="mt-2.5 sm:mt-3 text-xl sm:text-3xl font-bold tracking-tight text-white leading-tight">
                 One Portal, Organized Learning, Better Membership Management.
               </h1>
-              <p className="mt-3 text-sm text-[#E8EFE7]/90 leading-relaxed">
+              <p className="mt-2.5 sm:mt-3 text-xs sm:text-sm text-[#E8EFE7]/90 leading-relaxed">
                 Sistem informasi terpadu untuk pengelolaan peserta pembelajaran{' '}
                 <strong className="font-semibold text-white">Khot Naskhi</strong> dan{' '}
                 <strong className="font-semibold text-white">Khot Riq&apos;ah</strong>{' '}
                 secara Online maupun Offline.
               </p>
 
-              <div className="mt-8 space-y-3.5 border-t border-white/15 pt-6">
+              <div className="mt-6 sm:mt-8 space-y-3 border-t border-white/15 pt-5 sm:pt-6">
                 <div className="text-xs font-semibold uppercase tracking-wider text-[#A3D1B3]">
                   Ketentuan Utama Lembaga Belajar Khot
                 </div>
@@ -192,19 +192,19 @@ export const LoginPage: React.FC<LoginPageProps> = ({
             </div>
 
             {/* Public Card Verification Quick Bar */}
-            <div className="mt-8 rounded-xl bg-white/10 p-4 border border-white/15">
+            <div className="mt-6 sm:mt-8 rounded-xl bg-white/10 p-3.5 sm:p-4 border border-white/15">
               <div className="flex items-center gap-2 text-xs font-semibold text-[#A3D1B3]">
-                <QrCode className="h-4 w-4" />
+                <QrCode className="h-4 w-4 shrink-0" />
                 <span>Cek Keaslian Kartu Member Digital</span>
               </div>
-              <div className="mt-2.5 flex items-center gap-2">
+              <div className="mt-2.5 flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
                 <input
                   type="text"
                   value={verifyLookupId}
                   onChange={(e) => setVerifyLookupId(e.target.value)}
                   placeholder="Contoh: BK-00001"
                   aria-label="Nomor ID Member untuk verifikasi"
-                  className="h-10 flex-1 rounded-lg bg-white/95 px-3 text-xs font-mono font-semibold text-[#26332A] placeholder:text-[#929B93] focus:outline-none"
+                  className="h-10 min-w-0 flex-1 rounded-lg bg-white/95 px-3 text-xs font-mono font-semibold text-[#26332A] placeholder:text-[#929B93] focus:outline-none"
                 />
                 <button
                   type="button"
@@ -219,32 +219,32 @@ export const LoginPage: React.FC<LoginPageProps> = ({
             </div>
           </div>
 
-          {/* Right Column: Login Card */}
-          <div className="flex flex-col justify-center rounded-2xl border border-[#E3EAE3] bg-white p-6 sm:p-10 shadow-xs lg:col-span-6">
+          {/* Right Column: Login Card (Order 1 on Mobile, Order 2 on Desktop) */}
+          <div className="order-1 lg:order-2 flex flex-col justify-center rounded-2xl border border-[#E3EAE3] bg-white p-5 sm:p-10 shadow-xs lg:col-span-6">
             <div>
               <div className="inline-flex items-center gap-2 text-xs font-semibold text-[#315B43]">
-                <Lock className="h-3.5 w-3.5" />
+                <Lock className="h-3.5 w-3.5 shrink-0" />
                 <span>AUTENTIKASI PORTAL TERPUSAT</span>
               </div>
-              <h2 className="mt-2 text-2xl font-bold tracking-tight text-[#26332A]">
+              <h2 className="mt-2 text-xl sm:text-2xl font-bold tracking-tight text-[#26332A]">
                 Selamat Datang di Belajar Khot
               </h2>
-              <p className="mt-1 text-sm text-[#6B776D]">
-                Masukkan Nomor ID Member (contoh: <span className="font-mono font-semibold">BK-00001</span>) atau Username Admin Anda. Sistem otomatis mengenali hak akses akun.
+              <p className="mt-1 text-xs sm:text-sm text-[#6B776D]">
+                Masukkan Nomor ID Member (contoh: <span className="font-mono font-semibold">BK-00001</span>) atau Username Admin/Monitoring Anda. Sistem otomatis mengenali hak akses akun.
               </p>
             </div>
 
             {error && (
               <div
                 role="alert"
-                className="mt-5 flex items-start gap-2.5 rounded-xl border border-[#B44238]/30 bg-[#FCEEEF] p-3.5 text-xs font-medium text-[#B44238]"
+                className="mt-4 sm:mt-5 flex items-start gap-2.5 rounded-xl border border-[#B44238]/30 bg-[#FCEEEF] p-3.5 text-xs font-medium text-[#B44238]"
               >
                 <AlertCircle className="h-4 w-4 shrink-0 mt-0.5" />
-                <span>{error}</span>
+                <span className="break-words">{error}</span>
               </div>
             )}
 
-            <form onSubmit={handleSubmit} className="mt-6 space-y-4">
+            <form onSubmit={handleSubmit} className="mt-5 sm:mt-6 space-y-4">
               <div>
                 <label
                   htmlFor="login-identifier"
@@ -310,7 +310,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({
             </form>
 
             {/* Help Footer */}
-            <div className="mt-6 flex flex-wrap items-center justify-between gap-2 border-t border-[#E3EAE3] pt-4 text-xs text-[#6B776D]">
+            <div className="mt-5 sm:mt-6 flex flex-wrap items-center justify-between gap-2 border-t border-[#E3EAE3] pt-4 text-xs text-[#6B776D]">
               <span>Belum menerima ID Member dari pengurus?</span>
               <button
                 type="button"
@@ -325,7 +325,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({
         </div>
       </main>
 
-      <footer className="border-t border-[#E3EAE3] bg-white py-4 text-center text-xs text-[#6B776D]">
+      <footer className="border-t border-[#E3EAE3] bg-white px-4 py-4 text-center text-xs text-[#6B776D]">
         © 2026 BELAJAR KHOT — Sistem Manajemen Keanggotaan & Portal Member Digital (Zona Waktu WIB).
       </footer>
     </div>
@@ -358,26 +358,26 @@ export const HelpLoginPage: React.FC<HelpLoginPageProps> = ({
     : 'https://wa.me/6281110002026';
 
   return (
-    <div className="min-h-screen bg-[#FAFCF9] text-[#26332A]">
+    <div className="min-h-screen bg-[#FAFCF9] text-[#26332A] overflow-x-hidden">
       <header className="border-b border-[#E3EAE3] bg-white">
-        <div className="mx-auto flex max-w-4xl items-center justify-between px-4 py-4 sm:px-6">
-          <div className="flex items-center gap-3">
+        <div className="mx-auto flex max-w-4xl items-center justify-between gap-2 px-4 py-3.5 sm:px-6 sm:py-4">
+          <div className="flex items-center gap-2.5 min-w-0">
             <BrandLogo size="sm" />
             <button
               type="button"
               onClick={() => onNavigate('/login')}
-              className="inline-flex items-center gap-2 text-sm font-semibold text-[#315B43] hover:underline cursor-pointer"
+              className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-[#315B43] hover:underline cursor-pointer truncate"
             >
-              <ArrowLeft className="h-4 w-4" />
-              Kembali ke Halaman Login
+              <ArrowLeft className="h-4 w-4 shrink-0" />
+              <span className="truncate">Kembali ke Halaman Login</span>
             </button>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 shrink-0">
             {onToggleTheme && (
               <button
                 type="button"
                 onClick={onToggleTheme}
-                className="inline-flex items-center gap-1.5 rounded-lg border border-[#E3EAE3] bg-[#F3F7F2] px-3 py-1.5 text-xs font-semibold text-[#26332A] cursor-pointer"
+                className="inline-flex items-center gap-1.5 rounded-lg border border-[#E3EAE3] bg-[#F3F7F2] px-2.5 py-1.5 text-xs font-semibold text-[#26332A] cursor-pointer"
               >
                 {themeMode === 'dark' ? (
                   <>
@@ -392,24 +392,26 @@ export const HelpLoginPage: React.FC<HelpLoginPageProps> = ({
                 )}
               </button>
             )}
-            <span className="text-xs font-semibold text-[#6B776D]">PUSAT BANTUAN RESMI</span>
+            <span className="hidden md:inline-block text-xs font-semibold text-[#6B776D]">
+              PUSAT BANTUAN RESMI
+            </span>
           </div>
         </div>
       </header>
 
-      <main className="mx-auto max-w-4xl px-4 py-8 sm:px-6">
-        <div className="rounded-2xl border border-[#E3EAE3] bg-white p-6 sm:p-8">
-          <h1 className="text-2xl font-bold text-[#26332A]">
+      <main className="mx-auto max-w-4xl px-4 py-6 sm:px-6 sm:py-8">
+        <div className="rounded-2xl border border-[#E3EAE3] bg-white p-5 sm:p-8">
+          <h1 className="text-xl sm:text-2xl font-bold text-[#26332A]">
             Bantuan Login & Informasi Keanggotaan Belajar Khot
           </h1>
-          <p className="mt-2 text-sm text-[#6B776D]">
+          <p className="mt-2 text-xs sm:text-sm text-[#6B776D]">
             Panduan resmi bagi calon peserta dan member aktif untuk mengakses akun portal serta prosedur pengaturan ulang kata sandi (reset password).
           </p>
 
-          <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <div className="rounded-xl border border-[#E3EAE3] bg-[#F3F7F2] p-5">
+          <div className="mt-5 sm:mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <div className="rounded-xl border border-[#E3EAE3] bg-[#F3F7F2] p-4 sm:p-5">
               <div className="flex items-center gap-2 text-sm font-bold text-[#315B43]">
-                <KeyRound className="h-4 w-4" />
+                <KeyRound className="h-4 w-4 shrink-0" />
                 <span>1. Cara Mendapatkan ID & Password</span>
               </div>
               <p className="mt-2 text-xs text-[#26332A] leading-relaxed">
@@ -418,9 +420,9 @@ export const HelpLoginPage: React.FC<HelpLoginPageProps> = ({
               </p>
             </div>
 
-            <div className="rounded-xl border border-[#E3EAE3] bg-[#F3F7F2] p-5">
+            <div className="rounded-xl border border-[#E3EAE3] bg-[#F3F7F2] p-4 sm:p-5">
               <div className="flex items-center gap-2 text-sm font-bold text-[#315B43]">
-                <BookOpen className="h-4 w-4" />
+                <BookOpen className="h-4 w-4 shrink-0" />
                 <span>2. Verifikasi Persyaratan Buku Khot</span>
               </div>
               <p className="mt-2 text-xs text-[#26332A] leading-relaxed">
@@ -430,8 +432,8 @@ export const HelpLoginPage: React.FC<HelpLoginPageProps> = ({
             </div>
           </div>
 
-          <div className="mt-6 rounded-xl border border-[#E3EAE3] p-5">
-            <h2 className="text-base font-bold text-[#26332A]">
+          <div className="mt-5 sm:mt-6 rounded-xl border border-[#E3EAE3] p-4 sm:p-5">
+            <h2 className="text-sm sm:text-base font-bold text-[#26332A]">
               Ketentuan Keanggotaan Lembaga Belajar Khot
             </h2>
             <ul className="mt-3 space-y-2 text-xs sm:text-sm text-[#6B776D]">
@@ -450,7 +452,7 @@ export const HelpLoginPage: React.FC<HelpLoginPageProps> = ({
             </ul>
           </div>
 
-          <div className="mt-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 rounded-xl bg-[#E8EFE7] p-5">
+          <div className="mt-5 sm:mt-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 rounded-xl bg-[#E8EFE7] p-4 sm:p-5">
             <div>
               <div className="text-sm font-bold text-[#26332A]">
                 Lupa Password atau Kendala Akses Akun?
@@ -463,7 +465,7 @@ export const HelpLoginPage: React.FC<HelpLoginPageProps> = ({
               href={waUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-2 rounded-lg bg-[#315B43] px-5 py-2.5 text-xs font-semibold text-white hover:bg-[#264734] transition-colors whitespace-nowrap"
+              className="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-lg bg-[#315B43] px-5 py-2.5 text-xs font-semibold text-white hover:bg-[#264734] transition-colors whitespace-nowrap"
             >
               <MessageCircle className="h-4 w-4" />
               Hubungi Admin via WhatsApp
@@ -521,26 +523,26 @@ export const VerifyMemberPage: React.FC<VerifyMemberPageProps> = ({
   };
 
   return (
-    <div className="min-h-screen bg-[#FAFCF9] text-[#26332A]">
+    <div className="min-h-screen bg-[#FAFCF9] text-[#26332A] overflow-x-hidden">
       <header className="border-b border-[#E3EAE3] bg-white">
-        <div className="mx-auto flex max-w-3xl items-center justify-between px-4 py-4 sm:px-6">
-          <div className="flex items-center gap-3">
+        <div className="mx-auto flex max-w-3xl items-center justify-between gap-2 px-4 py-3.5 sm:px-6 sm:py-4">
+          <div className="flex items-center gap-2.5 min-w-0">
             <BrandLogo size="sm" />
             <button
               type="button"
               onClick={() => onNavigate('/login')}
-              className="inline-flex items-center gap-2 text-sm font-semibold text-[#315B43] hover:underline cursor-pointer"
+              className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-[#315B43] hover:underline cursor-pointer truncate"
             >
-              <ArrowLeft className="h-4 w-4" />
-              Ke Portal Login
+              <ArrowLeft className="h-4 w-4 shrink-0" />
+              <span className="truncate">Ke Portal Login</span>
             </button>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 shrink-0">
             {onToggleTheme && (
               <button
                 type="button"
                 onClick={onToggleTheme}
-                className="inline-flex items-center gap-1.5 rounded-lg border border-[#E3EAE3] bg-[#F3F7F2] px-3 py-1.5 text-xs font-semibold text-[#26332A] cursor-pointer"
+                className="inline-flex items-center gap-1.5 rounded-lg border border-[#E3EAE3] bg-[#F3F7F2] px-2.5 py-1.5 text-xs font-semibold text-[#26332A] cursor-pointer"
               >
                 {themeMode === 'dark' ? (
                   <>
@@ -555,31 +557,33 @@ export const VerifyMemberPage: React.FC<VerifyMemberPageProps> = ({
                 )}
               </button>
             )}
-            <span className="text-xs font-semibold uppercase tracking-wider text-[#6B776D]">
+            <span className="hidden md:inline-block text-xs font-semibold uppercase tracking-wider text-[#6B776D]">
               VERIFIKASI KEASLIAN KARTU MEMBER
             </span>
           </div>
         </div>
       </header>
 
-      <main className="mx-auto max-w-3xl px-4 py-8 sm:px-6">
+      <main className="mx-auto max-w-3xl px-4 py-6 sm:px-6 sm:py-8">
         {/* Lookup Bar */}
         <form
           onSubmit={handleSearch}
-          className="mb-6 flex items-center gap-2 rounded-xl border border-[#E3EAE3] bg-white p-3 shadow-xs"
+          className="mb-6 flex flex-col sm:flex-row items-stretch sm:items-center gap-2 rounded-xl border border-[#E3EAE3] bg-white p-3 shadow-xs"
         >
-          <Search className="ml-2 h-4 w-4 text-[#6B776D]" />
-          <input
-            type="text"
-            value={searchId}
-            onChange={(e) => setSearchId(e.target.value)}
-            placeholder="Masukkan Nomor ID Member (contoh: BK-00001, BK-00002, BK-00005)"
-            aria-label="Cari Nomor ID Member"
-            className="h-10 flex-1 bg-transparent px-2 text-sm font-mono font-semibold text-[#26332A] focus:outline-none"
-          />
+          <div className="flex items-center flex-1 min-w-0">
+            <Search className="ml-1.5 h-4 w-4 shrink-0 text-[#6B776D]" />
+            <input
+              type="text"
+              value={searchId}
+              onChange={(e) => setSearchId(e.target.value)}
+              placeholder="Masukkan Nomor ID Member (contoh: BK-00001)"
+              aria-label="Cari Nomor ID Member"
+              className="h-10 min-w-0 flex-1 bg-transparent px-2.5 text-sm font-mono font-semibold text-[#26332A] focus:outline-none"
+            />
+          </div>
           <button
             type="submit"
-            className="h-10 rounded-lg bg-[#315B43] px-4 text-xs font-semibold text-white hover:bg-[#264734] transition-colors cursor-pointer"
+            className="h-10 w-full sm:w-auto rounded-lg bg-[#315B43] px-4 text-xs font-semibold text-white hover:bg-[#264734] transition-colors cursor-pointer"
           >
             Cek Kartu
           </button>
@@ -590,18 +594,18 @@ export const VerifyMemberPage: React.FC<VerifyMemberPageProps> = ({
             Memeriksa keaslian Nomor ID Member di basis data Belajar Khot...
           </div>
         ) : error || !result ? (
-          <div className="rounded-2xl border border-[#B44238]/30 bg-[#FCEEEF] p-8 text-center">
+          <div className="rounded-2xl border border-[#B44238]/30 bg-[#FCEEEF] p-6 sm:p-8 text-center">
             <ShieldAlert className="mx-auto h-12 w-12 text-[#B44238]" />
-            <h1 className="mt-3 text-xl font-bold text-[#B44238]">
+            <h1 className="mt-3 text-lg sm:text-xl font-bold text-[#B44238]">
               Kartu Member Tidak Terdaftar
             </h1>
-            <p className="mt-1 text-sm text-[#26332A]">{error}</p>
+            <p className="mt-1 text-xs sm:text-sm text-[#26332A]">{error}</p>
           </div>
         ) : (
           <div className="overflow-hidden rounded-2xl border border-[#E3EAE3] bg-white shadow-xs">
             {/* Status Banner */}
             <div
-              className={`p-6 text-white ${
+              className={`p-4 sm:p-6 text-white ${
                 result.cardDisplayStatus === 'MEMBER AKTIF'
                   ? 'bg-[#315B43]'
                   : result.cardDisplayStatus === 'Menunggu Verifikasi'
@@ -609,20 +613,20 @@ export const VerifyMemberPage: React.FC<VerifyMemberPageProps> = ({
                   : 'bg-[#B44238]'
               }`}
             >
-              <div className="flex flex-wrap items-center justify-between gap-4">
-                <div className="flex items-center gap-3">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div className="flex items-center gap-3 min-w-0">
                   {result.cardDisplayStatus === 'MEMBER AKTIF' ? (
-                    <ShieldCheck className="h-10 w-10 text-[#A3D1B3]" />
+                    <ShieldCheck className="h-8 w-8 sm:h-10 sm:w-10 text-[#A3D1B3] shrink-0" />
                   ) : result.cardDisplayStatus === 'Menunggu Verifikasi' ? (
-                    <Clock className="h-10 w-10 text-white" />
+                    <Clock className="h-8 w-8 sm:h-10 sm:w-10 text-white shrink-0" />
                   ) : (
-                    <ShieldAlert className="h-10 w-10 text-white" />
+                    <ShieldAlert className="h-8 w-8 sm:h-10 sm:w-10 text-white shrink-0" />
                   )}
-                  <div>
-                    <div className="text-xs font-semibold uppercase tracking-wider text-white/80">
+                  <div className="min-w-0">
+                    <div className="text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-white/80 truncate">
                       HASIL VERIFIKASI QR RESMI • {result.institutionName}
                     </div>
-                    <h1 className="text-xl sm:text-2xl font-bold">
+                    <h1 className="text-base sm:text-2xl font-bold break-words">
                       {result.cardDisplayStatus === 'MEMBER AKTIF'
                         ? 'KARTU MEMBER AKTIF & TERVERIFIKASI'
                         : result.cardDisplayStatus === 'Menunggu Verifikasi'
@@ -631,18 +635,20 @@ export const VerifyMemberPage: React.FC<VerifyMemberPageProps> = ({
                     </h1>
                   </div>
                 </div>
-                <span className="rounded-full bg-white/20 px-3.5 py-1 font-mono text-sm font-bold text-white tabular-nums">
+                <span className="rounded-full bg-white/20 px-3 py-1 font-mono text-xs sm:text-sm font-bold text-white tabular-nums">
                   {result.memberId}
                 </span>
               </div>
             </div>
 
             {/* Public Minimum Information (No PII leak) */}
-            <div className="p-6 sm:p-8">
-              <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+            <div className="p-5 sm:p-8">
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div className="rounded-xl bg-[#F3F7F2] p-4">
                   <div className="text-xs font-medium text-[#6B776D]">Nama Lengkap Peserta</div>
-                  <div className="mt-1 text-base font-bold text-[#26332A]">{result.fullName}</div>
+                  <div className="mt-1 text-base font-bold text-[#26332A] break-words">
+                    {result.fullName}
+                  </div>
                 </div>
                 <div className="rounded-xl bg-[#F3F7F2] p-4">
                   <div className="text-xs font-medium text-[#6B776D]">Nomor ID Member</div>

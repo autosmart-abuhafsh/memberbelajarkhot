@@ -519,7 +519,7 @@ export const DigitalMemberCard: React.FC<DigitalMemberCardProps> = ({
                 >
                   Nama Lengkap Peserta
                 </div>
-                <div className="mt-0.5 truncate text-lg sm:text-2xl font-bold tracking-tight text-white">
+                <div className="mt-0.5 break-words text-base sm:text-2xl font-bold tracking-tight text-white">
                   {user.fullName}
                 </div>
 
@@ -554,7 +554,7 @@ export const DigitalMemberCard: React.FC<DigitalMemberCardProps> = ({
             {/* QR Code Verification Block */}
             <div className="flex flex-row sm:flex-col items-center sm:items-end justify-between sm:justify-center gap-3 sm:col-span-4 border-t border-white/10 pt-4 sm:border-t-0 sm:pt-0">
               <div
-                className="rounded-xl bg-white p-2.5 shadow-sm"
+                className="rounded-xl bg-white p-2.5 shadow-sm shrink-0"
                 title={`QR Verifikasi Resmi: ${member.memberId}`}
               >
                 <svg
@@ -584,7 +584,7 @@ export const DigitalMemberCard: React.FC<DigitalMemberCardProps> = ({
                   style={{ color: memberTheme.accentColor }}
                   className="inline-flex items-center gap-1 text-[11px] font-semibold"
                 >
-                  <QrCode className="h-3 w-3" />
+                  <QrCode className="h-3 w-3 shrink-0" />
                   QR VERIFIKASI RESMI
                 </div>
                 <div className="text-[11px] text-white/75 font-mono tabular-nums">
@@ -595,11 +595,11 @@ export const DigitalMemberCard: React.FC<DigitalMemberCardProps> = ({
           </div>
 
           {/* Card Footer Metadata Bar */}
-          <div className="relative z-10 mt-6 grid grid-cols-2 gap-3 border-t border-white/15 pt-4 sm:grid-cols-4">
+          <div className="relative z-10 mt-5 sm:mt-6 grid grid-cols-2 gap-3 border-t border-white/15 pt-4 sm:grid-cols-4">
             <div>
               <div
                 style={{ color: memberTheme.accentColor }}
-                className="text-[11px] font-medium uppercase tracking-wider"
+                className="text-[10px] sm:text-[11px] font-medium uppercase tracking-wider"
               >
                 Program Khot
               </div>
@@ -610,7 +610,7 @@ export const DigitalMemberCard: React.FC<DigitalMemberCardProps> = ({
             <div>
               <div
                 style={{ color: memberTheme.accentColor }}
-                className="text-[11px] font-medium uppercase tracking-wider"
+                className="text-[10px] sm:text-[11px] font-medium uppercase tracking-wider"
               >
                 Metode Belajar
               </div>
@@ -621,7 +621,7 @@ export const DigitalMemberCard: React.FC<DigitalMemberCardProps> = ({
             <div>
               <div
                 style={{ color: memberTheme.accentColor }}
-                className="text-[11px] font-medium uppercase tracking-wider"
+                className="text-[10px] sm:text-[11px] font-medium uppercase tracking-wider"
               >
                 Tanggal Bergabung
               </div>
@@ -632,7 +632,7 @@ export const DigitalMemberCard: React.FC<DigitalMemberCardProps> = ({
             <div>
               <div
                 style={{ color: memberTheme.accentColor }}
-                className="text-[11px] font-medium uppercase tracking-wider"
+                className="text-[10px] sm:text-[11px] font-medium uppercase tracking-wider"
               >
                 Persyaratan Buku
               </div>
@@ -697,52 +697,56 @@ export const DigitalMemberCard: React.FC<DigitalMemberCardProps> = ({
 
       {/* Card Action Controls: PDF, Printer, PNG, Verify */}
       {!compact && (
-        <div className="no-print mt-4 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-[#E3EAE3] bg-white p-3.5">
+        <div className="no-print mt-4 flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center justify-between gap-3 rounded-xl border border-[#E3EAE3] bg-white p-3.5">
           <div className="flex items-center gap-2 text-xs text-[#6B776D]">
-            <ShieldCheck className="h-4 w-4 text-[#315B43]" />
+            <ShieldCheck className="h-4 w-4 shrink-0 text-[#315B43]" />
             <span>
               Siap dicetak dalam format <strong>PDF (Depan & Belakang)</strong>, gambar <strong>PNG</strong>, atau langsung ke <strong>Printer</strong>.
             </span>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2">
+          <div className="grid grid-cols-2 sm:flex sm:flex-wrap items-center gap-2">
             <button
               type="button"
               onClick={handleDownloadPdf}
               disabled={isDownloadingPdf}
-              className="inline-flex items-center gap-1.5 rounded-lg bg-[#315B43] px-4 py-2 text-xs font-semibold text-white hover:bg-[#264734] transition-colors cursor-pointer disabled:opacity-50"
+              className="inline-flex justify-center items-center gap-1.5 rounded-lg bg-[#315B43] px-3 py-2 text-xs font-semibold text-white hover:bg-[#264734] transition-colors cursor-pointer disabled:opacity-50"
             >
-              <FileDown className="h-4 w-4" />
-              {isDownloadingPdf ? 'Menyiapkan PDF...' : 'Unduh Kartu (PDF)'}
+              <FileDown className="h-4 w-4 shrink-0" />
+              <span className="truncate">
+                {isDownloadingPdf ? 'Menyiapkan PDF...' : 'Unduh Kartu (PDF)'}
+              </span>
             </button>
 
             <button
               type="button"
               onClick={handlePrint}
-              className="inline-flex items-center gap-1.5 rounded-lg bg-[#E8EFE7] px-3.5 py-2 text-xs font-semibold text-[#315B43] hover:bg-[#DCE6DA] transition-colors cursor-pointer"
+              className="inline-flex justify-center items-center gap-1.5 rounded-lg bg-[#E8EFE7] px-3 py-2 text-xs font-semibold text-[#315B43] hover:bg-[#DCE6DA] transition-colors cursor-pointer"
             >
-              <Printer className="h-4 w-4" />
-              Cetak ke Printer
+              <Printer className="h-4 w-4 shrink-0" />
+              <span className="truncate">Cetak Printer</span>
             </button>
 
             <button
               type="button"
               onClick={handleDownloadPng}
               disabled={isDownloadingPng}
-              className="inline-flex items-center gap-1.5 rounded-lg border border-[#C7D7C8] bg-white px-3.5 py-2 text-xs font-semibold text-[#315B43] hover:bg-[#F3F7F2] transition-colors cursor-pointer disabled:opacity-50"
+              className="inline-flex justify-center items-center gap-1.5 rounded-lg border border-[#C7D7C8] bg-white px-3 py-2 text-xs font-semibold text-[#315B43] hover:bg-[#F3F7F2] transition-colors cursor-pointer disabled:opacity-50"
             >
-              <Download className="h-4 w-4" />
-              {isDownloadingPng ? 'Menyiapkan PNG...' : 'Unduh PNG'}
+              <Download className="h-4 w-4 shrink-0" />
+              <span className="truncate">
+                {isDownloadingPng ? 'Menyiapkan PNG...' : 'Unduh PNG'}
+              </span>
             </button>
 
             {onOpenVerify && (
               <button
                 type="button"
                 onClick={() => onOpenVerify(member.memberId)}
-                className="inline-flex items-center gap-1.5 rounded-lg border border-[#E3EAE3] bg-white px-3 py-2 text-xs font-semibold text-[#6B776D] hover:bg-[#F3F7F2] hover:text-[#26332A] transition-colors cursor-pointer"
+                className="inline-flex justify-center items-center gap-1.5 rounded-lg border border-[#E3EAE3] bg-white px-3 py-2 text-xs font-semibold text-[#6B776D] hover:bg-[#F3F7F2] hover:text-[#26332A] transition-colors cursor-pointer"
               >
-                <ExternalLink className="h-3.5 w-3.5" />
-                Uji QR
+                <ExternalLink className="h-3.5 w-3.5 shrink-0" />
+                <span className="truncate">Uji QR</span>
               </button>
             )}
           </div>
