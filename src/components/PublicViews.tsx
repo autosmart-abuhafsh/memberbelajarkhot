@@ -42,17 +42,6 @@ export const LoginPage: React.FC<LoginPageProps> = ({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [verifyLookupId, setVerifyLookupId] = useState('BK-00001');
-  const [demoModeEnabled, setDemoModeEnabled] = useState(true);
-
-  useEffect(() => {
-    apiRequest<{ demoModeEnabled?: boolean }>('/api/public/help-info')
-      .then((res) => {
-        if (typeof res?.demoModeEnabled === 'boolean') {
-          setDemoModeEnabled(res.demoModeEnabled);
-        }
-      })
-      .catch(() => {});
-  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -78,16 +67,14 @@ export const LoginPage: React.FC<LoginPageProps> = ({
       }
       onLoginSuccess(data);
     } catch (err: any) {
-      setError(err.message || 'Gagal melakukan autentikasi.');
+      const rawMsg =
+        typeof err?.message === 'string' && err.message !== '[object Object]'
+          ? err.message
+          : 'Gagal melakukan autentikasi. Periksa kembali ID Pengguna dan Password Anda.';
+      setError(rawMsg);
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleQuickDemoFill = (demoId: string, demoPass: string) => {
-    setIdentifier(demoId);
-    setPassword(demoPass);
-    setError(null);
   };
 
   return (
@@ -321,66 +308,6 @@ export const LoginPage: React.FC<LoginPageProps> = ({
                 {loading ? 'Memverifikasi Akun...' : 'Masuk ke Portal Belajar Khot'}
               </button>
             </form>
-
-            {/* Demo Mode Account Selector (PRD Section 23) */}
-            <div className="mt-6 rounded-xl border border-[#E3EAE3] bg-[#F3F7F2] p-4">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-semibold text-[#26332A]">
-                  {demoModeEnabled
-                    ? 'Mode Pengujian & Demonstrasi (Klik untuk Isi Otomatis)'
-                    : 'Mode Aplikasi Bersih / Kosongan (Siap Produksi)'}
-                </span>
-                <span className="text-[11px] font-medium text-[#6B776D]">
-                  {demoModeEnabled ? 'Data Demo Aktif' : 'Demo Nonaktif'}
-                </span>
-              </div>
-              {demoModeEnabled ? (
-                <>
-                  <p className="mt-1 text-xs text-[#6B776D]">
-                    Gunakan akun contoh berikut untuk menguji alur Role Admin, Member Aktif, maupun Calon Peserta:
-                  </p>
-                  <div className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-3">
-                    <button
-                      type="button"
-                      onClick={() => handleQuickDemoFill('admin', 'AdminKhot2026!')}
-                      className="flex flex-col items-start rounded-lg border border-[#C7D7C8] bg-white px-3 py-2 text-left hover:border-[#315B43] transition-colors cursor-pointer"
-                    >
-                      <span className="text-xs font-bold text-[#315B43]">1. Akun Admin</span>
-                      <span className="font-mono text-[11px] text-[#6B776D]">ID: admin</span>
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => handleQuickDemoFill('BK-00001', 'MemberKhot123!')}
-                      className="flex flex-col items-start rounded-lg border border-[#C7D7C8] bg-white px-3 py-2 text-left hover:border-[#315B43] transition-colors cursor-pointer"
-                    >
-                      <span className="text-xs font-bold text-[#315B43]">2. Member Aktif</span>
-                      <span className="font-mono text-[11px] text-[#6B776D]">ID: BK-00001</span>
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => handleQuickDemoFill('BK-00002', 'MemberKhot123!')}
-                      className="flex flex-col items-start rounded-lg border border-[#C7D7C8] bg-white px-3 py-2 text-left hover:border-[#315B43] transition-colors cursor-pointer"
-                    >
-                      <span className="text-xs font-bold text-[#A06A18]">3. Menunggu Verifikasi</span>
-                      <span className="font-mono text-[11px] text-[#6B776D]">ID: BK-00002</span>
-                    </button>
-                  </div>
-                </>
-              ) : (
-                <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
-                  <p className="text-xs text-[#6B776D]">
-                    Data demonstrasi sedang dimatikan. Masuk sebagai Admin Utama untuk mulai menginput data peserta baru atau menghidupkan kembali Mode Demo.
-                  </p>
-                  <button
-                    type="button"
-                    onClick={() => handleQuickDemoFill('admin', 'AdminKhot2026!')}
-                    className="rounded-lg border border-[#C7D7C8] bg-white px-3 py-1.5 text-xs font-bold text-[#315B43] hover:border-[#315B43] cursor-pointer"
-                  >
-                    Isi Akun Admin Utama
-                  </button>
-                </div>
-              )}
-            </div>
 
             {/* Help Footer */}
             <div className="mt-6 flex flex-wrap items-center justify-between gap-2 border-t border-[#E3EAE3] pt-4 text-xs text-[#6B776D]">

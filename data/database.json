@@ -14,7 +14,7 @@
       "accountStatus": "Aktif",
       "createdAt": "2026-01-01T00:00:00.000Z",
       "updatedAt": "2026-11-10T08:00:00.000Z",
-      "lastLoginAt": "2026-11-11T15:23:31.653Z",
+      "lastLoginAt": "2026-11-12T01:32:37.586Z",
       "isDemo": false
     },
     {
@@ -481,6 +481,15 @@
   "readReceipts": [],
   "activityLogs": [
     {
+      "id": "log-1794447157586-hkmh",
+      "actorUid": "usr-admin-01",
+      "actorName": "Ustadz H. Zulkifli Hasan",
+      "activityType": "LOGIN",
+      "description": "Pengguna ADMIN-01 berhasil masuk ke portal.",
+      "targetId": "ADMIN-01",
+      "createdAt": "2026-11-12T01:32:37.586Z"
+    },
+    {
       "id": "log-1794410611653-ec8a",
       "actorUid": "usr-admin-01",
       "actorName": "Ustadz H. Zulkifli Hasan",
@@ -591,6 +600,11 @@
       "token": "bkh1.eyJ1aWQiOiJ1c3ItYWRtaW4tMDEiLCJtZW1iZXJJZCI6IkFETUlOLTAxIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzk0NDEwNjExNjUzfQ.4k_wD0OydfttYI6E6ldpDiNCQr0152RxZt8jIA_uykY",
       "uid": "usr-admin-01",
       "createdAt": "2026-11-11T15:23:31.653Z"
+    },
+    {
+      "token": "bkh1.eyJ1aWQiOiJ1c3ItYWRtaW4tMDEiLCJtZW1iZXJJZCI6IkFETUlOLTAxIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzk0NDQ3MTU3NTg2fQ.SQexogedmKBKisPzHmARZmIlzWmRgh2ofiWJuLMnkVQ",
+      "uid": "usr-admin-01",
+      "createdAt": "2026-11-12T01:32:37.586Z"
     }
   ]
 }
