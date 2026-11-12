@@ -13,17 +13,22 @@ import {
   Users,
   UserX,
   Wifi,
+  ShieldCheck,
+  KeyRound,
 } from 'lucide-react';
 import type {
   ActivityLogRecord,
   AdminDashboardStats,
   AnnouncementRecord,
   CombinedMemberProfile,
+  UserRecord,
 } from '../types';
 import { formatDateID } from '../utils/domainLogic';
 
 interface AdminDashboardHomeProps {
   stats: AdminDashboardStats;
+  admins?: UserRecord[];
+  currentUser?: UserRecord | null;
   recentMembers: CombinedMemberProfile[];
   recentAnnouncements: AnnouncementRecord[];
   recentLogs: ActivityLogRecord[];
@@ -34,6 +39,8 @@ interface AdminDashboardHomeProps {
 
 export const AdminDashboardHome: React.FC<AdminDashboardHomeProps> = ({
   stats,
+  admins = [],
+  currentUser,
   recentMembers,
   recentAnnouncements,
   recentLogs,
@@ -258,6 +265,130 @@ export const AdminDashboardHome: React.FC<AdminDashboardHomeProps> = ({
                   </div>
                 </div>
               </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Pengelolaan Admin Utama & Anggota Monitoring Section */}
+      <div className="rounded-2xl border border-[#315B43]/30 bg-white p-5 sm:p-6 shadow-xs">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between border-b border-[#E3EAE3] pb-4">
+          <div className="flex items-start gap-3">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#315B43] text-white">
+              <ShieldCheck className="h-5 w-5" />
+            </div>
+            <div>
+              <div className="flex flex-wrap items-center gap-2">
+                <h2 className="text-base font-bold text-[#26332A]">
+                  Pengelolaan Admin Utama & Anggota Monitoring
+                </h2>
+                <span className="rounded-md bg-[#EBF5EE] px-2 py-0.5 text-[11px] font-bold text-[#315B43]">
+                  {admins.length || 1} Akun Pengurus & Monitoring
+                </span>
+              </div>
+              <p className="mt-0.5 text-xs text-[#6B776D]">
+                Sebagai Pemilik Portal, Anda dapat mengubah profil/kredensial <strong>Admin Utama</strong> serta mendaftarkan <strong>Anggota Monitoring</strong> dan memberikan <strong>ID Pengguna & Password</strong> khusus.
+              </p>
+            </div>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-2 shrink-0">
+            <button
+              type="button"
+              onClick={() => onNavigate('/admin/accounts')}
+              className="inline-flex items-center gap-1.5 rounded-lg border border-[#315B43] bg-[#F3F7F2] px-3.5 py-2 text-xs font-semibold text-[#315B43] hover:bg-[#E8EFE7] transition-colors cursor-pointer"
+            >
+              <KeyRound className="h-3.5 w-3.5" />
+              Kelola Admin Utama & Beri ID Password
+            </button>
+            <button
+              type="button"
+              onClick={() => onNavigate('/admin/accounts')}
+              className="inline-flex items-center gap-1.5 rounded-lg bg-[#315B43] px-3.5 py-2 text-xs font-semibold text-white hover:bg-[#264734] transition-colors cursor-pointer"
+            >
+              <UserPlus className="h-3.5 w-3.5" />
+              + Daftarkan Anggota Monitoring
+            </button>
+          </div>
+        </div>
+
+        <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {(admins.length > 0 ? admins : currentUser ? [currentUser] : []).map((adm) => {
+            const roleBadge =
+              adm.adminRole ||
+              (adm.memberId.toUpperCase().startsWith('MON')
+                ? 'Anggota Monitoring'
+                : 'Admin Utama');
+            const isMainOwner = roleBadge === 'Admin Utama';
+            return (
+              <div
+                key={adm.uid}
+                className={`flex flex-col justify-between rounded-xl border p-4 ${
+                  isMainOwner
+                    ? 'border-[#315B43]/40 bg-[#F3F7F2]'
+                    : 'border-[#E3EAE3] bg-white'
+                }`}
+              >
+                <div>
+                  <div className="flex items-center justify-between gap-2">
+                    <span
+                      className={`inline-flex items-center rounded-md px-2 py-0.5 text-[11px] font-bold ${
+                        isMainOwner
+                          ? 'bg-[#315B43] text-white'
+                          : 'bg-[#FCF5E8] text-[#A06A18]'
+                      }`}
+                    >
+                      {roleBadge}
+                    </span>
+                    <span
+                      className={`text-[11px] font-semibold ${
+                        adm.accountStatus === 'Aktif'
+                          ? 'text-[#3B7551]'
+                          : 'text-[#B44238]'
+                      }`}
+                    >
+                      ● {adm.accountStatus}
+                    </span>
+                  </div>
+                  <div className="mt-2.5 text-sm font-bold text-[#26332A]">
+                    {adm.fullName}
+                  </div>
+                  <div className="mt-1 space-y-0.5 text-[11px] text-[#6B776D]">
+                    <div>
+                      ID / Kode:{' '}
+                      <strong className="font-mono text-[#315B43]">
+                        {adm.memberId}
+                      </strong>{' '}
+                      · Username Login:{' '}
+                      <strong className="font-mono text-[#26332A]">
+                        {adm.username}
+                      </strong>
+                    </div>
+                    <div>
+                      Password:{' '}
+                      <strong className="font-mono text-[#26332A]">
+                        {adm.plainPasswordHint || 'AdminKhot2026!'}
+                      </strong>
+                    </div>
+                    {adm.notes && (
+                      <div className="text-[11px] italic text-[#6B776D] truncate">
+                        {adm.notes}
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                <div className="mt-3 flex items-center justify-between border-t border-[#E3EAE3] pt-2.5">
+                  <span className="text-[11px] text-[#6B776D]">{adm.phone}</span>
+                  <button
+                    type="button"
+                    onClick={() => onNavigate('/admin/accounts')}
+                    className="text-xs font-semibold text-[#315B43] hover:underline cursor-pointer"
+                  >
+                    Ubah ID / Password →
+                  </button>
+                </div>
+              </div>
             );
           })}
         </div>

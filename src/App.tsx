@@ -109,6 +109,7 @@ export default function App() {
     bookVerifiedCount: 0,
   });
   const [profiles, setProfiles] = useState<CombinedMemberProfile[]>([]);
+  const [admins, setAdmins] = useState<UserRecord[]>([]);
   const [announcements, setAnnouncements] = useState<AnnouncementRecord[]>([]);
   const [readReceipts, setReadReceipts] = useState<ReadReceiptRecord[]>([]);
   const [readAnnouncementIds, setReadAnnouncementIds] = useState<string[]>([]);
@@ -187,7 +188,7 @@ export default function App() {
           logsRes,
         ] = await Promise.all([
           apiRequest<any>('/api/dashboard'),
-          apiRequest<{ profiles: CombinedMemberProfile[] }>('/api/members'),
+          apiRequest<{ profiles: CombinedMemberProfile[]; admins?: UserRecord[] }>('/api/members'),
           apiRequest<{
             announcements: AnnouncementRecord[];
             readReceipts: ReadReceiptRecord[];
@@ -202,6 +203,14 @@ export default function App() {
         if (dashRes?.stats) setAdminStats(dashRes.stats);
         if (dashRes?.settings) setSettings(dashRes.settings);
         setProfiles(Array.isArray(membersRes?.profiles) ? membersRes.profiles : []);
+        if (Array.isArray(membersRes?.admins)) {
+          setAdmins(membersRes.admins);
+          setCurrentUser((prev) => {
+            if (!prev) return prev;
+            const updatedSelf = membersRes.admins?.find((a) => a.uid === prev.uid);
+            return updatedSelf ? { ...prev, ...updatedSelf } : prev;
+          });
+        }
         setAnnouncements(Array.isArray(annRes?.announcements) ? annRes.announcements : []);
         setReadReceipts(Array.isArray(annRes?.readReceipts) ? annRes.readReceipts : []);
         setInformation(Array.isArray(infoRes?.information) ? infoRes.information : []);
@@ -433,6 +442,8 @@ export default function App() {
         return (
           <AdminMembersView
             profiles={profiles}
+            admins={admins}
+            currentUser={currentUser}
             settings={settings}
             mode="add"
             onRefresh={handleRefresh}
@@ -446,6 +457,8 @@ export default function App() {
         return (
           <AdminMembersView
             profiles={profiles}
+            admins={admins}
+            currentUser={currentUser}
             settings={settings}
             mode="members"
             selectedMemberIdParam={memId}
@@ -459,6 +472,8 @@ export default function App() {
         return (
           <AdminMembersView
             profiles={profiles}
+            admins={admins}
+            currentUser={currentUser}
             settings={settings}
             mode="members"
             onRefresh={handleRefresh}
@@ -471,6 +486,8 @@ export default function App() {
         return (
           <AdminMembersView
             profiles={profiles}
+            admins={admins}
+            currentUser={currentUser}
             settings={settings}
             mode="accounts"
             onRefresh={handleRefresh}
@@ -570,6 +587,8 @@ export default function App() {
       return (
         <AdminDashboardHome
           stats={adminStats}
+          admins={admins}
+          currentUser={currentUser}
           recentMembers={profiles.slice(0, 5)}
           recentAnnouncements={announcements.slice(0, 4)}
           recentLogs={activityLogs.slice(0, 6)}
@@ -697,8 +716,20 @@ export default function App() {
               {currentUser.fullName}
             </div>
             <div className="font-mono text-[11px] text-[#315B43] font-semibold">
-              {currentUser.memberId} · {currentUser.role === 'admin' ? 'Admin' : 'Member'}
+              {currentUser.memberId} ·{' '}
+              {currentUser.role === 'admin'
+                ? currentUser.adminRole || 'Admin Utama'
+                : 'Member'}
             </div>
+            {currentUser.role === 'admin' && (
+              <button
+                type="button"
+                onClick={() => navigate('/admin/accounts')}
+                className="mt-2 w-full rounded-lg border border-[#315B43]/30 bg-white px-2.5 py-1.5 text-[11px] font-semibold text-[#315B43] hover:bg-[#EBF5EE] transition-colors cursor-pointer"
+              >
+                Kelola Admin Utama & Monitoring
+              </button>
+            )}
           </div>
           <button
             type="button"

@@ -10,6 +10,7 @@ import {
 import type {
   AccountStatus,
   ActivityLogRecord,
+  AdminRoleType,
   AnnouncementRecord,
   BookPurchaseStatus,
   ClassRecord,
@@ -71,8 +72,10 @@ interface FallbackDb {
 
 function createInitialFallbackDb(): FallbackDb {
   const adminUid = 'usr-admin-01';
+  const monitoringUid = 'usr-mon-01';
   const passwords: Record<string, string> = {
     [adminUid]: 'AdminKhot2026!',
+    [monitoringUid]: 'Monitoring2026!',
   };
 
   const demoList: Array<{
@@ -201,11 +204,34 @@ function createInitialFallbackDb(): FallbackDb {
       city: 'Jakarta Selatan',
       photoURL: '',
       role: 'admin',
+      adminRole: 'Admin Utama',
+      notes: 'Pemilik Portal & Administrator Utama Belajar Khot',
+      plainPasswordHint: 'AdminKhot2026!',
       accountStatus: 'Aktif',
       createdAt: '2026-01-01T00:00:00.000Z',
       updatedAt: '2026-11-10T08:00:00.000Z',
       lastLoginAt: '2026-11-10T08:00:00.000Z',
       isDemo: false,
+    },
+    {
+      uid: monitoringUid,
+      memberId: 'MON-01',
+      username: 'monitoring1',
+      fullName: 'Ustadz Salman Al-Hafizh (Monitoring)',
+      gender: 'Laki-laki (Ikhwan)',
+      phone: '081211002026',
+      email: 'monitoring@belajarkhot.id',
+      city: 'Jakarta Selatan',
+      photoURL: '',
+      role: 'admin',
+      adminRole: 'Anggota Monitoring',
+      notes: 'Anggota Tim Monitoring & Evaluasi Tashih (Contoh Data Demo)',
+      plainPasswordHint: 'Monitoring2026!',
+      accountStatus: 'Aktif',
+      createdAt: '2026-08-01T00:00:00.000Z',
+      updatedAt: '2026-11-09T08:00:00.000Z',
+      lastLoginAt: '2026-11-09T08:00:00.000Z',
+      isDemo: true,
     },
   ];
 
@@ -223,6 +249,7 @@ function createInitialFallbackDb(): FallbackDb {
       city: item.city,
       photoURL: '',
       role: 'member',
+      plainPasswordHint: 'MemberKhot123!',
       accountStatus: item.accountStatus,
       createdAt: item.joinDate,
       updatedAt: item.joinDate,
@@ -382,10 +409,14 @@ function ensureFallbackUsersAndPasswords(db: FallbackDb): void {
   }
   let adminUser = db.users.find(
     (u) =>
-      u.role === 'admin' ||
-      u.username.toLowerCase() === 'admin' ||
-      u.memberId.toUpperCase() === 'ADMIN-01'
+      u.role === 'admin' &&
+      (u.adminRole === 'Admin Utama' ||
+        u.username.toLowerCase() === 'admin' ||
+        u.memberId.toUpperCase() === 'ADMIN-01')
   );
+  if (!adminUser) {
+    adminUser = db.users.find((u) => u.role === 'admin');
+  }
   if (!adminUser) {
     adminUser = {
       uid: 'usr-admin-01',
@@ -398,6 +429,9 @@ function ensureFallbackUsersAndPasswords(db: FallbackDb): void {
       city: 'Jakarta Selatan',
       photoURL: '',
       role: 'admin',
+      adminRole: 'Admin Utama',
+      notes: 'Pemilik Portal & Administrator Utama Belajar Khot',
+      plainPasswordHint: 'AdminKhot2026!',
       accountStatus: 'Aktif',
       createdAt: '2026-01-01T00:00:00.000Z',
       updatedAt: new Date().toISOString(),
@@ -408,11 +442,25 @@ function ensureFallbackUsersAndPasswords(db: FallbackDb): void {
   } else {
     adminUser.role = 'admin';
     adminUser.accountStatus = 'Aktif';
+    if (!adminUser.adminRole) {
+      adminUser.adminRole = 'Admin Utama';
+    }
   }
 
   for (const u of db.users) {
+    if (u.role === 'admin' && !u.adminRole) {
+      u.adminRole = u.memberId.toUpperCase().startsWith('MON')
+        ? 'Anggota Monitoring'
+        : 'Admin Utama';
+    }
     if (!db.passwords[u.uid]) {
-      db.passwords[u.uid] = u.role === 'admin' ? 'AdminKhot2026!' : 'MemberKhot123!';
+      const defPass =
+        u.plainPasswordHint ||
+        (u.role === 'admin' ? 'AdminKhot2026!' : 'MemberKhot123!');
+      db.passwords[u.uid] = defPass;
+      if (!u.plainPasswordHint) {
+        u.plainPasswordHint = defPass;
+      }
     }
   }
 }
@@ -654,7 +702,146 @@ async function handleClientFallbackRequest<T>(
     } as unknown as T;
   }
 
+  if (endpoint === '/api/admins' && method === 'GET') {
+    ensureFallbackUsersAndPasswords(db);
+    return {
+      admins: db.users.filter((u) => u.role === 'admin'),
+    } as unknown as T;
+  }
+
+  if (endpoint === '/api/admins' && method === 'POST') {
+    if (!body.fullName || String(body.fullName).trim().length < 2) {
+      throw new Error('Nama lengkap Admin / Anggota Monitoring wajib diisi.');
+    }
+    const validAdminRole: AdminRoleType =
+      body.adminRole === 'Admin Utama' ||
+      body.adminRole === 'Anggota Monitoring' ||
+      body.adminRole === 'Admin Pengurus'
+        ? body.adminRole
+        : 'Anggota Monitoring';
+    const prefix = validAdminRole === 'Anggota Monitoring' ? 'MON' : 'ADMIN';
+    const existingIds = db.users
+      .filter((u) => u.role === 'admin')
+      .map((u) => u.memberId.toUpperCase());
+
+    let nextAdminId = String(body.customId || '').trim().toUpperCase();
+    if (!nextAdminId) {
+      let counter = 1;
+      while (existingIds.includes(`${prefix}-${String(counter).padStart(2, '0')}`)) {
+        counter++;
+      }
+      nextAdminId = `${prefix}-${String(counter).padStart(2, '0')}`;
+    }
+    const desiredUsername = String(body.username || nextAdminId).trim();
+    const conflict = db.users.find(
+      (u) =>
+        u.memberId.toLowerCase() === nextAdminId.toLowerCase() ||
+        u.username.toLowerCase() === desiredUsername.toLowerCase()
+    );
+    if (conflict) {
+      throw new Error(
+        `ID atau Username "${desiredUsername}" sudah digunakan oleh akun ${conflict.fullName}.`
+      );
+    }
+    const rawPass =
+      body.password && String(body.password).trim().length >= 4
+        ? String(body.password).trim()
+        : validAdminRole === 'Anggota Monitoring'
+        ? 'Monitoring2026!'
+        : 'AdminKhot2026!';
+    const nowIso = new Date().toISOString();
+    const newUid = `usr-${nextAdminId.toLowerCase().replace(/[^a-z0-9]/g, '')}-${Date.now()}`;
+    const newAdmin: UserRecord = {
+      uid: newUid,
+      memberId: nextAdminId,
+      username: desiredUsername,
+      fullName: String(body.fullName).trim(),
+      gender: 'Laki-laki (Ikhwan)',
+      phone: String(body.phone || '-').trim(),
+      email: String(body.email || '').trim(),
+      city: String(body.city || 'Indonesia').trim(),
+      photoURL: '',
+      role: 'admin',
+      adminRole: validAdminRole,
+      notes: String(body.notes || '').trim(),
+      plainPasswordHint: rawPass,
+      accountStatus: body.accountStatus === 'Nonaktif' ? 'Nonaktif' : 'Aktif',
+      createdAt: nowIso,
+      updatedAt: nowIso,
+      lastLoginAt: null,
+      isDemo: false,
+    };
+    db.users.unshift(newAdmin);
+    db.passwords[newUid] = rawPass;
+    saveFallbackDb(db);
+    return { admin: newAdmin, generatedPassword: rawPass } as unknown as T;
+  }
+
+  if (endpoint.startsWith('/api/admins/') && method === 'PUT') {
+    const targetUid = endpoint.replace('/api/admins/', '');
+    const targetAdmin = db.users.find((u) => u.uid === targetUid && u.role === 'admin');
+    if (!targetAdmin) throw new Error('Data Admin / Anggota Monitoring tidak ditemukan.');
+    if (body.memberId && String(body.memberId).trim()) {
+      const nextId = String(body.memberId).trim().toUpperCase();
+      const conflict = db.users.find(
+        (u) => u.uid !== targetAdmin.uid && u.memberId.toLowerCase() === nextId.toLowerCase()
+      );
+      if (conflict) throw new Error(`ID "${nextId}" sudah dipakai oleh ${conflict.fullName}.`);
+      targetAdmin.memberId = nextId;
+    }
+    if (body.username && String(body.username).trim()) {
+      const nextUname = String(body.username).trim();
+      const conflict = db.users.find(
+        (u) => u.uid !== targetAdmin.uid && u.username.toLowerCase() === nextUname.toLowerCase()
+      );
+      if (conflict)
+        throw new Error(`Username "${nextUname}" sudah dipakai oleh ${conflict.fullName}.`);
+      targetAdmin.username = nextUname;
+    }
+    if (body.fullName !== undefined && String(body.fullName).trim()) {
+      targetAdmin.fullName = String(body.fullName).trim();
+    }
+    if (body.phone !== undefined) targetAdmin.phone = String(body.phone).trim();
+    if (body.email !== undefined) targetAdmin.email = String(body.email).trim();
+    if (body.city !== undefined) targetAdmin.city = String(body.city).trim();
+    if (
+      body.adminRole === 'Admin Utama' ||
+      body.adminRole === 'Anggota Monitoring' ||
+      body.adminRole === 'Admin Pengurus'
+    ) {
+      targetAdmin.adminRole = body.adminRole;
+    }
+    if (body.notes !== undefined) targetAdmin.notes = String(body.notes).trim();
+    if (body.accountStatus === 'Aktif' || body.accountStatus === 'Nonaktif') {
+      targetAdmin.accountStatus = body.accountStatus;
+    }
+    if (body.newPassword && String(body.newPassword).trim().length >= 4) {
+      const cleanPass = String(body.newPassword).trim();
+      db.passwords[targetAdmin.uid] = cleanPass;
+      targetAdmin.plainPasswordHint = cleanPass;
+    }
+    targetAdmin.updatedAt = new Date().toISOString();
+    saveFallbackDb(db);
+    return { admin: targetAdmin } as unknown as T;
+  }
+
+  if (endpoint.startsWith('/api/admins/') && method === 'DELETE') {
+    const targetUid = endpoint.replace('/api/admins/', '');
+    const allAdmins = db.users.filter((u) => u.role === 'admin');
+    if (allAdmins.length <= 1) {
+      throw new Error('Tidak dapat menghapus satu-satunya akun Admin Utama yang tersisa.');
+    }
+    if (targetUid === currentUser.uid) {
+      throw new Error('Tidak dapat menghapus akun Admin Utama yang sedang Anda gunakan.');
+    }
+    db.users = db.users.filter((u) => u.uid !== targetUid);
+    delete db.passwords[targetUid];
+    saveFallbackDb(db);
+    return { success: true } as unknown as T;
+  }
+
   if (endpoint === '/api/members' && method === 'GET') {
+    ensureFallbackUsersAndPasswords(db);
     return {
       profiles: getProfiles(),
       admins: db.users.filter((u) => u.role === 'admin'),
@@ -674,17 +861,21 @@ async function handleClientFallbackRequest<T>(
     if (!check.valid) {
       throw new Error(Object.values(check.errors)[0]);
     }
-    const nextMemberId = generateNextMemberId(
-      db.members.map((m) => m.memberId),
-      db.settings.memberIdPrefix || 'BK'
-    );
+    const desiredId = String(body.customMemberId || '').trim().toUpperCase();
+    const nextMemberId =
+      desiredId ||
+      generateNextMemberId(
+        db.members.map((m) => m.memberId),
+        db.settings.memberIdPrefix || 'BK'
+      );
+    const desiredUsername = String(body.customUsername || nextMemberId).trim();
     const nowIso = new Date().toISOString();
-    const newUid = `usr-${nextMemberId.toLowerCase()}-${Date.now()}`;
+    const newUid = `usr-${nextMemberId.toLowerCase().replace(/[^a-z0-9]/g, '')}-${Date.now()}`;
     const rawPass = body.initialPassword || 'MemberKhot123!';
     const newUser: UserRecord = {
       uid: newUid,
       memberId: nextMemberId,
-      username: nextMemberId,
+      username: desiredUsername,
       fullName: String(body.fullName).trim(),
       gender: 'Laki-laki (Ikhwan)',
       phone: String(body.phone).trim(),
@@ -692,6 +883,7 @@ async function handleClientFallbackRequest<T>(
       city: String(body.city).trim(),
       photoURL: '',
       role: 'member',
+      plainPasswordHint: rawPass,
       accountStatus: 'Aktif',
       createdAt: nowIso,
       updatedAt: nowIso,
@@ -727,6 +919,14 @@ async function handleClientFallbackRequest<T>(
     const member = db.members.find((m) => m.memberId.toUpperCase() === targetId);
     const user = member ? db.users.find((u) => u.uid === member.uid) : null;
     if (!member || !user) throw new Error('Data peserta tidak ditemukan.');
+    if (body.customUsername && String(body.customUsername).trim()) {
+      user.username = String(body.customUsername).trim();
+    }
+    if (body.newPassword && String(body.newPassword).trim().length >= 4) {
+      const cleanPass = String(body.newPassword).trim();
+      db.passwords[user.uid] = cleanPass;
+      user.plainPasswordHint = cleanPass;
+    }
     if (body.fullName !== undefined) user.fullName = String(body.fullName).trim();
     if (body.phone !== undefined) user.phone = String(body.phone).trim();
     if (body.email !== undefined) user.email = String(body.email).trim();
@@ -758,6 +958,7 @@ async function handleClientFallbackRequest<T>(
     if (!targetUser) throw new Error('Akun tidak ditemukan.');
     const nextPass = body.newPassword || 'Khot2026!';
     db.passwords[uid] = nextPass;
+    targetUser.plainPasswordHint = nextPass;
     saveFallbackDb(db);
     return {
       success: true,

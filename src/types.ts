@@ -1,5 +1,7 @@
 export type UserRole = 'admin' | 'member';
 
+export type AdminRoleType = 'Admin Utama' | 'Anggota Monitoring' | 'Admin Pengurus';
+
 export type AccountStatus = 'Aktif' | 'Nonaktif';
 
 export type ProgramType = 'Khot Naskhi' | "Khot Riq'ah";
@@ -57,7 +59,7 @@ export type InformationCategory =
 
 export interface UserRecord {
   uid: string;
-  memberId: string; // e.g., 'ADMIN-01' or 'BK-00001'
+  memberId: string; // e.g., 'ADMIN-01', 'MON-01', or 'BK-00001'
   username: string;
   fullName: string;
   gender: 'Laki-laki (Ikhwan)';
@@ -66,6 +68,9 @@ export interface UserRecord {
   city: string;
   photoURL: string;
   role: UserRole;
+  adminRole?: AdminRoleType;
+  notes?: string;
+  plainPasswordHint?: string;
   accountStatus: AccountStatus;
   createdAt: string;
   updatedAt: string;

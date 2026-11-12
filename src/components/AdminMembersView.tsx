@@ -1,14 +1,15 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import {
   CheckCircle2,
+  Copy,
   Download,
   Edit3,
   Eye,
   KeyRound,
-  Plus,
   Printer,
   Search,
   ShieldAlert,
+  ShieldCheck,
   Trash2,
   UserCheck,
   UserPlus,
@@ -18,12 +19,14 @@ import {
 import { apiRequest } from '../services/api';
 import type {
   AccountStatus,
+  AdminRoleType,
   BookPurchaseStatus,
   CombinedMemberProfile,
   InstitutionSettings,
   LearningMethod,
   MembershipStatus,
   ProgramType,
+  UserRecord,
 } from '../types';
 import {
   formatDateID,
@@ -34,6 +37,8 @@ import { DigitalMemberCard } from './DigitalMemberCard';
 
 interface AdminMembersViewProps {
   profiles: CombinedMemberProfile[];
+  admins?: UserRecord[];
+  currentUser?: UserRecord | null;
   settings: InstitutionSettings | null;
   mode: 'members' | 'accounts' | 'add';
   selectedMemberIdParam?: string | null;
@@ -44,6 +49,8 @@ interface AdminMembersViewProps {
 
 export const AdminMembersView: React.FC<AdminMembersViewProps> = ({
   profiles,
+  admins = [],
+  currentUser,
   settings,
   mode,
   selectedMemberIdParam,
@@ -59,7 +66,7 @@ export const AdminMembersView: React.FC<AdminMembersViewProps> = ({
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 8;
 
-  // Modals state
+  // Modals state for regular Members
   const [showAddModal, setShowAddModal] = useState(mode === 'add');
   const [editingProfile, setEditingProfile] = useState<CombinedMemberProfile | null>(null);
   const [detailProfile, setDetailProfile] = useState<CombinedMemberProfile | null>(() => {
@@ -72,6 +79,34 @@ export const AdminMembersView: React.FC<AdminMembersViewProps> = ({
     }
     return null;
   });
+
+  // Modals state for Admin Utama & Anggota Monitoring
+  const [showAddAdminModal, setShowAddAdminModal] = useState(false);
+  const [editingAdmin, setEditingAdmin] = useState<UserRecord | null>(null);
+  const [confirmDeleteAdmin, setConfirmDeleteAdmin] = useState<UserRecord | null>(null);
+
+  // Add Admin / Anggota Monitoring Form State
+  const [admFullName, setAdmFullName] = useState('');
+  const [admRoleType, setAdmRoleType] = useState<AdminRoleType>('Anggota Monitoring');
+  const [admCustomId, setAdmCustomId] = useState('');
+  const [admUsername, setAdmUsername] = useState('');
+  const [admPassword, setAdmPassword] = useState('Monitoring2026!');
+  const [admPhone, setAdmPhone] = useState('');
+  const [admEmail, setAdmEmail] = useState('');
+  const [admCity, setAdmCity] = useState('Jakarta Selatan');
+  const [admNotes, setAdmNotes] = useState('');
+
+  // Edit Admin Utama / Anggota Monitoring Form State
+  const [editAdmFullName, setEditAdmFullName] = useState('');
+  const [editAdmRoleType, setEditAdmRoleType] = useState<AdminRoleType>('Admin Utama');
+  const [editAdmMemberId, setEditAdmMemberId] = useState('');
+  const [editAdmUsername, setEditAdmUsername] = useState('');
+  const [editAdmNewPassword, setEditAdmNewPassword] = useState('');
+  const [editAdmPhone, setEditAdmPhone] = useState('');
+  const [editAdmEmail, setEditAdmEmail] = useState('');
+  const [editAdmCity, setEditAdmCity] = useState('');
+  const [editAdmAccountStatus, setEditAdmAccountStatus] = useState<AccountStatus>('Aktif');
+  const [editAdmNotes, setEditAdmNotes] = useState('');
 
   useEffect(() => {
     if (mode === 'add') {
@@ -88,6 +123,7 @@ export const AdminMembersView: React.FC<AdminMembersViewProps> = ({
       setDetailProfile(found);
     }
   }, [selectedMemberIdParam, profiles]);
+
   const [confirmDeleteProfile, setConfirmDeleteProfile] = useState<CombinedMemberProfile | null>(
     null
   );
@@ -97,8 +133,10 @@ export const AdminMembersView: React.FC<AdminMembersViewProps> = ({
     resultPass?: string;
   } | null>(null);
 
-  // Add Participant Form State (PRD Section 8.C)
+  // Add Participant Form State
   const [formFullName, setFormFullName] = useState('');
+  const [formCustomMemberId, setFormCustomMemberId] = useState('');
+  const [formCustomUsername, setFormCustomUsername] = useState('');
   const [formPhone, setFormPhone] = useState('');
   const [formEmail, setFormEmail] = useState('');
   const [formCity, setFormCity] = useState('');
@@ -113,8 +151,10 @@ export const AdminMembersView: React.FC<AdminMembersViewProps> = ({
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const [submitting, setSubmitting] = useState(false);
 
-  // Edit Form State
+  // Edit Member Form State
   const [editFullName, setEditFullName] = useState('');
+  const [editCustomUsername, setEditCustomUsername] = useState('');
+  const [editNewPassword, setEditNewPassword] = useState('');
   const [editPhone, setEditPhone] = useState('');
   const [editEmail, setEditEmail] = useState('');
   const [editCity, setEditCity] = useState('');
@@ -126,6 +166,12 @@ export const AdminMembersView: React.FC<AdminMembersViewProps> = ({
   const [editAccountStatus, setEditAccountStatus] = useState<AccountStatus>('Aktif');
   const [editAdminNotes, setEditAdminNotes] = useState('');
 
+  const effectiveAdmins = useMemo(() => {
+    if (admins.length > 0) return admins;
+    if (currentUser && currentUser.role === 'admin') return [currentUser];
+    return [];
+  }, [admins, currentUser]);
+
   const filteredProfiles = useMemo(() => {
     return profiles.filter(({ user, member }) => {
       if (user.role !== 'member') return false;
@@ -133,9 +179,10 @@ export const AdminMembersView: React.FC<AdminMembersViewProps> = ({
       if (q) {
         const matchName = user.fullName.toLowerCase().includes(q);
         const matchId = member.memberId.toLowerCase().includes(q);
+        const matchUname = user.username.toLowerCase().includes(q);
         const matchPhone = user.phone.toLowerCase().includes(q);
         const matchCity = user.city.toLowerCase().includes(q);
-        if (!matchName && !matchId && !matchPhone && !matchCity) return false;
+        if (!matchName && !matchId && !matchUname && !matchPhone && !matchCity) return false;
       }
       if (programFilter !== 'ALL' && member.program !== programFilter) return false;
       if (methodFilter !== 'ALL' && member.learningMethod !== methodFilter) return false;
@@ -151,9 +198,138 @@ export const AdminMembersView: React.FC<AdminMembersViewProps> = ({
     return filteredProfiles.slice(start, start + pageSize);
   }, [filteredProfiles, currentPage]);
 
+  const openEditAdminModal = (adm: UserRecord) => {
+    setEditingAdmin(adm);
+    setEditAdmFullName(adm.fullName);
+    setEditAdmRoleType(
+      adm.adminRole ||
+        (adm.memberId.toUpperCase().startsWith('MON')
+          ? 'Anggota Monitoring'
+          : 'Admin Utama')
+    );
+    setEditAdmMemberId(adm.memberId);
+    setEditAdmUsername(adm.username);
+    setEditAdmNewPassword(adm.plainPasswordHint || '');
+    setEditAdmPhone(adm.phone);
+    setEditAdmEmail(adm.email);
+    setEditAdmCity(adm.city);
+    setEditAdmAccountStatus(adm.accountStatus);
+    setEditAdmNotes(adm.notes || '');
+  };
+
+  const handleCreateAdminMonitoring = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!admFullName.trim()) {
+      onShowToast('Nama lengkap Admin / Anggota Monitoring wajib diisi.', 'error');
+      return;
+    }
+    setSubmitting(true);
+    try {
+      const res = await apiRequest<{
+        admin: UserRecord;
+        generatedPassword: string;
+      }>('/api/admins', {
+        method: 'POST',
+        body: JSON.stringify({
+          fullName: admFullName,
+          adminRole: admRoleType,
+          customId: admCustomId,
+          username: admUsername || admCustomId,
+          password: admPassword,
+          phone: admPhone,
+          email: admEmail,
+          city: admCity,
+          notes: admNotes,
+        }),
+      });
+      await onRefresh();
+      setShowAddAdminModal(false);
+      setAdmFullName('');
+      setAdmCustomId('');
+      setAdmUsername('');
+      setAdmPassword('Monitoring2026!');
+      setAdmPhone('');
+      setAdmEmail('');
+      setAdmNotes('');
+      onShowToast(
+        `${res.admin.adminRole || 'Anggota Monitoring'} ${res.admin.fullName} berhasil didaftarkan (ID Login: ${res.admin.username} | Password: ${res.generatedPassword}).`,
+        'success'
+      );
+    } catch (err: any) {
+      onShowToast(err.message || 'Gagal mendaftarkan akun monitoring.', 'error');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleUpdateAdminMonitoring = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingAdmin) return;
+    setSubmitting(true);
+    try {
+      const res = await apiRequest<{ admin: UserRecord }>(`/api/admins/${editingAdmin.uid}`, {
+        method: 'PUT',
+        body: JSON.stringify({
+          fullName: editAdmFullName,
+          adminRole: editAdmRoleType,
+          memberId: editAdmMemberId,
+          username: editAdmUsername,
+          newPassword: editAdmNewPassword,
+          phone: editAdmPhone,
+          email: editAdmEmail,
+          city: editAdmCity,
+          accountStatus: editAdmAccountStatus,
+          notes: editAdmNotes,
+        }),
+      });
+      await onRefresh();
+      setEditingAdmin(null);
+      onShowToast(
+        `Profil & Kredensial ${res.admin.fullName} (${res.admin.memberId}) berhasil diperbarui!`,
+        'success'
+      );
+    } catch (err: any) {
+      onShowToast(err.message || 'Gagal memperbarui akun Admin / Monitoring.', 'error');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleDeleteAdminMonitoring = async () => {
+    if (!confirmDeleteAdmin) return;
+    setSubmitting(true);
+    try {
+      await apiRequest(`/api/admins/${confirmDeleteAdmin.uid}`, {
+        method: 'DELETE',
+      });
+      await onRefresh();
+      onShowToast(
+        `Akun ${confirmDeleteAdmin.fullName} (${confirmDeleteAdmin.memberId}) berhasil dihapus.`,
+        'success'
+      );
+      setConfirmDeleteAdmin(null);
+    } catch (err: any) {
+      onShowToast(err.message || 'Gagal menghapus akun.', 'error');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleCopyCredentials = (idOrUsername: string, pass: string, labelName: string) => {
+    const text = `Kredensial Login Portal Belajar Khot\nNama: ${labelName}\nID Pengguna / Username: ${idOrUsername}\nPassword: ${pass}`;
+    try {
+      navigator.clipboard.writeText(text);
+      onShowToast(`ID & Password untuk ${labelName} berhasil disalin!`, 'success');
+    } catch {
+      onShowToast(`ID: ${idOrUsername} | Password: ${pass}`, 'success');
+    }
+  };
+
   const openEditModal = (p: CombinedMemberProfile) => {
     setEditingProfile(p);
     setEditFullName(p.user.fullName);
+    setEditCustomUsername(p.user.username || p.member.memberId);
+    setEditNewPassword(p.user.plainPasswordHint || '');
     setEditPhone(p.user.phone);
     setEditEmail(p.user.email);
     setEditCity(p.user.city);
@@ -192,6 +368,8 @@ export const AdminMembersView: React.FC<AdminMembersViewProps> = ({
         method: 'POST',
         body: JSON.stringify({
           fullName: formFullName,
+          customMemberId: formCustomMemberId,
+          customUsername: formCustomUsername || formCustomMemberId,
           phone: formPhone,
           email: formEmail,
           city: formCity,
@@ -208,12 +386,14 @@ export const AdminMembersView: React.FC<AdminMembersViewProps> = ({
       await onRefresh();
       setShowAddModal(false);
       setFormFullName('');
+      setFormCustomMemberId('');
+      setFormCustomUsername('');
       setFormPhone('');
       setFormEmail('');
       setFormCity('');
       setFormAdminNotes('');
       onShowToast(
-        `Peserta ${res.profile.user.fullName} berhasil didaftarkan dengan ID ${res.profile.member.memberId}.`,
+        `Peserta ${res.profile.user.fullName} berhasil didaftarkan dengan ID ${res.profile.member.memberId} & Password ${res.generatedPassword}.`,
         'success'
       );
       if (mode === 'add') {
@@ -235,6 +415,8 @@ export const AdminMembersView: React.FC<AdminMembersViewProps> = ({
         method: 'PUT',
         body: JSON.stringify({
           fullName: editFullName,
+          customUsername: editCustomUsername,
+          newPassword: editNewPassword,
           phone: editPhone,
           email: editEmail,
           city: editCity,
@@ -249,7 +431,7 @@ export const AdminMembersView: React.FC<AdminMembersViewProps> = ({
       await onRefresh();
       setEditingProfile(null);
       onShowToast(
-        `Data peserta ${editingProfile.member.memberId} berhasil diperbarui.`,
+        `Data & kredensial peserta ${editingProfile.member.memberId} berhasil diperbarui.`,
         'success'
       );
     } catch (err: any) {
@@ -337,11 +519,12 @@ export const AdminMembersView: React.FC<AdminMembersViewProps> = ({
         method: 'POST',
         body: JSON.stringify({ newPassword: resetPasswordModal.newPass }),
       });
+      await onRefresh();
       setResetPasswordModal({
         ...resetPasswordModal,
         resultPass: res.temporaryPassword,
       });
-      onShowToast(`Password akun ${res.memberId} berhasil direset.`, 'success');
+      onShowToast(`Password akun ${res.memberId} berhasil ditetapkan.`, 'success');
     } catch (err: any) {
       onShowToast(err.message || 'Gagal mereset password.', 'error');
     } finally {
@@ -370,13 +553,11 @@ export const AdminMembersView: React.FC<AdminMembersViewProps> = ({
         <div>
           <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-[#26332A]">
             {mode === 'accounts'
-              ? 'Manajemen Akun & Status Keanggotaan'
-              : 'Manajemen Calon Peserta & Member'}
+              ? 'Kelola Admin Utama, Anggota Monitoring & Akun Member'
+              : 'Manajemen Calon Peserta, Member & Tim Monitoring'}
           </h1>
           <p className="mt-1 text-xs sm:text-sm text-[#6B776D]">
-            {mode === 'accounts'
-              ? 'Kelola kredensial login ID Member, pengaktifan akun, verifikasi buku Khot, dan reset password.'
-              : 'Kelola pendaftaran peserta ikhwan, verifikasi persyaratan buku Khot, metode belajar, dan ekspor data.'}
+            Sebagai Pemilik Portal, Anda dapat mengelola profil <strong>Admin Utama</strong>, mendaftarkan <strong>Anggota Monitoring</strong>, serta memberikan <strong>ID Pengguna & Password</strong> untuk seluruh akun.
           </p>
         </div>
 
@@ -399,12 +580,201 @@ export const AdminMembersView: React.FC<AdminMembersViewProps> = ({
           </button>
           <button
             type="button"
+            onClick={() => setShowAddAdminModal(true)}
+            className="inline-flex items-center gap-1.5 rounded-lg border border-[#315B43] bg-[#F3F7F2] px-3.5 py-2.5 text-xs font-semibold text-[#315B43] hover:bg-[#E8EFE7] transition-colors cursor-pointer"
+          >
+            <ShieldCheck className="h-4 w-4" />
+            + Daftarkan Anggota Monitoring
+          </button>
+          <button
+            type="button"
             onClick={() => setShowAddModal(true)}
             className="inline-flex items-center gap-1.5 rounded-lg bg-[#315B43] px-4 py-2.5 text-xs font-semibold text-white hover:bg-[#264734] transition-colors cursor-pointer"
           >
             <UserPlus className="h-4 w-4" />
-            Tambah Peserta Baru
+            + Tambah Peserta / Member
           </button>
+        </div>
+      </div>
+
+      {/* ===================================================================== */}
+      {/* PANEL 1: PENGELOLAAN ADMIN UTAMA & ANGGOTA MONITORING */}
+      {/* ===================================================================== */}
+      <div className="rounded-2xl border border-[#315B43]/30 bg-white p-5 sm:p-6 shadow-xs space-y-4">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between border-b border-[#E3EAE3] pb-4">
+          <div className="flex items-start gap-3">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#315B43] text-white">
+              <ShieldCheck className="h-5 w-5" />
+            </div>
+            <div>
+              <div className="flex flex-wrap items-center gap-2">
+                <h2 className="text-base font-bold text-[#26332A]">
+                  1. Pengelolaan Admin Utama (Pemilik Portal) & Anggota Monitoring
+                </h2>
+                <span className="rounded-md bg-[#EBF5EE] px-2.5 py-0.5 text-[11px] font-bold text-[#315B43]">
+                  {effectiveAdmins.length} Akun Terdaftar
+                </span>
+              </div>
+              <p className="mt-0.5 text-xs text-[#6B776D]">
+                Kelola nama & kredensial <strong>Admin Utama</strong> Anda atau daftarkan <strong>Anggota Monitoring</strong> yang dapat masuk ke dashboard menggunakan ID & Password yang Anda tetapkan.
+              </p>
+            </div>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-2 shrink-0">
+            {currentUser && (
+              <button
+                type="button"
+                onClick={() => openEditAdminModal(currentUser)}
+                className="inline-flex items-center gap-1.5 rounded-lg border border-[#315B43] bg-white px-3.5 py-2 text-xs font-semibold text-[#315B43] hover:bg-[#F3F7F2] transition-colors cursor-pointer"
+              >
+                <Edit3 className="h-3.5 w-3.5" />
+                Edit Profil Admin Utama Saya
+              </button>
+            )}
+            <button
+              type="button"
+              onClick={() => setShowAddAdminModal(true)}
+              className="inline-flex items-center gap-1.5 rounded-lg bg-[#315B43] px-3.5 py-2 text-xs font-semibold text-white hover:bg-[#264734] transition-colors cursor-pointer"
+            >
+              <UserPlus className="h-3.5 w-3.5" />
+              + Daftarkan Anggota Monitoring (Beri ID & Password)
+            </button>
+          </div>
+        </div>
+
+        {/* Table of Admin Utama & Anggota Monitoring */}
+        <div className="overflow-x-auto">
+          <table className="w-full text-left border-collapse">
+            <thead>
+              <tr className="border-b border-[#E3EAE3] bg-[#F3F7F2] text-[11px] font-semibold uppercase tracking-wider text-[#6B776D]">
+                <th className="py-3 pl-4 pr-2">ID Kode</th>
+                <th className="px-3 py-3">Nama Lengkap & Peran</th>
+                <th className="px-3 py-3">ID Login / Username</th>
+                <th className="px-3 py-3">Password Login</th>
+                <th className="px-3 py-3">WhatsApp & Domisili</th>
+                <th className="px-3 py-3">Status</th>
+                <th className="no-print py-3 pl-3 pr-4 text-right">Kelola ID & Password</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-[#E3EAE3] text-xs">
+              {effectiveAdmins.map((adm) => {
+                const roleLabel =
+                  adm.adminRole ||
+                  (adm.memberId.toUpperCase().startsWith('MON')
+                    ? 'Anggota Monitoring'
+                    : 'Admin Utama');
+                const isMainOwner = roleLabel === 'Admin Utama';
+                const displayPass = adm.plainPasswordHint || 'AdminKhot2026!';
+                return (
+                  <tr key={adm.uid} className="hover:bg-[#FAFCF9]">
+                    <td className="py-3.5 pl-4 pr-2">
+                      <span className="font-mono font-bold text-[#315B43]">
+                        {adm.memberId}
+                      </span>
+                      {adm.uid === currentUser?.uid && (
+                        <span className="ml-1.5 rounded bg-[#EBF5EE] px-1.5 py-0.5 text-[10px] font-bold text-[#315B43]">
+                          Anda
+                        </span>
+                      )}
+                    </td>
+                    <td className="px-3 py-3.5">
+                      <div className="font-bold text-[#26332A]">{adm.fullName}</div>
+                      <div className="mt-0.5 flex flex-wrap items-center gap-1.5">
+                        <span
+                          className={`inline-flex rounded px-2 py-0.5 text-[10px] font-bold ${
+                            isMainOwner
+                              ? 'bg-[#315B43] text-white'
+                              : 'bg-[#FCF5E8] text-[#A06A18]'
+                          }`}
+                        >
+                          {roleLabel}
+                        </span>
+                        {adm.notes && (
+                          <span className="text-[11px] text-[#6B776D] truncate max-w-[220px]">
+                            · {adm.notes}
+                          </span>
+                        )}
+                      </div>
+                    </td>
+                    <td className="px-3 py-3.5">
+                      <span className="rounded bg-[#F3F7F2] px-2 py-1 font-mono font-bold text-[#26332A]">
+                        {adm.username}
+                      </span>
+                    </td>
+                    <td className="px-3 py-3.5">
+                      <span className="rounded bg-[#F3F7F2] px-2 py-1 font-mono font-semibold text-[#315B43]">
+                        {displayPass}
+                      </span>
+                    </td>
+                    <td className="px-3 py-3.5">
+                      <div className="font-mono text-[#26332A]">{adm.phone}</div>
+                      <div className="text-[11px] text-[#6B776D]">{adm.city}</div>
+                    </td>
+                    <td className="px-3 py-3.5">
+                      <span
+                        className={`font-semibold ${
+                          adm.accountStatus === 'Aktif'
+                            ? 'text-[#3B7551]'
+                            : 'text-[#B44238]'
+                        }`}
+                      >
+                        {adm.accountStatus}
+                      </span>
+                    </td>
+                    <td className="no-print py-3.5 pl-3 pr-4 text-right">
+                      <div className="inline-flex items-center justify-end gap-1.5">
+                        <button
+                          type="button"
+                          onClick={() =>
+                            handleCopyCredentials(adm.username, displayPass, adm.fullName)
+                          }
+                          title="Salin ID & Password untuk dikirim ke WhatsApp"
+                          className="inline-flex items-center gap-1 rounded-lg border border-[#E3EAE3] bg-white px-2.5 py-1.5 text-[11px] font-semibold text-[#26332A] hover:bg-[#F3F7F2] cursor-pointer"
+                        >
+                          <Copy className="h-3.5 w-3.5 text-[#315B43]" />
+                          Salin ID & Pass
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => openEditAdminModal(adm)}
+                          title="Ubah Nama, Jabatan, ID Login & Password"
+                          className="inline-flex items-center gap-1 rounded-lg bg-[#E8EFE7] px-2.5 py-1.5 text-[11px] font-semibold text-[#315B43] hover:bg-[#DCE6DA] cursor-pointer"
+                        >
+                          <Edit3 className="h-3.5 w-3.5" />
+                          Edit / Password
+                        </button>
+                        {adm.uid !== currentUser?.uid && effectiveAdmins.length > 1 && (
+                          <button
+                            type="button"
+                            onClick={() => setConfirmDeleteAdmin(adm)}
+                            title="Hapus Akun Monitoring / Admin"
+                            className="rounded-lg p-1.5 text-[#6B776D] hover:bg-[#FCEEEF] hover:text-[#B44238] cursor-pointer"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </button>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* ===================================================================== */}
+      {/* PANEL 2: PENGELOLAAN PESERTA / MEMBER (BK-XXXXX) */}
+      {/* ===================================================================== */}
+      <div className="flex items-center justify-between pt-2">
+        <div>
+          <h2 className="text-base font-bold text-[#26332A]">
+            2. Daftar Akun & Keanggotaan Peserta / Member ({filteredProfiles.length} Peserta)
+          </h2>
+          <p className="text-xs text-[#6B776D]">
+            Kelola data peserta belajar Khot, verifikasi kepemilikan buku, serta berikan/ubah ID Login & Password masing-masing member.
+          </p>
         </div>
       </div>
 
@@ -509,7 +879,7 @@ export const AdminMembersView: React.FC<AdminMembersViewProps> = ({
             <thead>
               <tr className="border-b border-[#E3EAE3] bg-[#F3F7F2] text-[11px] font-semibold uppercase tracking-wider text-[#6B776D]">
                 <th className="py-3.5 pl-5 pr-2">No</th>
-                <th className="px-3 py-3.5">ID Member</th>
+                <th className="px-3 py-3.5">ID & Password Login</th>
                 <th className="px-3 py-3.5">Nama Lengkap & Domisili</th>
                 <th className="px-3 py-3.5">WhatsApp & Email</th>
                 <th className="px-3 py-3.5">Program & Metode</th>
@@ -530,6 +900,7 @@ export const AdminMembersView: React.FC<AdminMembersViewProps> = ({
                 paginatedProfiles.map((p, idx) => {
                   const rowNum = (currentPage - 1) * pageSize + idx + 1;
                   const { user, member } = p;
+                  const memberPass = user.plainPasswordHint || 'MemberKhot123!';
                   return (
                     <tr
                       key={member.memberId}
@@ -543,6 +914,9 @@ export const AdminMembersView: React.FC<AdminMembersViewProps> = ({
                           {member.memberId}
                         </span>
                         <div className="text-[11px] text-[#6B776D]">
+                          Pass: <strong className="font-mono text-[#26332A]">{memberPass}</strong>
+                        </div>
+                        <div className="text-[10px] text-[#6B776D]">
                           Akun: {user.accountStatus}
                         </div>
                       </td>
@@ -611,6 +985,20 @@ export const AdminMembersView: React.FC<AdminMembersViewProps> = ({
                           )}
                           <button
                             type="button"
+                            onClick={() =>
+                              handleCopyCredentials(
+                                user.username || member.memberId,
+                                memberPass,
+                                user.fullName
+                              )
+                            }
+                            title="Salin ID & Password Member"
+                            className="rounded-lg p-1.5 text-[#6B776D] hover:bg-[#F3F7F2] hover:text-[#315B43] cursor-pointer"
+                          >
+                            <Copy className="h-4 w-4" />
+                          </button>
+                          <button
+                            type="button"
                             onClick={() => setDetailProfile(p)}
                             title="Lihat Detail & Kartu Member"
                             aria-label={`Detail ${user.fullName}`}
@@ -621,7 +1009,7 @@ export const AdminMembersView: React.FC<AdminMembersViewProps> = ({
                           <button
                             type="button"
                             onClick={() => openEditModal(p)}
-                            title="Edit Data Peserta"
+                            title="Edit Data & ID/Password Peserta"
                             aria-label={`Edit ${user.fullName}`}
                             className="rounded-lg p-1.5 text-[#6B776D] hover:bg-[#F3F7F2] hover:text-[#315B43] cursor-pointer"
                           >
@@ -632,10 +1020,10 @@ export const AdminMembersView: React.FC<AdminMembersViewProps> = ({
                             onClick={() =>
                               setResetPasswordModal({
                                 profile: p,
-                                newPass: `Khot${Math.floor(1000 + Math.random() * 9000)}!`,
+                                newPass: memberPass,
                               })
                             }
-                            title="Reset Password Member"
+                            title="Berikan / Ubah Password Member"
                             aria-label={`Reset password ${user.fullName}`}
                             className="rounded-lg p-1.5 text-[#6B776D] hover:bg-[#F3F7F2] hover:text-[#A06A18] cursor-pointer"
                           >
@@ -678,7 +1066,7 @@ export const AdminMembersView: React.FC<AdminMembersViewProps> = ({
         </div>
       </div>
 
-      {/* Mobile Card List (<768px) — PRD Section 5 Layout Mobile */}
+      {/* Mobile Card List (<768px) */}
       <div className="grid grid-cols-1 gap-3 md:hidden">
         {paginatedProfiles.map((p) => {
           const { user, member } = p;
@@ -704,9 +1092,9 @@ export const AdminMembersView: React.FC<AdminMembersViewProps> = ({
 
               <div className="grid grid-cols-2 gap-2 border-t border-[#E3EAE3] pt-2.5 text-xs">
                 <div>
-                  <span className="text-[#6B776D] block">WhatsApp</span>
-                  <span className="font-mono font-medium text-[#26332A] tabular-nums">
-                    {user.phone}
+                  <span className="text-[#6B776D] block">Password</span>
+                  <span className="font-mono font-medium text-[#26332A]">
+                    {user.plainPasswordHint || 'MemberKhot123!'}
                   </span>
                 </div>
                 <div>
@@ -740,7 +1128,7 @@ export const AdminMembersView: React.FC<AdminMembersViewProps> = ({
                   onClick={() => openEditModal(p)}
                   className="rounded-lg bg-[#E8EFE7] px-3 py-1.5 text-xs font-semibold text-[#315B43]"
                 >
-                  Edit
+                  Edit / Pass
                 </button>
               </div>
             </div>
@@ -769,8 +1157,382 @@ export const AdminMembersView: React.FC<AdminMembersViewProps> = ({
               onClick={() => setCurrentPage((c) => Math.min(totalPages, c + 1))}
               className="rounded-lg border border-[#E3EAE3] px-3 py-1.5 font-semibold text-[#26332A] hover:bg-[#F3F7F2] disabled:opacity-40 cursor-pointer"
             >
-               Berikutnya
+              Berikutnya
             </button>
+          </div>
+        </div>
+      )}
+
+      {/* ===================================================================== */}
+      {/* MODAL A: DAFTARKAN ANGGOTA MONITORING / ADMIN BARU */}
+      {/* ===================================================================== */}
+      {showAddAdminModal && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-xs overflow-y-auto"
+        >
+          <div className="my-8 w-full max-w-xl rounded-2xl border border-[#E3EAE3] bg-white p-6 sm:p-8 shadow-xl">
+            <div className="flex items-center justify-between border-b border-[#E3EAE3] pb-4">
+              <div>
+                <h2 className="text-lg font-bold text-[#26332A]">
+                  Daftarkan Anggota Monitoring / Admin & Beri ID Password
+                </h2>
+                <p className="text-xs text-[#6B776D]">
+                  Akun yang didaftarkan dapat login ke portal menggunakan ID Pengguna & Password yang Anda tetapkan di bawah ini.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowAddAdminModal(false)}
+                className="rounded-lg p-1.5 text-[#6B776D] hover:bg-[#F3F7F2]"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+
+            <form onSubmit={handleCreateAdminMonitoring} className="mt-5 space-y-4">
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <div className="sm:col-span-2">
+                  <label className="block text-xs font-semibold text-[#26332A]">
+                    1. Peran / Kategori Pengurus *
+                  </label>
+                  <select
+                    value={admRoleType}
+                    onChange={(e) => setAdmRoleType(e.target.value as AdminRoleType)}
+                    className="mt-1 h-10 w-full rounded-lg border border-[#E3EAE3] bg-white px-3 text-xs font-semibold text-[#26332A]"
+                  >
+                    <option value="Anggota Monitoring">
+                      Anggota Monitoring (Tim Pemantau & Evaluasi Dashboard)
+                    </option>
+                    <option value="Admin Pengurus">
+                      Admin Pengurus (Pengelola Operasional Harian)
+                    </option>
+                    <option value="Admin Utama">
+                      Admin Utama (Pemilik Portal / Super Admin)
+                    </option>
+                  </select>
+                </div>
+
+                <div className="sm:col-span-2">
+                  <label className="block text-xs font-semibold text-[#26332A]">
+                    2. Nama Lengkap Anggota Monitoring / Admin *
+                  </label>
+                  <input
+                    type="text"
+                    value={admFullName}
+                    onChange={(e) => setAdmFullName(e.target.value)}
+                    placeholder="Contoh: Ustadz Ahmad Ridho"
+                    className="mt-1 h-10 w-full rounded-lg border border-[#E3EAE3] px-3 text-xs text-[#26332A]"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-[#26332A]">
+                    3. Kode ID (Opsional, Otomatis MON-XX)
+                  </label>
+                  <input
+                    type="text"
+                    value={admCustomId}
+                    onChange={(e) => setAdmCustomId(e.target.value.toUpperCase())}
+                    placeholder="Contoh: MON-02 atau ADMIN-02"
+                    className="mt-1 h-10 w-full rounded-lg border border-[#E3EAE3] px-3 font-mono text-xs text-[#26332A]"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-[#26332A]">
+                    4. ID Pengguna / Username Login *
+                  </label>
+                  <input
+                    type="text"
+                    value={admUsername}
+                    onChange={(e) => setAdmUsername(e.target.value)}
+                    placeholder="Contoh: monitoring2 / ridho"
+                    className="mt-1 h-10 w-full rounded-lg border border-[#E3EAE3] px-3 font-mono text-xs text-[#26332A]"
+                  />
+                </div>
+
+                <div className="sm:col-span-2">
+                  <label className="block text-xs font-semibold text-[#26332A]">
+                    5. Password Login yang Diberikan *
+                  </label>
+                  <input
+                    type="text"
+                    value={admPassword}
+                    onChange={(e) => setAdmPassword(e.target.value)}
+                    placeholder="Minimal 4 karakter"
+                    className="mt-1 h-10 w-full rounded-lg border border-[#315B43]/50 bg-[#F3F7F2] px-3 font-mono text-xs font-bold text-[#315B43]"
+                  />
+                  <span className="mt-1 block text-[11px] text-[#6B776D]">
+                    Berikan ID Pengguna dan Password ini kepada Anggota Monitoring agar dapat masuk ke portal.
+                  </span>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-[#26332A]">
+                    6. Nomor WhatsApp
+                  </label>
+                  <input
+                    type="text"
+                    value={admPhone}
+                    onChange={(e) => setAdmPhone(e.target.value)}
+                    placeholder="0812xxxxxxxx"
+                    className="mt-1 h-10 w-full rounded-lg border border-[#E3EAE3] px-3 font-mono text-xs text-[#26332A]"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-[#26332A]">
+                    7. Domisili / Kota
+                  </label>
+                  <input
+                    type="text"
+                    value={admCity}
+                    onChange={(e) => setAdmCity(e.target.value)}
+                    placeholder="Jakarta Selatan"
+                    className="mt-1 h-10 w-full rounded-lg border border-[#E3EAE3] px-3 text-xs text-[#26332A]"
+                  />
+                </div>
+
+                <div className="sm:col-span-2">
+                  <label className="block text-xs font-semibold text-[#26332A]">
+                    8. Catatan Tugas / Keterangan Monitoring
+                  </label>
+                  <input
+                    type="text"
+                    value={admNotes}
+                    onChange={(e) => setAdmNotes(e.target.value)}
+                    placeholder="Contoh: Monitoring kelas Khot Naskhi & verifikasi buku"
+                    className="mt-1 h-10 w-full rounded-lg border border-[#E3EAE3] px-3 text-xs text-[#26332A]"
+                  />
+                </div>
+              </div>
+
+              <div className="flex items-center justify-end gap-2 border-t border-[#E3EAE3] pt-4">
+                <button
+                  type="button"
+                  onClick={() => setShowAddAdminModal(false)}
+                  className="rounded-lg border border-[#E3EAE3] px-4 py-2 text-xs font-semibold text-[#6B776D]"
+                >
+                  Batal
+                </button>
+                <button
+                  type="submit"
+                  disabled={submitting}
+                  className="rounded-lg bg-[#315B43] px-5 py-2 text-xs font-semibold text-white hover:bg-[#264734]"
+                >
+                  {submitting ? 'Menyimpan...' : 'Simpan & Berikan Akses Login'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ===================================================================== */}
+      {/* MODAL B: EDIT PROFIL, ID & PASSWORD ADMIN UTAMA / ANGGOTA MONITORING */}
+      {/* ===================================================================== */}
+      {editingAdmin && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-xs overflow-y-auto"
+        >
+          <div className="my-8 w-full max-w-xl rounded-2xl border border-[#E3EAE3] bg-white p-6 sm:p-8 shadow-xl">
+            <div className="flex items-center justify-between border-b border-[#E3EAE3] pb-4">
+              <div>
+                <h2 className="text-lg font-bold text-[#26332A]">
+                  Kelola Profil, ID Login & Password — {editingAdmin.memberId}
+                </h2>
+                <p className="text-xs text-[#6B776D]">
+                  Ubah nama tampilan (misal di pojok kiri bawah sidebar), ID Pengguna, peran, maupun password login.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setEditingAdmin(null)}
+                className="rounded-lg p-1.5 text-[#6B776D] hover:bg-[#F3F7F2]"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+
+            <form onSubmit={handleUpdateAdminMonitoring} className="mt-5 space-y-4">
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <div className="sm:col-span-2">
+                  <label className="block text-xs font-semibold text-[#26332A]">
+                    Nama Lengkap (Tampil di Portal & Sidebar)
+                  </label>
+                  <input
+                    type="text"
+                    value={editAdmFullName}
+                    onChange={(e) => setEditAdmFullName(e.target.value)}
+                    className="mt-1 h-10 w-full rounded-lg border border-[#E3EAE3] px-3 text-xs font-semibold text-[#26332A]"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-[#26332A]">
+                    Peran / Jabatan
+                  </label>
+                  <select
+                    value={editAdmRoleType}
+                    onChange={(e) => setEditAdmRoleType(e.target.value as AdminRoleType)}
+                    className="mt-1 h-10 w-full rounded-lg border border-[#E3EAE3] bg-white px-3 text-xs font-semibold text-[#26332A]"
+                  >
+                    <option value="Admin Utama">Admin Utama (Pemilik Portal)</option>
+                    <option value="Anggota Monitoring">Anggota Monitoring</option>
+                    <option value="Admin Pengurus">Admin Pengurus</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-[#26332A]">
+                    Status Akses Akun
+                  </label>
+                  <select
+                    value={editAdmAccountStatus}
+                    onChange={(e) => setEditAdmAccountStatus(e.target.value as AccountStatus)}
+                    className="mt-1 h-10 w-full rounded-lg border border-[#E3EAE3] bg-white px-3 text-xs"
+                  >
+                    <option value="Aktif">Aktif (Dapat Login)</option>
+                    <option value="Nonaktif">Nonaktif (Akses Ditutup)</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-[#26332A]">
+                    Kode ID (misal ADMIN-01 / MON-01)
+                  </label>
+                  <input
+                    type="text"
+                    value={editAdmMemberId}
+                    onChange={(e) => setEditAdmMemberId(e.target.value.toUpperCase())}
+                    className="mt-1 h-10 w-full rounded-lg border border-[#E3EAE3] px-3 font-mono text-xs font-bold text-[#315B43]"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-[#26332A]">
+                    Username / ID Login
+                  </label>
+                  <input
+                    type="text"
+                    value={editAdmUsername}
+                    onChange={(e) => setEditAdmUsername(e.target.value)}
+                    className="mt-1 h-10 w-full rounded-lg border border-[#E3EAE3] px-3 font-mono text-xs font-bold text-[#26332A]"
+                  />
+                </div>
+
+                <div className="sm:col-span-2">
+                  <label className="block text-xs font-semibold text-[#26332A]">
+                    Password Login (Ubah / Tetapkan Password Baru)
+                  </label>
+                  <input
+                    type="text"
+                    value={editAdmNewPassword}
+                    onChange={(e) => setEditAdmNewPassword(e.target.value)}
+                    placeholder="Masukkan password baru"
+                    className="mt-1 h-10 w-full rounded-lg border border-[#315B43]/50 bg-[#F3F7F2] px-3 font-mono text-xs font-bold text-[#315B43]"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-[#26332A]">
+                    Nomor WhatsApp
+                  </label>
+                  <input
+                    type="text"
+                    value={editAdmPhone}
+                    onChange={(e) => setEditAdmPhone(e.target.value)}
+                    className="mt-1 h-10 w-full rounded-lg border border-[#E3EAE3] px-3 font-mono text-xs"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-[#26332A]">
+                    Domisili / Kota
+                  </label>
+                  <input
+                    type="text"
+                    value={editAdmCity}
+                    onChange={(e) => setEditAdmCity(e.target.value)}
+                    className="mt-1 h-10 w-full rounded-lg border border-[#E3EAE3] px-3 text-xs"
+                  />
+                </div>
+
+                <div className="sm:col-span-2">
+                  <label className="block text-xs font-semibold text-[#26332A]">
+                    Catatan Tugas / Keterangan
+                  </label>
+                  <input
+                    type="text"
+                    value={editAdmNotes}
+                    onChange={(e) => setEditAdmNotes(e.target.value)}
+                    className="mt-1 h-10 w-full rounded-lg border border-[#E3EAE3] px-3 text-xs"
+                  />
+                </div>
+              </div>
+
+              <div className="flex items-center justify-end gap-2 border-t border-[#E3EAE3] pt-4">
+                <button
+                  type="button"
+                  onClick={() => setEditingAdmin(null)}
+                  className="rounded-lg border border-[#E3EAE3] px-4 py-2 text-xs font-semibold text-[#6B776D]"
+                >
+                  Batal
+                </button>
+                <button
+                  type="submit"
+                  disabled={submitting}
+                  className="rounded-lg bg-[#315B43] px-5 py-2 text-xs font-semibold text-white hover:bg-[#264734]"
+                >
+                  {submitting ? 'Menyimpan...' : 'Simpan Perubahan Admin / Monitoring'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ===================================================================== */}
+      {/* MODAL C: KONFIRMASI HAPUS AKUN MONITORING / ADMIN */}
+      {/* ===================================================================== */}
+      {confirmDeleteAdmin && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-xs"
+        >
+          <div className="w-full max-w-md rounded-2xl border border-[#B44238]/30 bg-white p-6 shadow-xl">
+            <div className="flex items-center gap-3 text-[#B44238]">
+              <ShieldAlert className="h-6 w-6 shrink-0" />
+              <h3 className="text-base font-bold">Hapus Akun Monitoring / Admin</h3>
+            </div>
+            <p className="mt-2 text-xs text-[#6B776D] leading-relaxed">
+              Apakah Anda yakin ingin menghapus akun{' '}
+              <strong className="text-[#26332A]">{confirmDeleteAdmin.fullName}</strong> (
+              <span className="font-mono font-bold">{confirmDeleteAdmin.memberId}</span>)?
+              Akun ini tidak akan bisa login lagi ke dashboard.
+            </p>
+            <div className="mt-5 flex justify-end gap-2">
+              <button
+                type="button"
+                onClick={() => setConfirmDeleteAdmin(null)}
+                className="rounded-lg border border-[#E3EAE3] px-4 py-2 text-xs font-semibold text-[#6B776D]"
+              >
+                Batal
+              </button>
+              <button
+                type="button"
+                disabled={submitting}
+                onClick={handleDeleteAdminMonitoring}
+                className="rounded-lg bg-[#B44238] px-4 py-2 text-xs font-semibold text-white hover:bg-[#96352C]"
+              >
+                {submitting ? 'Menghapus...' : 'Ya, Hapus Akun'}
+              </button>
+            </div>
           </div>
         </div>
       )}
@@ -792,10 +1554,10 @@ export const AdminMembersView: React.FC<AdminMembersViewProps> = ({
                   id="modal-add-member-title"
                   className="text-lg font-bold text-[#26332A]"
                 >
-                  Formulir Pendaftaran Peserta & Pembuatan Akun Member
+                  Formulir Pendaftaran Peserta & Pemberian ID Password Member
                 </h2>
                 <p className="text-xs text-[#6B776D]">
-                  Nomor ID Member (format BK-XXXXX) akan dibuat secara otomatis dan unik oleh sistem.
+                  Anda dapat membiarkan Nomor ID dibuat otomatis (BK-XXXXX) atau menentukan ID & Password sendiri.
                 </p>
               </div>
               <button
@@ -936,30 +1698,55 @@ export const AdminMembersView: React.FC<AdminMembersViewProps> = ({
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 rounded-xl bg-[#F3F7F2] p-3.5">
                 <div>
                   <label className="block text-xs font-semibold text-[#26332A]">
-                    Password Awal Akun Member
+                    ID Member Khusus (Opsional)
+                  </label>
+                  <input
+                    type="text"
+                    value={formCustomMemberId}
+                    onChange={(e) => setFormCustomMemberId(e.target.value.toUpperCase())}
+                    placeholder="Otomatis BK-XXXXX"
+                    className="mt-1 h-10 w-full rounded-lg border border-[#E3EAE3] bg-white px-3 font-mono text-xs text-[#26332A]"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-[#26332A]">
+                    Username Login (Opsional)
+                  </label>
+                  <input
+                    type="text"
+                    value={formCustomUsername}
+                    onChange={(e) => setFormCustomUsername(e.target.value)}
+                    placeholder="Sama dengan ID Member"
+                    className="mt-1 h-10 w-full rounded-lg border border-[#E3EAE3] bg-white px-3 font-mono text-xs text-[#26332A]"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-[#26332A]">
+                    Password Login Member *
                   </label>
                   <input
                     type="text"
                     value={formInitialPassword}
                     onChange={(e) => setFormInitialPassword(e.target.value)}
-                    className="mt-1 h-10 w-full rounded-lg border border-[#E3EAE3] px-3 text-xs font-mono text-[#26332A]"
+                    className="mt-1 h-10 w-full rounded-lg border border-[#315B43]/40 bg-white px-3 font-mono text-xs font-bold text-[#315B43]"
                   />
                 </div>
-                <div>
-                  <label className="block text-xs font-semibold text-[#26332A]">
-                    Catatan Internal Admin (Opsional)
-                  </label>
-                  <input
-                    type="text"
-                    value={formAdminNotes}
-                    onChange={(e) => setFormAdminNotes(e.target.value)}
-                    placeholder="Catatan angkatan / bukti transfer buku..."
-                    className="mt-1 h-10 w-full rounded-lg border border-[#E3EAE3] px-3 text-xs text-[#26332A]"
-                  />
-                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-[#26332A]">
+                  Catatan Internal Admin (Opsional)
+                </label>
+                <input
+                  type="text"
+                  value={formAdminNotes}
+                  onChange={(e) => setFormAdminNotes(e.target.value)}
+                  placeholder="Catatan angkatan / bukti transfer buku..."
+                  className="mt-1 h-10 w-full rounded-lg border border-[#E3EAE3] px-3 text-xs text-[#26332A]"
+                />
               </div>
 
               <label className="flex items-start gap-2.5 rounded-xl bg-[#F3F7F2] p-3.5 text-xs text-[#26332A] cursor-pointer">
@@ -1002,7 +1789,7 @@ export const AdminMembersView: React.FC<AdminMembersViewProps> = ({
       )}
 
       {/* ===================================================================== */}
-      {/* MODAL 2: EDIT PESERTA & UBAH STATUS KEANGGOTAAN */}
+      {/* MODAL 2: EDIT PESERTA, ID LOGIN & PASSWORD */}
       {/* ===================================================================== */}
       {editingProfile && (
         <div
@@ -1014,10 +1801,10 @@ export const AdminMembersView: React.FC<AdminMembersViewProps> = ({
             <div className="flex items-center justify-between border-b border-[#E3EAE3] pb-4">
               <div>
                 <h2 className="text-lg font-bold text-[#26332A]">
-                  Edit Data & Verifikasi Status — {editingProfile.member.memberId}
+                  Edit Data, Status & Password — {editingProfile.member.memberId}
                 </h2>
                 <p className="text-xs text-[#6B776D]">
-                  Perubahan status keanggotaan akan langsung memperbarui tampilan Kartu Member Digital peserta.
+                  Perubahan status keanggotaan maupun kredensial login akan langsung berlaku.
                 </p>
               </div>
               <button
@@ -1051,6 +1838,29 @@ export const AdminMembersView: React.FC<AdminMembersViewProps> = ({
                     value={editPhone}
                     onChange={(e) => setEditPhone(e.target.value)}
                     className="mt-1 h-10 w-full rounded-lg border border-[#E3EAE3] px-3 text-xs font-mono text-[#26332A]"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-[#26332A]">
+                    ID Pengguna / Username Login
+                  </label>
+                  <input
+                    type="text"
+                    value={editCustomUsername}
+                    onChange={(e) => setEditCustomUsername(e.target.value)}
+                    className="mt-1 h-10 w-full rounded-lg border border-[#E3EAE3] bg-[#F3F7F2] px-3 font-mono text-xs font-bold text-[#26332A]"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-[#26332A]">
+                    Password Login Member
+                  </label>
+                  <input
+                    type="text"
+                    value={editNewPassword}
+                    onChange={(e) => setEditNewPassword(e.target.value)}
+                    placeholder="Tetapkan password baru"
+                    className="mt-1 h-10 w-full rounded-lg border border-[#315B43]/50 bg-[#F3F7F2] px-3 font-mono text-xs font-bold text-[#315B43]"
                   />
                 </div>
                 <div>
@@ -1248,7 +2058,7 @@ export const AdminMembersView: React.FC<AdminMembersViewProps> = ({
         >
           <div className="w-full max-w-md rounded-2xl border border-[#E3EAE3] bg-white p-6 shadow-xl">
             <h3 className="text-base font-bold text-[#26332A]">
-              Reset Password Akun Member ({resetPasswordModal.profile.member.memberId})
+              Tetapkan / Reset Password Member ({resetPasswordModal.profile.member.memberId})
             </h3>
             <p className="mt-1 text-xs text-[#6B776D]">
               Tetapkan password baru untuk <strong>{resetPasswordModal.profile.user.fullName}</strong>.
@@ -1275,7 +2085,7 @@ export const AdminMembersView: React.FC<AdminMembersViewProps> = ({
               <form onSubmit={handleResetPassword} className="mt-4 space-y-4">
                 <div>
                   <label className="block text-xs font-semibold text-[#26332A]">
-                    Password Baru (Min. 6 Karakter)
+                    Password Baru (Min. 4 Karakter)
                   </label>
                   <input
                     type="text"
@@ -1302,7 +2112,7 @@ export const AdminMembersView: React.FC<AdminMembersViewProps> = ({
                     disabled={submitting}
                     className="rounded-lg bg-[#315B43] px-4 py-2 text-xs font-semibold text-white"
                   >
-                    Reset Password Sekarang
+                    Simpan Password Sekarang
                   </button>
                 </div>
               </form>

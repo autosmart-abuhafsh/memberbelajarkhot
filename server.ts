@@ -15,6 +15,7 @@ import {
 import type {
   AccountStatus,
   ActivityLogRecord,
+  AdminRoleType,
   AnnouncementRecord,
   BookPurchaseStatus,
   ClassRecord,
@@ -158,8 +159,10 @@ startxref
 
 function createInitialSeedDatabase(): DatabaseSchema {
   const adminUid = 'usr-admin-01';
+  const monitoringUid = 'usr-mon-01';
   const passwordHashes: Record<string, string> = {
     [adminUid]: hashPassword('AdminKhot2026!'),
+    [monitoringUid]: hashPassword('Monitoring2026!'),
   };
 
   const demoMembersData: Array<{
@@ -295,11 +298,34 @@ function createInitialSeedDatabase(): DatabaseSchema {
       city: 'Jakarta Selatan',
       photoURL: '',
       role: 'admin',
+      adminRole: 'Admin Utama',
+      notes: 'Pemilik Portal & Administrator Utama Belajar Khot',
+      plainPasswordHint: 'AdminKhot2026!',
       accountStatus: 'Aktif',
       createdAt: '2026-01-01T00:00:00.000Z',
       updatedAt: '2026-11-10T08:00:00.000Z',
       lastLoginAt: '2026-11-10T08:00:00.000Z',
       isDemo: false,
+    },
+    {
+      uid: monitoringUid,
+      memberId: 'MON-01',
+      username: 'monitoring1',
+      fullName: 'Ustadz Salman Al-Hafizh (Monitoring)',
+      gender: 'Laki-laki (Ikhwan)',
+      phone: '081211002026',
+      email: 'monitoring@belajarkhot.id',
+      city: 'Jakarta Selatan',
+      photoURL: '',
+      role: 'admin',
+      adminRole: 'Anggota Monitoring',
+      notes: 'Anggota Tim Monitoring & Evaluasi Tashih (Contoh Data Demo)',
+      plainPasswordHint: 'Monitoring2026!',
+      accountStatus: 'Aktif',
+      createdAt: '2026-08-01T00:00:00.000Z',
+      updatedAt: '2026-11-09T08:00:00.000Z',
+      lastLoginAt: '2026-11-09T08:00:00.000Z',
+      isDemo: true,
     },
   ];
 
@@ -318,6 +344,7 @@ function createInitialSeedDatabase(): DatabaseSchema {
       city: item.city,
       photoURL: '',
       role: 'member',
+      plainPasswordHint: 'MemberKhot123!',
       accountStatus: item.accountStatus,
       createdAt: item.joinDate,
       updatedAt: item.joinDate,
@@ -901,10 +928,14 @@ let pendingSyncPromise: Promise<void> | null = null;
 function ensureAllUsersHavePasswordHashes() {
   let adminUser = db.users.find(
     (u) =>
-      u.role === 'admin' ||
-      u.username.toLowerCase() === 'admin' ||
-      u.memberId.toUpperCase() === 'ADMIN-01'
+      u.role === 'admin' &&
+      (u.adminRole === 'Admin Utama' ||
+        u.username.toLowerCase() === 'admin' ||
+        u.memberId.toUpperCase() === 'ADMIN-01')
   );
+  if (!adminUser) {
+    adminUser = db.users.find((u) => u.role === 'admin');
+  }
   if (!adminUser) {
     adminUser = {
       uid: 'usr-admin-01',
@@ -917,6 +948,9 @@ function ensureAllUsersHavePasswordHashes() {
       city: 'Jakarta Selatan',
       photoURL: '',
       role: 'admin',
+      adminRole: 'Admin Utama',
+      notes: 'Pemilik Portal & Administrator Utama Belajar Khot',
+      plainPasswordHint: 'AdminKhot2026!',
       accountStatus: 'Aktif',
       createdAt: '2026-01-01T00:00:00.000Z',
       updatedAt: new Date().toISOString(),
@@ -927,13 +961,25 @@ function ensureAllUsersHavePasswordHashes() {
   } else {
     adminUser.role = 'admin';
     adminUser.accountStatus = 'Aktif';
+    if (!adminUser.adminRole) {
+      adminUser.adminRole = 'Admin Utama';
+    }
   }
 
   for (const u of db.users) {
+    if (u.role === 'admin' && !u.adminRole) {
+      u.adminRole = u.memberId.toUpperCase().startsWith('MON')
+        ? 'Anggota Monitoring'
+        : 'Admin Utama';
+    }
     if (!db.passwordHashes[u.uid]) {
-      db.passwordHashes[u.uid] = hashPassword(
-        u.role === 'admin' ? 'AdminKhot2026!' : 'MemberKhot123!'
-      );
+      const fallbackPass =
+        u.plainPasswordHint ||
+        (u.role === 'admin' ? 'AdminKhot2026!' : 'MemberKhot123!');
+      db.passwordHashes[u.uid] = hashPassword(fallbackPass);
+      if (!u.plainPasswordHint) {
+        u.plainPasswordHint = fallbackPass;
+      }
     }
   }
 }
@@ -1390,10 +1436,260 @@ async function startServer() {
   });
 
   // ============================================================================
-  // MEMBERS & ACCOUNTS CRUD (Admin Only, plus Member Self-Profile Update)
+  // MEMBERS, ADMIN UTAMA & ANGGOTA MONITORING CRUD
   // ============================================================================
 
+  app.get('/api/admins', requireAdmin, (_req, res) => {
+    ensureAllUsersHavePasswordHashes();
+    res.json({
+      admins: db.users.filter((u) => u.role === 'admin'),
+    });
+  });
+
+  app.post('/api/admins', requireAdmin, (req: AuthenticatedRequest, res) => {
+    const actor = req.authUser!;
+    const {
+      fullName,
+      customId,
+      username,
+      password,
+      phone,
+      email,
+      city,
+      adminRole,
+      notes,
+      accountStatus,
+    } = req.body || {};
+
+    if (!fullName || String(fullName).trim().length < 2) {
+      res.status(400).json({ error: 'Nama lengkap Admin / Anggota Monitoring wajib diisi.' });
+      return;
+    }
+
+    const validAdminRole: AdminRoleType =
+      adminRole === 'Admin Utama' ||
+      adminRole === 'Anggota Monitoring' ||
+      adminRole === 'Admin Pengurus'
+        ? adminRole
+        : 'Anggota Monitoring';
+
+    const prefix = validAdminRole === 'Anggota Monitoring' ? 'MON' : 'ADMIN';
+    const existingAdminIds = db.users
+      .filter((u) => u.role === 'admin')
+      .map((u) => u.memberId.toUpperCase());
+
+    let nextAdminId = String(customId || '').trim().toUpperCase();
+    if (!nextAdminId) {
+      let counter = 1;
+      while (
+        existingAdminIds.includes(`${prefix}-${String(counter).padStart(2, '0')}`)
+      ) {
+        counter++;
+      }
+      nextAdminId = `${prefix}-${String(counter).padStart(2, '0')}`;
+    }
+
+    const desiredUsername = String(username || nextAdminId).trim();
+    const duplicateUser = db.users.find(
+      (u) =>
+        u.memberId.toLowerCase() === nextAdminId.toLowerCase() ||
+        u.username.toLowerCase() === desiredUsername.toLowerCase()
+    );
+    if (duplicateUser) {
+      res.status(400).json({
+        error: `ID atau Username "${desiredUsername}" sudah digunakan oleh akun ${duplicateUser.fullName}. Silakan gunakan ID lain.`,
+      });
+      return;
+    }
+
+    const rawPass =
+      password && String(password).trim().length >= 4
+        ? String(password).trim()
+        : validAdminRole === 'Anggota Monitoring'
+        ? 'Monitoring2026!'
+        : 'AdminKhot2026!';
+
+    const nowIso = new Date().toISOString();
+    const newUid = `usr-${nextAdminId.toLowerCase().replace(/[^a-z0-9]/g, '')}-${Date.now().toString(36)}`;
+
+    const newAdmin: UserRecord = {
+      uid: newUid,
+      memberId: nextAdminId,
+      username: desiredUsername,
+      fullName: String(fullName).trim(),
+      gender: 'Laki-laki (Ikhwan)',
+      phone: String(phone || '-').trim(),
+      email: String(email || '').trim(),
+      city: String(city || 'Indonesia').trim(),
+      photoURL: '',
+      role: 'admin',
+      adminRole: validAdminRole,
+      notes: String(notes || '').trim(),
+      plainPasswordHint: rawPass,
+      accountStatus: accountStatus === 'Nonaktif' ? 'Nonaktif' : 'Aktif',
+      createdAt: nowIso,
+      updatedAt: nowIso,
+      lastLoginAt: null,
+      isDemo: false,
+    };
+
+    db.users.unshift(newAdmin);
+    db.passwordHashes[newUid] = hashPassword(rawPass);
+
+    logActivity(
+      actor.uid,
+      actor.fullName,
+      'TAMBAH_ADMIN_MONITORING',
+      `Mendaftarkan ${validAdminRole} baru: ${newAdmin.fullName} (ID: ${newAdmin.memberId} / Login: ${newAdmin.username}).`,
+      newAdmin.memberId
+    );
+    saveDatabase();
+
+    res.status(201).json({
+      admin: newAdmin,
+      generatedPassword: rawPass,
+    });
+  });
+
+  app.put('/api/admins/:uid', requireAdmin, (req: AuthenticatedRequest, res) => {
+    const actor = req.authUser!;
+    const targetUid = String(req.params.uid || '');
+    const targetAdmin = db.users.find(
+      (u) => u.uid === targetUid && u.role === 'admin'
+    );
+    if (!targetAdmin) {
+      res.status(404).json({ error: 'Data Admin / Anggota Monitoring tidak ditemukan.' });
+      return;
+    }
+
+    const {
+      fullName,
+      memberId,
+      username,
+      newPassword,
+      phone,
+      email,
+      city,
+      adminRole,
+      notes,
+      accountStatus,
+    } = req.body || {};
+
+    if (memberId !== undefined && String(memberId).trim()) {
+      const nextMemberId = String(memberId).trim().toUpperCase();
+      const conflict = db.users.find(
+        (u) =>
+          u.uid !== targetAdmin.uid &&
+          u.memberId.toLowerCase() === nextMemberId.toLowerCase()
+      );
+      if (conflict) {
+        res.status(400).json({
+          error: `ID "${nextMemberId}" sudah dipakai oleh ${conflict.fullName}.`,
+        });
+        return;
+      }
+      targetAdmin.memberId = nextMemberId;
+    }
+
+    if (username !== undefined && String(username).trim()) {
+      const nextUsername = String(username).trim();
+      const conflict = db.users.find(
+        (u) =>
+          u.uid !== targetAdmin.uid &&
+          u.username.toLowerCase() === nextUsername.toLowerCase()
+      );
+      if (conflict) {
+        res.status(400).json({
+          error: `Username login "${nextUsername}" sudah dipakai oleh ${conflict.fullName}.`,
+        });
+        return;
+      }
+      targetAdmin.username = nextUsername;
+    }
+
+    if (fullName !== undefined && String(fullName).trim()) {
+      targetAdmin.fullName = String(fullName).trim();
+    }
+    if (phone !== undefined) targetAdmin.phone = String(phone).trim();
+    if (email !== undefined) targetAdmin.email = String(email).trim();
+    if (city !== undefined) targetAdmin.city = String(city).trim();
+    if (
+      adminRole === 'Admin Utama' ||
+      adminRole === 'Anggota Monitoring' ||
+      adminRole === 'Admin Pengurus'
+    ) {
+      targetAdmin.adminRole = adminRole;
+    }
+    if (notes !== undefined) {
+      targetAdmin.notes = String(notes).trim();
+    }
+    if (accountStatus === 'Aktif' || accountStatus === 'Nonaktif') {
+      targetAdmin.accountStatus = accountStatus;
+    }
+    if (newPassword !== undefined && String(newPassword).trim().length >= 4) {
+      const cleanPass = String(newPassword).trim();
+      db.passwordHashes[targetAdmin.uid] = hashPassword(cleanPass);
+      targetAdmin.plainPasswordHint = cleanPass;
+    }
+
+    targetAdmin.updatedAt = new Date().toISOString();
+
+    logActivity(
+      actor.uid,
+      actor.fullName,
+      'UPDATE_ADMIN_MONITORING',
+      `Memperbarui data ${targetAdmin.adminRole || 'Admin'} ${targetAdmin.fullName} (${targetAdmin.memberId}).`,
+      targetAdmin.memberId
+    );
+    saveDatabase();
+
+    res.json({ admin: targetAdmin });
+  });
+
+  app.delete('/api/admins/:uid', requireAdmin, (req: AuthenticatedRequest, res) => {
+    const actor = req.authUser!;
+    const targetUid = String(req.params.uid || '');
+    const targetAdmin = db.users.find(
+      (u) => u.uid === targetUid && u.role === 'admin'
+    );
+    if (!targetAdmin) {
+      res.status(404).json({ error: 'Data Admin / Anggota Monitoring tidak ditemukan.' });
+      return;
+    }
+
+    const allAdmins = db.users.filter((u) => u.role === 'admin');
+    if (allAdmins.length <= 1) {
+      res.status(400).json({
+        error: 'Tidak dapat menghapus satu-satunya akun Admin Utama yang tersisa di portal.',
+      });
+      return;
+    }
+
+    if (targetAdmin.uid === actor.uid) {
+      res.status(400).json({
+        error: 'Anda tidak dapat menghapus akun Admin Utama yang sedang Anda gunakan untuk login saat ini.',
+      });
+      return;
+    }
+
+    db.users = db.users.filter((u) => u.uid !== targetUid);
+    delete db.passwordHashes[targetUid];
+    db.sessions = db.sessions.filter((s) => s.uid !== targetUid);
+
+    logActivity(
+      actor.uid,
+      actor.fullName,
+      'HAPUS_ADMIN_MONITORING',
+      `Menghapus akun ${targetAdmin.adminRole || 'Admin'}: ${targetAdmin.fullName} (${targetAdmin.memberId}).`,
+      targetAdmin.memberId
+    );
+    saveDatabase();
+
+    res.json({ success: true });
+  });
+
   app.get('/api/members', requireAdmin, (_req, res) => {
+    ensureAllUsersHavePasswordHashes();
     res.json({
       profiles: getCombinedProfiles(),
       admins: db.users.filter((u) => u.role === 'admin'),
@@ -1414,6 +1710,8 @@ async function startServer() {
       agreedToRules,
       adminNotes,
       initialPassword,
+      customMemberId,
+      customUsername,
     } = req.body || {};
 
     const validation = validateParticipantForm({
@@ -1432,10 +1730,25 @@ async function startServer() {
     }
 
     const existingIds = db.members.map((m) => m.memberId);
-    const nextMemberId = generateNextMemberId(existingIds, db.settings.memberIdPrefix || 'BK');
+    const desiredId = String(customMemberId || '').trim().toUpperCase();
+    const nextMemberId = desiredId || generateNextMemberId(existingIds, db.settings.memberIdPrefix || 'BK');
+    const desiredUsername = String(customUsername || nextMemberId).trim();
+
+    const duplicate = db.users.find(
+      (u) =>
+        u.memberId.toLowerCase() === nextMemberId.toLowerCase() ||
+        u.username.toLowerCase() === desiredUsername.toLowerCase()
+    );
+    if (duplicate) {
+      res.status(400).json({
+        error: `ID atau Username "${desiredUsername}" sudah digunakan oleh ${duplicate.fullName}.`,
+      });
+      return;
+    }
+
     const nowIso = new Date().toISOString();
-    const newUid = `usr-${nextMemberId.toLowerCase()}-${Date.now().toString(36)}`;
-    const rawPassword = initialPassword && String(initialPassword).trim().length >= 6
+    const newUid = `usr-${nextMemberId.toLowerCase().replace(/[^a-z0-9]/g, '')}-${Date.now().toString(36)}`;
+    const rawPassword = initialPassword && String(initialPassword).trim().length >= 4
       ? String(initialPassword).trim()
       : 'MemberKhot123!';
 
@@ -1447,7 +1760,7 @@ async function startServer() {
     const newUser: UserRecord = {
       uid: newUid,
       memberId: nextMemberId,
-      username: nextMemberId,
+      username: desiredUsername,
       fullName: String(fullName).trim(),
       gender: 'Laki-laki (Ikhwan)',
       phone: String(phone).trim(),
@@ -1455,6 +1768,7 @@ async function startServer() {
       city: String(city).trim(),
       photoURL: '',
       role: 'member',
+      plainPasswordHint: rawPassword,
       accountStatus: 'Aktif',
       createdAt: nowIso,
       updatedAt: nowIso,
@@ -1504,7 +1818,7 @@ async function startServer() {
       admin.uid,
       admin.fullName,
       'TAMBAH_PESERTA',
-      `Menambahkan peserta baru ${newUser.fullName} dengan ID otomatis ${nextMemberId}.`,
+      `Menambahkan peserta baru ${newUser.fullName} dengan ID ${nextMemberId}.`,
       nextMemberId
     );
     saveDatabase();
@@ -1540,8 +1854,30 @@ async function startServer() {
       membershipStatus,
       accountStatus,
       adminNotes,
+      customUsername,
+      newPassword,
     } = req.body || {};
 
+    if (customUsername !== undefined && String(customUsername).trim()) {
+      const cleanUname = String(customUsername).trim();
+      const conflict = db.users.find(
+        (u) =>
+          u.uid !== user.uid &&
+          u.username.toLowerCase() === cleanUname.toLowerCase()
+      );
+      if (conflict) {
+        res.status(400).json({
+          error: `Username/ID Login "${cleanUname}" sudah dipakai oleh ${conflict.fullName}.`,
+        });
+        return;
+      }
+      user.username = cleanUname;
+    }
+    if (newPassword !== undefined && String(newPassword).trim().length >= 4) {
+      const cleanPass = String(newPassword).trim();
+      db.passwordHashes[user.uid] = hashPassword(cleanPass);
+      user.plainPasswordHint = cleanPass;
+    }
     if (fullName !== undefined) user.fullName = String(fullName).trim();
     if (phone !== undefined) user.phone = String(phone).trim();
     if (email !== undefined) user.email = String(email).trim();
@@ -1629,7 +1965,7 @@ async function startServer() {
     res.json({ success: true });
   });
 
-  // Admin resets a member's password
+  // Admin resets any account's password (member or admin/monitoring)
   app.post('/api/accounts/:uid/reset-password', requireAdmin, (req: AuthenticatedRequest, res) => {
     const admin = req.authUser!;
     const targetUser = db.users.find((u) => u.uid === req.params.uid);
@@ -1638,18 +1974,19 @@ async function startServer() {
       return;
     }
 
-    const customPassword = req.body?.newPassword && String(req.body.newPassword).trim().length >= 6
+    const customPassword = req.body?.newPassword && String(req.body.newPassword).trim().length >= 4
       ? String(req.body.newPassword).trim()
       : `Khot${Math.floor(1000 + Math.random() * 9000)}!`;
 
     db.passwordHashes[targetUser.uid] = hashPassword(customPassword);
+    targetUser.plainPasswordHint = customPassword;
     targetUser.updatedAt = new Date().toISOString();
 
     logActivity(
       admin.uid,
       admin.fullName,
       'RESET_PASSWORD',
-      `Mereset password akun ${targetUser.fullName} (${targetUser.memberId}).`,
+      `Menetapkan password baru untuk akun ${targetUser.fullName} (${targetUser.memberId}).`,
       targetUser.memberId
     );
     saveDatabase();
