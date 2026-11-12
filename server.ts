@@ -11,7 +11,7 @@ import {
   generateNextMemberId,
   matchesTargetAudience,
   validateParticipantForm,
-} from './src/utils/domainLogic.ts';
+} from './src/utils/domainLogic';
 import type {
   AccountStatus,
   ActivityLogRecord,
@@ -29,7 +29,7 @@ import type {
   ProgramType,
   ReadReceiptRecord,
   UserRecord,
-} from './src/types.ts';
+} from './src/types';
 
 function resolveWritableDataDir(): string {
   if (process.env.VERCEL === '1') {
@@ -775,15 +775,122 @@ function verifySignedSessionToken(token: string): { uid: string; memberId: strin
   }
 }
 
+function normalizeAppsScriptUrl(rawUrl: string): string {
+  const trimmed = String(rawUrl || '').trim();
+  if (!trimmed) return '';
+  // Strip accidental surrounding quotes
+  const unquoted = trimmed.replace(/^["']+|["']+$/g, '').trim();
+  // Convert /dev test URLs to /exec if the user copied the test link
+  if (unquoted.startsWith('https://script.google.com/') && unquoted.endsWith('/dev')) {
+    return unquoted.slice(0, -4) + '/exec';
+  }
+  return unquoted;
+}
+
 function getActiveAppsScriptUrl(): string {
-  return (
+  const raw =
     process.env.GOOGLE_APPS_SCRIPT_URL ||
     process.env.GOOGLE_SCRIPT_URL ||
     process.env.VITE_GOOGLE_APPS_SCRIPT_URL ||
     process.env.VITE_GOOGLE_SCRIPT_URL ||
     db?.settings?.googleAppsScriptUrl ||
-    ''
-  ).trim();
+    '';
+  return normalizeAppsScriptUrl(raw);
+}
+
+async function callGoogleAppsScript(
+  targetUrl: string,
+  options: { method: 'GET' | 'POST'; body?: any }
+): Promise<any> {
+  const cleanUrl = normalizeAppsScriptUrl(targetUrl);
+  if (!cleanUrl || !cleanUrl.startsWith('https://script.google.com/')) {
+    throw new Error(
+      'URL Web App Google Apps Script belum valid. Pastikan URL diawali dengan https://script.google.com/macros/s/.../exec'
+    );
+  }
+
+  let response: globalThis.Response;
+  if (options.method === 'POST') {
+    response = await fetch(cleanUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'text/plain;charset=utf-8',
+        Accept: 'application/json',
+      },
+      body: JSON.stringify(options.body || {}),
+      redirect: 'manual',
+    });
+  } else {
+    response = await fetch(cleanUrl, {
+      method: 'GET',
+      headers: { Accept: 'application/json' },
+      redirect: 'manual',
+    });
+  }
+
+  // Follow Google Apps Script 302/303/307 redirects via GET to script.googleusercontent.com
+  let redirectCount = 0;
+  while (
+    response.status >= 300 &&
+    response.status < 400 &&
+    redirectCount < 5
+  ) {
+    redirectCount++;
+    const location = response.headers.get('location') || '';
+    if (!location) break;
+
+    if (
+      location.includes('accounts.google.com') ||
+      location.includes('ServiceLogin')
+    ) {
+      throw new Error(
+        'Akses ditolak oleh Google (meminta Login). Pastikan saat Deploy -> New deployment di Google Apps Script, bagian "Who has access" dipilih "Anyone" (Siapa saja), bukan "Only myself".'
+      );
+    }
+
+    response = await fetch(location, {
+      method: 'GET',
+      headers: { Accept: 'application/json' },
+      redirect: 'manual',
+    });
+  }
+
+  const rawText = await response.text();
+  const trimmedText = rawText.trim();
+
+  if (trimmedText.startsWith('{') || trimmedText.startsWith('[')) {
+    return JSON.parse(trimmedText);
+  }
+
+  if (
+    trimmedText.includes('accounts.google.com') ||
+    trimmedText.includes('ServiceLogin') ||
+    trimmedText.includes('Sign in - Google Accounts')
+  ) {
+    throw new Error(
+      'Akses Web App masih terkunci. Buka Google Apps Script -> Deploy -> Manage deployments -> Edit -> ubah "Who has access" menjadi "Anyone" (Siapa saja).'
+    );
+  }
+
+  // Extract readable Google Apps Script runtime exception if returned as HTML
+  const exceptionMatch = trimmedText.match(
+    /(?:Exception|TypeError|ReferenceError|SyntaxError|Error):[^<\n]+/i
+  );
+  if (exceptionMatch) {
+    throw new Error(`Error di dalam script Google Apps Script: ${exceptionMatch[0].trim()}`);
+  }
+
+  // If POST completed a redirect to script.googleusercontent.com with 200 OK
+  if (options.method === 'POST' && response.ok) {
+    return {
+      ok: true,
+      message: 'Data berhasil dikirim ke Google Sheets.',
+    };
+  }
+
+  throw new Error(
+    `Respons dari Google Apps Script bukan format JSON (Status ${response.status}). Pastikan kode Code.gs & Setup.gs sudah disimpan lalu klik Deploy -> New deployment -> Web app.`
+  );
 }
 
 let hasHydratedFromSheets = false;
@@ -845,7 +952,6 @@ async function hydrateFromGoogleAppsScriptIfNeeded(force = false): Promise<void>
     return;
   }
 
-  // Ensure db.settings reflects the env var URL if not already set
   if (!db.settings.googleAppsScriptUrl) {
     db.settings.googleAppsScriptUrl = scriptUrl;
   }
@@ -858,7 +964,6 @@ async function hydrateFromGoogleAppsScriptIfNeeded(force = false): Promise<void>
     return;
   }
 
-  // If a write sync is currently in flight, wait for it instead of overwriting with stale remote state
   if (pendingSyncPromise) {
     await pendingSyncPromise;
     return;
@@ -872,8 +977,7 @@ async function hydrateFromGoogleAppsScriptIfNeeded(force = false): Promise<void>
   activeHydrationPromise = (async () => {
     try {
       const pullUrl = `${scriptUrl}${scriptUrl.includes('?') ? '&' : '?'}action=getSnapshot`;
-      const response = await fetch(pullUrl, { redirect: 'follow' });
-      const result = await response.json();
+      const result = await callGoogleAppsScript(pullUrl, { method: 'GET' });
       if (result && result.ok) {
         hasHydratedFromSheets = true;
         lastHydratedAtMs = Date.now();
@@ -883,7 +987,6 @@ async function hydrateFromGoogleAppsScriptIfNeeded(force = false): Promise<void>
             db.settings.lastGoogleSheetsSync = String(result.updatedAt);
           }
         } else {
-          // Remote Google Sheet is empty on first connection -> push initial seed snapshot automatically
           await syncToGoogleAppsScriptBackground();
         }
       }
@@ -909,17 +1012,15 @@ async function syncToGoogleAppsScriptBackground() {
       ...db,
       sessions: undefined,
     };
-    const res = await fetch(scriptUrl, {
+    const result = await callGoogleAppsScript(scriptUrl, {
       method: 'POST',
-      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body: JSON.stringify({
+      body: {
         action: 'saveSnapshot',
         data: snapshotPayload,
         database: snapshotPayload,
-      }),
-      redirect: 'follow',
+      },
     });
-    if (res.ok) {
+    if (result && result.ok) {
       hasHydratedFromSheets = true;
       lastHydratedAtMs = Date.now();
     }
@@ -2157,14 +2258,14 @@ async function startServer() {
     const { direction = 'push', googleAppsScriptUrl } = req.body || {};
 
     if (typeof googleAppsScriptUrl === 'string' && googleAppsScriptUrl.trim()) {
-      db.settings.googleAppsScriptUrl = googleAppsScriptUrl.trim();
+      db.settings.googleAppsScriptUrl = normalizeAppsScriptUrl(googleAppsScriptUrl);
     }
 
     const targetUrl = getActiveAppsScriptUrl();
     if (!targetUrl || !targetUrl.startsWith('https://script.google.com/')) {
       res.status(400).json({
         error:
-          'URL Web App Google Apps Script belum valid. Pastikan URL diawali dengan https://script.google.com/macros/s/.../exec',
+          'URL Web App Google Apps Script belum valid. Pastikan Anda menempelkan Web App URL yang diawali https://script.google.com/macros/s/.../exec (bukan link Google Sheet biasa).',
       });
       return;
     }
@@ -2172,8 +2273,7 @@ async function startServer() {
     try {
       if (direction === 'pull') {
         const pullUrl = `${targetUrl}${targetUrl.includes('?') ? '&' : '?'}action=getSnapshot`;
-        const response = await fetch(pullUrl, { redirect: 'follow' });
-        const result = await response.json();
+        const result = await callGoogleAppsScript(pullUrl, { method: 'GET' });
         if (!result.ok) {
           throw new Error(result.error || 'Gagal membaca data dari Google Sheets.');
         }
@@ -2221,18 +2321,15 @@ async function startServer() {
         settings: db.settings,
       };
 
-      const response = await fetch(targetUrl, {
+      const result = await callGoogleAppsScript(targetUrl, {
         method: 'POST',
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify({
+        body: {
           action: 'saveSnapshot',
           data: snapshotPayload,
           database: snapshotPayload,
-        }),
-        redirect: 'follow',
+        },
       });
 
-      const result = await response.json();
       if (!result.ok) {
         throw new Error(result.error || 'Google Apps Script mengembalikan status gagal.');
       }
@@ -2263,9 +2360,7 @@ async function startServer() {
       });
     } catch (err: any) {
       res.status(400).json({
-        error: `Gagal menghubungi Google Apps Script: ${
-          err.message || 'Pastikan Web App dideploy dengan akses "Anyone" (Siapa saja).'
-        }`,
+        error: err.message || 'Gagal menghubungi Google Apps Script. Pastikan Web App dideploy dengan akses "Anyone" (Siapa saja).',
       });
     }
   });
@@ -2371,7 +2466,8 @@ async function startServer() {
   // VITE MIDDLEWARE (Dev) / STATIC FILES (Production)
   // ============================================================================
   if (process.env.NODE_ENV !== 'production' && process.env.VERCEL !== '1') {
-    const { createServer: createViteServer } = await import('vite');
+    const vitePkgName = 'vite';
+    const { createServer: createViteServer } = await import(vitePkgName);
     const vite = await createViteServer({
       server: { middlewareMode: true },
       appType: 'spa',

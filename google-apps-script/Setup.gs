@@ -135,6 +135,32 @@ var SHEET_COLUMNS = {
   Settings: ['Key', 'Value', 'UpdatedAt']
 };
 
+function resolveSetupSpreadsheet() {
+  if (typeof getDatabaseSpreadsheet === 'function') {
+    return getDatabaseSpreadsheet();
+  }
+  var ss = null;
+  try {
+    ss = SpreadsheetApp.getActiveSpreadsheet();
+  } catch (e) {
+    ss = null;
+  }
+  if (ss) return ss;
+  var props = PropertiesService.getScriptProperties();
+  var savedId = props.getProperty('BELAJAR_KHOT_SPREADSHEET_ID');
+  if (savedId) {
+    try {
+      ss = SpreadsheetApp.openById(savedId);
+      if (ss) return ss;
+    } catch (e2) {
+      ss = null;
+    }
+  }
+  ss = SpreadsheetApp.create('Database Resmi Belajar Khot');
+  props.setProperty('BELAJAR_KHOT_SPREADSHEET_ID', ss.getId());
+  return ss;
+}
+
 /**
  * Menambahkan menu khusus "Belajar Khot DB" saat file Google Spreadsheet dibuka.
  */
@@ -157,7 +183,7 @@ function onOpen() {
  * Jalankan fungsi ini pertama kali dari editor Apps Script (klik tombol Run).
  */
 function setupDatabaseSheets() {
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var ss = resolveSetupSpreadsheet();
   var keys = Object.keys(SHEET_NAMES);
 
   for (var i = 0; i < keys.length; i++) {
@@ -181,6 +207,7 @@ function setupDatabaseSheets() {
   return {
     ok: true,
     spreadsheetName: ss.getName(),
+    spreadsheetUrl: ss.getUrl(),
     message: 'Seluruh 11 Sheet Database Belajar Khot berhasil dibuat dan disiapkan.'
   };
 }
@@ -189,7 +216,7 @@ function setupDatabaseSheets() {
  * Merapikan tampilan warna header (#19432D) dan membekukan baris pertama di semua Sheet.
  */
 function formatAllSheetsStyle() {
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var ss = resolveSetupSpreadsheet();
   var keys = Object.keys(SHEET_NAMES);
 
   for (var i = 0; i < keys.length; i++) {
@@ -211,7 +238,7 @@ function formatAllSheetsStyle() {
  * Membersihkan seluruh isi baris data (menyisakan baris Header) untuk Mode Kosongan / Fresh.
  */
 function clearAllSheetsData() {
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var ss = resolveSetupSpreadsheet();
   var keys = Object.keys(SHEET_NAMES);
 
   for (var i = 0; i < keys.length; i++) {
