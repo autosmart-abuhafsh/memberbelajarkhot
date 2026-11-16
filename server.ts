@@ -2852,7 +2852,7 @@ async function startServer() {
   }
 
   if (process.env.VERCEL !== '1') {
-    const PORT = Number(process.env.PORT) || 3000;
+    const PORT = Number(process.env.DEFAULT_APP_PORT) || 3000;
     app.listen(PORT, '0.0.0.0', () => {
       console.log(`Belajar Khot Full-Stack Server running on http://0.0.0.0:${PORT}`);
     });
